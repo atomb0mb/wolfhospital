@@ -254,9 +254,26 @@ while (rs.next()) {
 
     }
 
-    
+    static void checkBeds(String bID) {
 
+    }
 
+    static void assignPatientToBeds(String pID, String bID){
+      //MAKE SURE TO CHANGE BEDS TO RESERVE
+    }
+
+    static void releaseBed(String bID) {
+
+    }
+
+    static void createCheckIn( String pID, String hID, String bID, String startDate, String respDoctor, String currentDiagnosis, String registrationFee) {
+
+    }
+
+    static void transferPatient( String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
+        // update
+        // create 
+    }
 
 
 }
