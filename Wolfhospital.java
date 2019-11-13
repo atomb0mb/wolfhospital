@@ -88,7 +88,7 @@ stmt.executeUpdate("create table MedicalRecords(mID integer NOT NULL UNIQUE PRIM
 "result varchar(500), consultationfee integer NOT NULL, testfee integer NOT NULL, treatmentfee integer NOT NULL, FOREIGN KEY(cID) REFERENCES CheckIn(cID))");
 
 // BillingAccounts ##TBD
-stmt.executeUpdate("create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY,pID integer NOT NULL, payerSSN varchar(11) NOT NULL, " +
+stmt.executeUpdate("create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY,pID integer NOT NULL, payerSSN varchar(11), " +
 "billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee double, medicationPrescribed varchar(200), accommodationFee double, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
 
 
@@ -217,7 +217,7 @@ while (rs.next()) {
             try { rs.close(); } catch(Throwable whatever) {}
         }
     }
-
+    //#1 (Abhi)
     static void enterHospital(String hId, String aId, String hAddress, String hPhone, String s1, String s1cost, String s2, String s2cost, String capacity) {
 
     }
@@ -254,6 +254,8 @@ while (rs.next()) {
 
     }
 
+    //#2 cwng
+
     static void checkBeds(String bID) {
 
     }
@@ -272,7 +274,48 @@ while (rs.next()) {
 
     static void transferPatient( String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
         // update
-        // create 
+        // create
+    }
+
+
+    // Manage MedicalRecords
+    static void enterMedicalRecords(String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+
+    }
+
+    static void updateMedicalRecords(String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+
+    }
+    // #3 jasalina arthur
+    //Manage BillingAccounts
+    static void createBillingAccount(String baID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String medicationPrescribed, String accommodationFee, String visitDate) {
+      // check beds first before you create account
+    }
+
+    //Report
+
+    static void reportBillingHistory(String startDate, String endDate, String pId) {
+
+    }
+
+    static void reportUsageStatus() {
+
+    }
+
+    static void reportPatientPerMonth(String hID) {
+
+    }
+
+    static void reportHospitalPercentage(String hID){
+
+    }
+
+    static void reportDoctorByPatient(String pID) {
+
+    }
+
+    static void reportAllHospitalSpeciality() {
+
     }
 
 
