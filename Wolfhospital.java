@@ -8,7 +8,7 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
+static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
 
 public static void main(String[] args) {
         try {
@@ -19,8 +19,8 @@ public static void main(String[] args) {
 
     Class.forName("org.mariadb.jdbc.Driver");
 
-    String user = "jasalina";
-    String passwd = "";
+    String user = "cwng";
+    String passwd = "200207715";
 
     Connection conn = null;
     Statement stmt = null;
@@ -44,7 +44,7 @@ stmt.executeUpdate("DROP TABLE IF EXISTS MedicalRecords");
 stmt.executeUpdate("DROP TABLE IF EXISTS CheckIn");
 stmt.executeUpdate("DROP TABLE IF EXISTS Staff");
 stmt.executeUpdate("DROP TABLE IF EXISTS Beds");
-stmt.executeUpdate("DROP TABLE IF EXISTS Specializations");
+// stmt.executeUpdate("DROP TABLE IF EXISTS Specializations");
 stmt.executeUpdate("DROP TABLE IF EXISTS Patient");
 stmt.executeUpdate("DROP TABLE IF EXISTS Hospital");
 stmt.executeUpdate("DROP TABLE IF EXISTS Admin");
@@ -56,11 +56,11 @@ stmt.executeUpdate("CREATE TABLE Admin(aID integer UNIQUE NOT NULL, aName varcha
 // Create the table for hospital
 
 stmt.executeUpdate("create table Hospital(hID integer NOT NULL UNIQUE, aID integer NOT NULL, hAddress varchar(150) NOT NULL, " +
-"hPhone varchar(15) NOT NULL, capacity integer NOT NULL, PRIMARY KEY(hID), FOREIGN KEY(aID) REFERENCES Admin(aID))");
+"hPhone varchar(15) NOT NULL, spec1 varchar(100), s1CostPerDay integer, spec2 varchar(100), s2CostPerDay integer, capacity integer NOT NULL, PRIMARY KEY(hID), FOREIGN KEY(aID) REFERENCES Admin(aID))");
 
 // Specializations
-stmt.executeUpdate("create table Specializations(sID integer NOT NULL UNIQUE, hID integer NOT NULL, sName varchar(100) NOT NULL, costPerDay double NOT NULL, " +
-"PRIMARY KEY(sID), FOREIGN KEY(hID) REFERENCES Hospital(hID))");
+// stmt.executeUpdate("create table Specializations(sID integer NOT NULL UNIQUE, hID integer NOT NULL, sName varchar(100) NOT NULL, costPerDay double NOT NULL, " +
+// "PRIMARY KEY(sID), FOREIGN KEY(hID) REFERENCES Hospital(hID))");
 
 // Patient
 stmt.executeUpdate("create table Patient(pID integer NOT NULL UNIQUE PRIMARY KEY, pName varchar(50) NOT NULL, SSN varchar(11), " +
@@ -68,8 +68,8 @@ stmt.executeUpdate("create table Patient(pID integer NOT NULL UNIQUE PRIMARY KEY
 "patientPhone varchar(15) NOT NULL, patientAddress varchar(150) NOT NULL, status varchar(150))");
 
 // Beds
-stmt.executeUpdate("create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, sID integer NOT NULL, staffID integer, pID integer, reserved boolean NOT NULL, " +
-"FOREIGN KEY (sID) REFERENCES Specializations(sID), FOREIGN KEY (pID) REFERENCES Patient(pID))");
+stmt.executeUpdate("create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, spec varchar(100) NOT NULL, staffID integer, pID integer, reserved boolean NOT NULL, " +
+"FOREIGN KEY (hID) REFERENCES Hospital(hID), FOREIGN KEY (pID) REFERENCES Patient(pID))");
 
 // Staff
 stmt.executeUpdate("create table Staff(staffID integer NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, staffName varchar(50) NOT NULL, " +
@@ -79,11 +79,11 @@ stmt.executeUpdate("create table Staff(staffID integer NOT NULL UNIQUE PRIMARY K
 
 // Check-in #when creating check in ensure that patient is assigned to a bed by updating bed (perhaps?)
 stmt.executeUpdate("create table CheckIn(cID integer NOT NULL UNIQUE PRIMARY KEY, pID integer NOT NULL, hID integer NOT NULL, bID integer, " +
-"startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee double NOT NULL, " + 
+"startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee double NOT NULL, " +
 "FOREIGN KEY(pID) REFERENCES Patient(pID), FOREIGN KEY(hID) REFERENCES Hospital(hID))");
 
 // MedicalRecords
-stmt.executeUpdate("create table MedicalRecords(mID integer NOT NULL UNIQUE PRIMARY KEY,cID integer NOT NULL, " + 
+stmt.executeUpdate("create table MedicalRecords(mID integer NOT NULL UNIQUE PRIMARY KEY,cID integer NOT NULL, " +
 "respNurse varchar(50), prescriptions varchar(500), diagnosisDetails varchar(500), treatment varchar(500), test varchar(500), " +
 "result varchar(500), consultationfee integer NOT NULL, testfee integer NOT NULL, treatmentfee integer NOT NULL, FOREIGN KEY(cID) REFERENCES CheckIn(cID))");
 
@@ -107,16 +107,16 @@ stmt.executeUpdate("insert into Patient(pID, pName, DOB, gender, patientAge, pat
 
 
 // hospital #1
-stmt.executeUpdate("insert into Hospital(hID, aID, hAddress, hPhone, capacity) VALUES (111, 11101, '111 St NC, 111', '101', 100)");
+stmt.executeUpdate("insert into Hospital(hID, aID, hAddress, hPhone, spec1, s1CostPerDay, spec2, s2CostPerDay, capacity) VALUES (111, 11101, '111 St NC, 111', '101', 'pediatrics', 10, 'neurology', 15, 100)");
 // Specializations
-stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (1, 111, 'pediatrics', 10)");
-stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (2, 111, 'neurology', 15)");
+// stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (1, 111, 'pediatrics', 10)");
+// stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (2, 111, 'neurology', 15)");
 
 // hospital #2
-stmt.executeUpdate("insert into Hospital(hID, aID, hAddress, hPhone, capacity) VALUES (222, 22201, '222 St NC, 222', '202', 200)");
+stmt.executeUpdate("insert into Hospital(hID, aID, hAddress, hPhone, spec1, s1CostPerDay, spec2, s2CostPerDay, capacity) VALUES (222, 22201, '222 St NC, 222', '202', 'cardiology', 20, 'oncology', 25, 200)");
 // Specializations
-stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (3, 222, 'cardiology', 20)");
-stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (4, 222, 'oncology', 25)");
+// stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (3, 222, 'cardiology', 20)");
+// stmt.executeUpdate("insert into Specializations(sID, hID, sName, costPerDay) VALUES (4, 222, 'oncology', 25)");
 
 // Staff Operator (Registration office)
 stmt.executeUpdate("insert into Staff(staffID, hID, staffName, homeAddress, sgender, age, jobTitle, department, " +
@@ -143,10 +143,10 @@ stmt.executeUpdate("insert into Staff(staffID, hID, staffName, homeAddress, sgen
 "specPosition, staffPhone, email) VALUES (1004, 222, 'Joseph', '51 ABC St, NC 27', 'M', 41, 'Doctor', 'cardiology', 'cardiologist', '327', '1004@gmail.com')");
 
 // Beds #1
-stmt.executeUpdate("insert into Beds(bID, sID, staffID, reserved) VALUES (5001, 2, 1002, FALSE)");
+stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, FALSE)");
 
 // Beds #2
-stmt.executeUpdate("insert into Beds(bID, sID, staffID, reserved) VALUES (5002, 2, 1002, FALSE)");
+stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, FALSE)");
 
 
 // Check-in/out #1
@@ -215,6 +215,48 @@ while (rs.next()) {
     static void close(ResultSet rs) {
         if(rs != null) {
             try { rs.close(); } catch(Throwable whatever) {}
-        } 
+        }
     }
+
+    static void enterHospital(String hId, String aId, String hAddress, String hPhone, String s1, String s1cost, String s2, String s2cost, String capacity) {
+
+    }
+
+    static void updateHospital(String hId, String aId, String hAddress, String hPhone, String s1, String s1cost, String s2, String s2cost, String capacity) {
+
+    }
+
+    static void deleteHospital(String hId) {
+
+    }
+
+    static void enterPatient(String pId, String ssn, String pName, String dob, String gender, String patientAge, String patientPhone, String patientAddress, String status) {
+
+    }
+
+    static void updatePatient(String pId, String ssn, String pName, String dob, String gender, String age, String patientPhone, String patientAddress, String status) {
+
+    }
+
+    static void deletePatient(String pId) {
+
+    }
+
+    static void enterStaff(String staffID, String hID, String staffName, String homeAddress, String officeAddress, String sgender, String age, String jobTitle, String department, String specPosition, String staffPhone, String email) {
+
+    }
+
+    static void updateStaff(String staffID, String hID, String staffName, String homeAddress, String officeAddress, String sgender, String age, String jobTitle, String department, String specPosition, String staffPhone, String email) {
+
+    }
+
+    static void deleteStaff(String staffID) {
+
+    }
+
+    
+
+
+
+
 }
