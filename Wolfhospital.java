@@ -10,21 +10,25 @@ public class Wolfhospital {
 
 static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
 
+static String user = "cwng";
+static String passwd = "200207715";
+
+
 public static void main(String[] args) {
-        try {
+    try {
 
         // Load the driver. This creates an instance of the driver
     // and calls the registerDriver method to make MySql Thin
     // driver, available to clients.
 
-    Class.forName("org.mariadb.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
 
-    String user = "cwng";
-    String passwd = "200207715";
+            String user = "cwng";
+            String passwd = "200207715";
 
-    Connection conn = null;
-    Statement stmt = null;
-    ResultSet rs = null;
+            Connection conn = null;
+            Statement stmt = null;
+            ResultSet rs = null;
 
     try {
 
@@ -33,11 +37,11 @@ public static void main(String[] args) {
 
         conn = DriverManager.getConnection(jdbcURL, user, passwd);
 
-// Create a statement object that will be sending your
-// SQL statements to the DBMS
+        // Create a statement object that will be sending your
+        // SQL statements to the DBMS
 
-stmt = conn.createStatement();
-// Drop tables
+        stmt = conn.createStatement();
+        // Drop tables
 
 stmt.executeUpdate("DROP TABLE IF EXISTS BillingAccounts");
 stmt.executeUpdate("DROP TABLE IF EXISTS MedicalRecords");
@@ -174,8 +178,10 @@ stmt.executeUpdate("insert into MedicalRecords(mID ,cID, prescriptions, diagnosi
 
 
 
-
-
+System.out.println("Make sure we are here!");
+checkBeds(conn ,"5001");
+assignPatientToBeds(conn, "3001", "5001");
+assignPatientToBeds(conn, "3001", "5001");
 
 
 
@@ -256,12 +262,75 @@ while (rs.next()) {
 
     //#2 cwng
 
-    static void checkBeds(String bID) {
+    static void checkBeds(Connection conn, String bID) {
+       try {
+       String sql = "select reserved from Beds where bID=";
+       sql += bID +";";
+       Statement stmt = null;
+       ResultSet rs = null;
+       try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+
+             while (rs.next()) {
+                 String s = rs.getString("reserved");
+                 if(s.equals("0")) {
+                   System.out.println("The bed number " + bID + " is available.");
+                 }
+                 else {
+                   System.out.println("The bed number " + bID + " is not available.");
+                 }
+             }
+
+           } finally {
+               close(rs);
+               close(stmt);
+               //close(conn);
+           }
+
+           } catch(Throwable oops) {
+               oops.printStackTrace();
+           }
 
     }
 
-    static void assignPatientToBeds(String pID, String bID){
+    static void assignPatientToBeds(Connection conn, String pID, String bID) {
       //MAKE SURE TO CHANGE BEDS TO RESERVE
+
+      try {
+        String sqlcheck = "select reserved from Beds where bID=";
+        sqlcheck += bID +";";
+
+        Statement stmt = null;
+        ResultSet rs = null;
+      try {
+           stmt = conn.createStatement();
+           rs = stmt.executeQuery(sqlcheck);
+
+            while (rs.next()) {
+                String s = rs.getString("reserved");
+                if(s.equals("1")) {
+                  System.out.println("The bed number " + bID + " is not available.");
+                }
+                else {
+                  String sql = "UPDATE Beds SET reserved = TRUE, pID= ";
+                  sql += pID;
+                  sql += " WHERE bID = ";
+                  sql += bID +";";
+                  stmt.executeUpdate(sql);
+                  System.out.println("Successfully assigned patient to the bed!");
+                }
+            }
+
+          } finally {
+              close(rs);
+              close(stmt);
+              //close(conn);
+          }
+
+          } catch(Throwable oops) {
+              oops.printStackTrace();
+          }
     }
 
     static void releaseBed(String bID) {
