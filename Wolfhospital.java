@@ -180,8 +180,8 @@ stmt.executeUpdate("insert into MedicalRecords(mID ,cID, prescriptions, diagnosi
 
 System.out.println("Make sure we are here!");
 checkBeds(conn ,"5001");
-assignPatientToBeds(conn, "3001", "5001");
-assignPatientToBeds(conn, "3001", "5001");
+assignPatientToBed(conn, "3001", "5001");
+assignPatientToBed(conn, "3001", "5001");
 
 
 
@@ -294,7 +294,7 @@ while (rs.next()) {
 
     }
 
-    static void assignPatientToBeds(Connection conn, String pID, String bID) {
+    static void assignPatientToBed(Connection conn, String pID, String bID) {
       //MAKE SURE TO CHANGE BEDS TO RESERVE
 
       try {
