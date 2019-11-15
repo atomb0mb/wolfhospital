@@ -10,21 +10,25 @@ public class Wolfhospital {
 
 static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
 
+static String user = "cwng";
+static String passwd = "200207715";
+
+
 public static void main(String[] args) {
-        try {
+    try {
 
         // Load the driver. This creates an instance of the driver
     // and calls the registerDriver method to make MySql Thin
     // driver, available to clients.
 
-    Class.forName("org.mariadb.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
 
-    String user = "cwng";
-    String passwd = "200207715";
+            String user = "cwng";
+            String passwd = "200207715";
 
-    Connection conn = null;
-    Statement stmt = null;
-    ResultSet rs = null;
+            Connection conn = null;
+            Statement stmt = null;
+            ResultSet rs = null;
 
     try {
 
@@ -33,11 +37,11 @@ public static void main(String[] args) {
 
         conn = DriverManager.getConnection(jdbcURL, user, passwd);
 
-// Create a statement object that will be sending your
-// SQL statements to the DBMS
+        // Create a statement object that will be sending your
+        // SQL statements to the DBMS
 
-stmt = conn.createStatement();
-// Drop tables
+        stmt = conn.createStatement();
+        // Drop tables
 
 stmt.executeUpdate("DROP TABLE IF EXISTS BillingAccounts");
 stmt.executeUpdate("DROP TABLE IF EXISTS MedicalRecords");
@@ -78,7 +82,7 @@ stmt.executeUpdate("create table Staff(staffID integer NOT NULL UNIQUE PRIMARY K
 
 
 // Check-in #when creating check in ensure that patient is assigned to a bed by updating bed (perhaps?)
-stmt.executeUpdate("create table CheckIn(cID integer NOT NULL UNIQUE PRIMARY KEY, pID integer NOT NULL, hID integer NOT NULL, bID integer, " +
+stmt.executeUpdate("create table CheckIn(cID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, hID integer NOT NULL, bID integer, " +
 "startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee double NOT NULL, " +
 "FOREIGN KEY(pID) REFERENCES Patient(pID), FOREIGN KEY(hID) REFERENCES Hospital(hID))");
 
@@ -150,23 +154,23 @@ stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (
 
 
 // Check-in/out #1
-stmt.executeUpdate("insert into CheckIn(cID, pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (1, 3001, 111, 5001, '2019-08-05', 1003, 'abc', 20)");
+stmt.executeUpdate("insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (3001, 111, 5001, '2019-08-05', 1003, 'abc', 20)");
 
 // Check-in/out #2
-stmt.executeUpdate("insert into CheckIn(cID, pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (2, 3002, 111, 5002, '2019-10-15', 1003, 'def', 20)");
+stmt.executeUpdate("insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (3002, 111, 5002, '2019-10-15', 1003, 'def', 20)");
 
 
 
 // Possibly revise for startDate and endDate for MedicalRecords instead of creating new checkins
 
 // Check-in/out # 3 for MR #1
-stmt.executeUpdate("insert into CheckIn(cID, pID, hID, bID, startDate, endDate, respDoctor, currentDiagnosis, registrationFee) VALUES (3, 3001, 111, 5001, '2019-08-05', '2019-08-31', 1003, 'abc', 20)");
+stmt.executeUpdate("insert into CheckIn(pID, hID, bID, startDate, endDate, respDoctor, currentDiagnosis, registrationFee) VALUES (3001, 111, 5001, '2019-08-05', '2019-08-31', 1003, 'abc', 20)");
 
 // MedicalRecords #1
 stmt.executeUpdate("insert into MedicalRecords(mID ,cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) VALUES(2001, 3, 'antibiotics', 'Testing for TB', 'TB treatment', 'TB blood test', 'positive', 50, 75, 200 )");
 
 // Check-in/out # 4 FOR MR #2
-stmt.executeUpdate("insert into CheckIn(cID, pID, hID, bID, startDate, endDate, respDoctor, currentDiagnosis, registrationFee) VALUES (4, 3001, 111, 5001, '2019-09-01', '2019-09-16', 1003, 'abc', 20)");
+stmt.executeUpdate("insert into CheckIn(pID, hID, bID, startDate, endDate, respDoctor, currentDiagnosis, registrationFee) VALUES (3001, 111, 5001, '2019-09-01', '2019-09-16', 1003, 'abc', 20)");
 
 // MedicalRecords #2
 stmt.executeUpdate("insert into MedicalRecords(mID ,cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) " +
@@ -174,8 +178,16 @@ stmt.executeUpdate("insert into MedicalRecords(mID ,cID, prescriptions, diagnosi
 
 
 
-
-
+// System.out.println("Make sure we are here!");
+// checkBeds(conn ,"5001");
+// assignPatientToBed(conn, "3001", "5001");
+// assignPatientToBed(conn, "3001", "5001");
+// releaseBed(conn, "5001");
+//
+// createCheckIn( conn, "3001", "111", "5001", "2019-09-03", "1003", "XXX", "20");
+// transferPatient( conn, "5", "3002", "222", "5001", "2019-09-03", "2019-09-19", "1003", "XXX", "20");
+// enterMedicalRecords(conn, "2003", "6", "baa", "critical", "toolate", "Donttest", "TheEnd", "1000", "50000", "6000");
+// updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive", "Hope", "Try", "Chance", "99", "555", "300");
 
 
 
@@ -256,35 +268,288 @@ while (rs.next()) {
 
     //#2 cwng
 
-    static void checkBeds(String bID) {
+    static void checkBeds(Connection conn, String bID) {
+       try {
+         String sql = "select reserved from Beds where bID=";
+         sql += bID +";";
+         Statement stmt = null;
+         ResultSet rs = null;
+         try {
+              stmt = conn.createStatement();
+              rs = stmt.executeQuery(sql);
+
+               while (rs.next()) {
+                   String s = rs.getString("reserved");
+                   if(s.equals("0")) {
+                     System.out.println("The bed number " + bID + " is available.");
+                   }
+                   else {
+                     System.out.println("The bed number " + bID + " is not available.");
+                   }
+               }
+
+             } finally {
+                 close(rs);
+                 close(stmt);
+                 //close(conn);
+             }
+
+             } catch(Throwable oops) {
+                 oops.printStackTrace();
+             }
 
     }
 
-    static void assignPatientToBeds(String pID, String bID){
+    static void assignPatientToBed(Connection conn, String pID, String bID) {
       //MAKE SURE TO CHANGE BEDS TO RESERVE
+
+      try {
+        String sqlcheck = "select reserved from Beds where bID=";
+        sqlcheck += bID +";";
+
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+             stmt = conn.createStatement();
+             rs = stmt.executeQuery(sqlcheck);
+
+              while (rs.next()) {
+                  String s = rs.getString("reserved");
+                  if(s.equals("1")) {
+                    System.out.println("The bed number " + bID + " is not available.");
+                  }
+                  else {
+                    String sql = "UPDATE Beds SET reserved = TRUE, pID= ";
+                    sql += pID;
+                    sql += " WHERE bID = ";
+                    sql += bID +";";
+                    stmt.executeUpdate(sql);
+                    System.out.println("Successfully assigned patient to the bed!");
+                  }
+              }
+
+            } finally {
+                close(rs);
+                close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
     }
 
-    static void releaseBed(String bID) {
+    static void releaseBed(Connection conn, String bID) {
+      try {
+        String sqlcheck = "select reserved from Beds where bID=";
+        sqlcheck += bID +";";
 
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+             stmt = conn.createStatement();
+             rs = stmt.executeQuery(sqlcheck);
+
+              while (rs.next()) {
+                  String s = rs.getString("reserved");
+                  if(s.equals("1")) {
+                    String sql = "UPDATE Beds SET reserved = FALSE, pID= ";
+                    String pID = "NULL";
+                    sql += pID;
+                    sql += " WHERE bID = ";
+                    sql += bID +";";
+                    stmt.executeUpdate(sql);
+                    System.out.println("Successfully updated bed number " + bID);
+                  }
+                  else {
+                    System.out.println("Error! There is no patient assigned to this bed.");
+                  }
+              }
+
+            } finally {
+                close(rs);
+                close(stmt);
+                //close(conn);
+            }
+
+          } catch(Throwable oops) {
+              oops.printStackTrace();
+          }
     }
 
-    static void createCheckIn( String pID, String hID, String bID, String startDate, String respDoctor, String currentDiagnosis, String registrationFee) {
+    static void createCheckIn( Connection conn, String pID, String hID, String bID, String startDate, String respDoctor, String currentDiagnosis, String registrationFee) {
+      try {
 
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+             stmt = conn.createStatement();
+
+              String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (";
+
+              sqlInsert += pID +", ";
+              sqlInsert += hID +", ";
+              sqlInsert += bID +", ";
+              sqlInsert += "'"+ startDate +"', ";
+              sqlInsert += respDoctor +", ";
+              sqlInsert += "'"+currentDiagnosis +"', ";
+              sqlInsert += registrationFee +");";
+
+              stmt.executeUpdate(sqlInsert);
+
+              System.out.println("CheckIn/Out for patient " + pID + " successfully created!");
+
+
+            } finally {
+                close(rs);
+                close(stmt);
+                //close(conn);
+            }
+
+          } catch(Throwable oops) {
+              oops.printStackTrace();
+          }
     }
 
-    static void transferPatient( String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
-        // update
-        // create
+    static void transferPatient( Connection conn, String cID, String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
+
+        try {
+          // Update the checkIns
+          String sqlUpdate = "UPDATE CheckIn SET endDate=";
+          sqlUpdate += "'"+ endDate;
+          sqlUpdate += "' WHERE cID =";
+          sqlUpdate += cID + ";";
+
+          Statement stmt = null;
+          ResultSet rs = null;
+          try {
+                 stmt = conn.createStatement();
+                 stmt.executeUpdate(sqlUpdate);
+                 String sqlshow = "select hID from CheckIn where cID=";
+                 sqlshow += cID + ";";
+                 rs = stmt.executeQuery(sqlshow);
+                 String prevHopital = null;
+                 while (rs.next()) {
+                   prevHopital = rs.getString("hID");
+                 }
+                 // Create new CheckIn
+                 // Note: The startdate for new checkIns records is endDate of previous checkIns records
+                 String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (";
+                 sqlInsert += pID +", ";
+                 sqlInsert += hID +", ";
+                 sqlInsert += bID +", ";
+                 sqlInsert += "'"+ endDate +"', "; // startDate
+                 sqlInsert += respDoctor +", ";
+                 sqlInsert += "'"+currentDiagnosis +"', ";
+                 sqlInsert += registrationFee +");";
+
+                 stmt.executeUpdate(sqlInsert);
+
+                 System.out.println("Successfully transferred patient " + pID + " from Hospital " + prevHopital +" to Hospital " +hID);
+
+              } finally {
+                  close(rs);
+                  close(stmt);
+                  //close(conn);
+              }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
     }
 
 
     // Manage MedicalRecords
-    static void enterMedicalRecords(String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+    static void enterMedicalRecords(Connection conn, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+      try {
 
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+             stmt = conn.createStatement();
+
+              String sqlInsert = "insert into MedicalRecords(mID ,cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) VALUES(";
+              sqlInsert += mID +", ";
+              sqlInsert += cID +", ";
+              sqlInsert += "'"+ prescriptions +"', ";
+              sqlInsert += "'"+ diagnosisDetails +"', ";
+              sqlInsert += "'"+ treatment +"', ";
+              sqlInsert += "'"+ test +"', ";
+              sqlInsert += "'"+ result +"', ";
+              sqlInsert += consultationfee +", ";
+              sqlInsert += testfee +", ";
+              sqlInsert += treatmentfee +");";
+
+              stmt.executeUpdate(sqlInsert);
+
+
+              String sqlshow = "select pID from CheckIn where cID=";
+              sqlshow += cID + ";";
+              rs = stmt.executeQuery(sqlshow);
+
+              String patientmedicalRecord = null;
+              while (rs.next()) {
+                patientmedicalRecord = rs.getString("pID");
+              }
+
+              System.out.println("MedicalRecord for patient " + patientmedicalRecord + " successfully created!");
+
+
+            } finally {
+                close(rs);
+                close(stmt);
+                //close(conn);
+            }
+
+          } catch(Throwable oops) {
+              oops.printStackTrace();
+          }
     }
 
-    static void updateMedicalRecords(String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+    static void updateMedicalRecords(Connection conn, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+      try {
 
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+             stmt = conn.createStatement();
+
+              String sqlUpdate = "UPDATE MedicalRecords SET ";
+              sqlUpdate += "prescriptions= "+"'"+ prescriptions +"', ";
+              sqlUpdate += "diagnosisDetails= "+"'"+ diagnosisDetails +"', ";
+              sqlUpdate += "treatment= "+"'"+ treatment +"', ";
+              sqlUpdate+= "test= "+"'"+ test +"', ";
+              sqlUpdate+= "result= "+"'"+ result +"', ";
+              sqlUpdate += "consultationfee= " + consultationfee +", ";
+              sqlUpdate += "testfee= " + testfee +", ";
+              sqlUpdate += "treatmentfee= "+ treatmentfee;
+              sqlUpdate += " WHERE mID =";
+              sqlUpdate += mID + ";";
+
+              stmt.executeUpdate(sqlUpdate);
+
+
+              String sqlshow = "select pID from CheckIn where cID=";
+              sqlshow += cID + ";";
+              rs = stmt.executeQuery(sqlshow);
+
+              String patientmedicalRecord = null;
+              while (rs.next()) {
+                patientmedicalRecord = rs.getString("pID");
+              }
+
+              System.out.println("MedicalRecord for patient " + patientmedicalRecord + " successfully Updated!");
+
+
+            } finally {
+                close(rs);
+                close(stmt);
+                //close(conn);
+            }
+
+          } catch(Throwable oops) {
+              oops.printStackTrace();
+          }
     }
     // #3 jasalina arthur
     //Manage BillingAccounts
