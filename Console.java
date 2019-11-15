@@ -1,32 +1,10 @@
 import java.util.*;
 
 /**
- * This class acts as a virtual Wolfpack Theater Box Office. It prompts the user
- * to select a movie, date, time of the day, and number of tickets. Finally, it
- * displays the total cost based on the mentioned factors.
- *
- * @author Eugenio Sarritzu
- *
+ * Frontend code for the WolfHospital system.
+ * 
  */
 public class Console {
-
-    /**
-     * Class constants used in program.
-     */
-    /** Current calendar year. */
-    public static final int CURRENT_YEAR = 2017;
-    /** Special price in dollars for weekday matinee Hidden Figures movie. */
-    public static final int SPECIAL_MATINEE_H_F = 4;
-    /** Regular price in dollars for matinee movies. */
-    public static final int REGULAR_MATINEE = 6;
-    /** Weekend surcharge in dollars (Friday-Sunday). */
-    public static final int SURCHARGE = 2;
-    /** Student discount in dollars on regular priced tickets (not matinee). */
-    public static final int STUDENT_DISCOUNT = 3;
-    /** Number that represents Monday in Zeller's algorithm. */
-    public static final int MON = 1;
-    /** Number that represents Thursday in Zeller's algorithm. */
-    public static final int THURS = 4;
 
     /**
      * Starts the program.
