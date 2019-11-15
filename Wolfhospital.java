@@ -267,7 +267,11 @@ while (rs.next()) {
     }
 
     //#2 cwng
-
+    /**
+      This checkbeds will check if the specific bed is reserved or NOT
+      @param Connection is the connection for DBMS
+      @param bID is the number of bed number
+    **/
     static void checkBeds(Connection conn, String bID) {
        try {
          String sql = "select reserved from Beds where bID=";
@@ -299,9 +303,13 @@ while (rs.next()) {
              }
 
     }
-
+    /**
+      This function assign the patient to the selected bed
+      @param conn is the connection for DBMS
+      @param pID is patient id
+      @param bID is the number of bed number
+    **/
     static void assignPatientToBed(Connection conn, String pID, String bID) {
-      //MAKE SURE TO CHANGE BEDS TO RESERVE
 
       try {
         String sqlcheck = "select reserved from Beds where bID=";
@@ -338,7 +346,11 @@ while (rs.next()) {
                 oops.printStackTrace();
             }
     }
-
+    /**
+      This function will release bed and set it to open / available
+      @param Connection is the connection for DBMS
+      @param bID is the number of bed number
+    **/
     static void releaseBed(Connection conn, String bID) {
       try {
         String sqlcheck = "select reserved from Beds where bID=";
@@ -376,7 +388,17 @@ while (rs.next()) {
               oops.printStackTrace();
           }
     }
-
+    /**
+      This function will create check in / out for the patient
+      @param Connection is the connection for DBMS
+      @param pID is patient id
+      @param hID is the hospital id
+      @param bID is the number of bed number
+      @param startDate is the start date of check in to the hospital
+      @param respDoctor is the reponsible Doctor
+      @param currentDiagnosis is the current diagnosis information
+      @param registrationFee is the fee of registration
+    **/
     static void createCheckIn( Connection conn, String pID, String hID, String bID, String startDate, String respDoctor, String currentDiagnosis, String registrationFee) {
       try {
 
@@ -410,7 +432,19 @@ while (rs.next()) {
               oops.printStackTrace();
           }
     }
-
+    /**
+      This function will transfer patient to the selected hospital
+      @param Connection is the connection for DBMS
+      @param cID is check ins
+      @param pID is patient id
+      @param hID is the hospital to be transferred
+      @param bID is the number of bed number
+      @param startDate is the date of checking in to the hospital
+      @param endDate is date of checking out or discharge to the hospital
+      @param respDoctor is the reponsible Doctor
+      @param currentDiagnosis is the current diagnosis information
+      @param registrationFee is the fee of registration
+    **/
     static void transferPatient( Connection conn, String cID, String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
 
         try {
@@ -459,7 +493,20 @@ while (rs.next()) {
     }
 
 
-    // Manage MedicalRecords
+    /**
+      This function create medical record for the patient
+      @param Connection is the connection for DBMS
+      @param mID medical record id
+      @param cID is checkIns id
+      @param prescriptions is prescriptions info
+      @param diagnosisDetails is diagnosis details
+      @param treatment is treatment info
+      @param test is the test info
+      @param result is the result
+      @param consultationfee is the fee of consultion
+      @param testfee is the fee of test
+      @param treatmentfee is the fee of treatment
+    **/
     static void enterMedicalRecords(Connection conn, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
       try {
 
@@ -468,7 +515,7 @@ while (rs.next()) {
         try {
              stmt = conn.createStatement();
 
-              String sqlInsert = "insert into MedicalRecords(mID ,cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) VALUES(";
+              String sqlInsert = "insert into MedicalRecords(mID, cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) VALUES(";
               sqlInsert += mID +", ";
               sqlInsert += cID +", ";
               sqlInsert += "'"+ prescriptions +"', ";
@@ -505,7 +552,20 @@ while (rs.next()) {
               oops.printStackTrace();
           }
     }
-
+    /**
+      This function update medical record for the patient
+      @param Connection is the connection for DBMS
+      @param mID medical record id
+      @param cID is checkIns id
+      @param prescriptions is prescriptions info
+      @param diagnosisDetails is diagnosis details
+      @param treatment is treatment info
+      @param test is the test info
+      @param result is the result
+      @param consultationfee is the fee of consultion
+      @param testfee is the fee of test
+      @param treatmentfee is the fee of treatment
+    **/
     static void updateMedicalRecords(Connection conn, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
       try {
 
