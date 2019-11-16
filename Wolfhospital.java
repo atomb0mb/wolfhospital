@@ -8,10 +8,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/";
+	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
 
 	static String user = "jasalina";
-	static String passwd = "";
+	static String passwd = "Sh1tterukotodake";
 
 
 	public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class Wolfhospital {
 			Class.forName("org.mariadb.jdbc.Driver");
 
 			String user = "jasalina";
-			String passwd = "";
+			String passwd = "Sh1tterukotodake";
 
 			Connection conn = null;
 			Statement stmt = null;
@@ -40,6 +40,7 @@ public class Wolfhospital {
 				createInitialTables(stmt);
 				populateDemoTables(stmt);
 
+                reportUsageStatus(stmt, rs);
 
 				// System.out.println("Make sure we are here!");
 				// checkBeds(conn ,"5001");
@@ -413,8 +414,35 @@ public class Wolfhospital {
 
     }
 
-    static void reportUsageStatus() {
+   /**
+    * This is the function to report the Usage Status of the Hospitals. It will print the number of hospital beds currently
+    * occupied in each hospital. The hospitals are defined by their hospital ids.
+    * @param stmt statement object used to execute queries.
+    * @param rs this is the resultset object necessary to print the results from the sql query.
+    */
+    static void reportUsageStatus(Statement stmt, ResultSet rs) {
+        try{
+            System.out.println("\nBeds currently in use per Hospital (Sorted by Hospital ID): ");
+            System.out.println("+-------------+----------------+");
+            rs = stmt.executeQuery("select h.hID, count(*) from Beds b, Hospital h WHERE b.hID = h.hID AND b.reserved = false group by h.hID;");
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            System.out.println("| Hospital ID | Beds Reserved  |");
+            System.out.println("+-------------+----------------+");
+            while (rs.next()) {
+                //Print one row
+                
+                System.out.print("| ");
+                System.out.print(rs.getString(1) + "         | "); //Print each  col element
+                System.out.print(rs.getString(2) + "              | "); 
 
+                System.out.println();
+                System.out.println("+-------------+----------------+");
+            }
+  
+        }catch(Throwable oops) {
+              oops.printStackTrace();
+        }
     }
 
     static void reportPatientPerMonth(String hID) {
