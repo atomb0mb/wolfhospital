@@ -1,10 +1,42 @@
 import java.util.*;
+import java.sql.*;
 
 /**
- * Frontend code for the WolfHospital system.
+ * WolfHospital System User Application.
  * 
  */
-public class Console {
+public class ConsoleUI {
+
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/";
+    private Connection conn;
+    private Statement stmt;
+    private ResultSet rs;
+
+    public ConsoleUI() {
+        try {
+
+            // Load the driver. This creates an instance of the driver
+            // and calls the registerDriver method to make MySql Thin
+            // driver, available to clients.
+            Class.forName("org.mariadb.jdbc.Driver");
+
+            String user = "";
+            String passwd = "";
+
+            // Get a connection from the first driver in the
+            // DriverManager list that recognizes the URL jdbcURL
+            this.conn = DriverManager.getConnection(jdbcURL, user, passwd);
+
+            // Create a statement object that will be sending your
+            // SQL statements to the DBMS
+            this.stmt = this.conn.createStatement();
+            BackendCopy.createInitialTables(this.stmt);
+            BackendCopy.populateDemoTables(this.stmt);
+
+        } catch (Throwable oops) {
+            oops.printStackTrace();
+        }
+    }
 
     /**
      * Starts the program.
@@ -13,20 +45,34 @@ public class Console {
      *
      */
     public static void main(String[] args) {
+        /** Initialize database and populate it. */
+        ConsoleUI consoleUI = new ConsoleUI();
+
         /** Scanner that is going to read input in from the user. */
         Scanner console = new Scanner(System.in);
         System.out.println();
         System.out.println("      Welcome to the Wolfpack Hospital System!");
 
-        topLevelUserInterface(console);
+        consoleUI.topLevelUserInterface(console);
+        consoleUI.close();
 
+    }
+
+    public void close() {
+        try {
+            BackendCopy.close(this.rs);
+            BackendCopy.close(this.stmt);
+            BackendCopy.close(this.conn);
+        } catch (Throwable oops) {
+            oops.printStackTrace();
+        }
     }
 
     /**
      * Welcome message for the user.
      * 
      */
-    public static void printMainHeader() {
+    public void printMainHeader() {
         System.out.println("\n                 Main Menu:\n");
         System.out.println("Enter the corresponding command for the operation Task you wish to perform:");
         System.out.println("I for Information Processing, C for CheckIn / CheckOut,");
@@ -40,7 +86,7 @@ public class Console {
      * Header for the Information Processing sub-menu.
      * 
      */
-    public static void printInfoProcessingHeader() {
+    public void printInfoProcessingHeader() {
         System.out.println("\n       Information Processing Sub-Menu:\n");
         System.out.println("Enter P for Patients, H for Hospitals, S for Staff, B for Beds.");
         System.out.println("Enter R to return to main menu or Q to quit the program.");
@@ -51,7 +97,7 @@ public class Console {
      * Header for the CheckIn sub-menu.
      * 
      */
-    public static void checkInHeader() {
+    public void checkInHeader() {
         System.out.println("\n       CheckIn / CheckOut Sub-Menu:\n");
         System.out.println("Enter E for creating a new CheckIn or");
         System.out.println("U for updating an existing CheckIn.");
@@ -63,7 +109,7 @@ public class Console {
      * Header for the Maintaining Medical Records sub-menu.
      * 
      */
-    public static void medicalRecordsHeader() {
+    public void medicalRecordsHeader() {
         System.out.println("\n      Maintaining Medical Records Sub-Menu:\n");
         System.out.println("Enter E for entering a new Medical Record or");
         System.out.println("U for updating an existing Medical Record.");
@@ -75,7 +121,7 @@ public class Console {
      * Header for the Maintaining Billing Accounts sub-menu.
      * 
      */
-    public static void billingAccountsHeader() {
+    public void billingAccountsHeader() {
         System.out.println("\n      Maintaining Billing Accounts Sub-Menu:\n");
         System.out.println("Enter E for entering a new Billing Account or");
         System.out.println("U for updating an existing Billing Account.");
@@ -87,7 +133,7 @@ public class Console {
      * Header for the Reports sub-menu.
      * 
      */
-    public static void reportsHeader() {
+    public void reportsHeader() {
         System.out.println("\n       Generate Reports Sub-Menu:\n");
         System.out.println("Enter PT for generating a report of the billing history for a given patient");
         System.out.println("and for a certain time period (month/year), Enter U for getting the current usage");
@@ -102,7 +148,7 @@ public class Console {
      * Parent layer of the application.
      * 
      */
-    public static void topLevelUserInterface(Scanner console) {
+    public void topLevelUserInterface(Scanner console) {
         printMainHeader();
 
         /** String object representing the command desired by user. */
@@ -139,7 +185,7 @@ public class Console {
         }
     }
 
-    public static void informationProcessingSubPanel(Scanner console) {
+    public void informationProcessingSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -175,7 +221,7 @@ public class Console {
 
     }
 
-    public static void checkInSubPanel(Scanner console) {
+    public void checkInSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -209,7 +255,7 @@ public class Console {
 
     }
 
-    public static void medicalRecordsSubPanel(Scanner console) {
+    public void medicalRecordsSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -243,7 +289,7 @@ public class Console {
 
     }
 
-    public static void billingAccountsSubPanel(Scanner console) {
+    public void billingAccountsSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -277,7 +323,7 @@ public class Console {
 
     }
 
-    public static void generateReportsSubPanel(Scanner console) {
+    public void generateReportsSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -323,7 +369,7 @@ public class Console {
         }
     }
 
-    public static void patientOperationsMenuHeader() {
+    public void patientOperationsMenuHeader() {
         System.out.println("\n       Patient Operations Sub-Menu:\n");
         System.out.println("Enter E for creating a new Patient, U for updating an existing Patient,");
         System.out.println("D for deleting a Patient, T for transferring a patient to another hospital,");
@@ -332,21 +378,21 @@ public class Console {
         System.out.println();
     }
 
-    public static void hospitalOperationsMenuHeader() {
+    public void hospitalOperationsMenuHeader() {
         System.out.println("\n       Hospital Operations Sub-Menu:\n");
         System.out.println("Enter E for creating a new Hospital, U for updating an existing Hospital,");
         System.out.println("D for deleting a Hospital, R to return to previous menu, or Q to quit the program.");
         System.out.println();
     }
 
-    public static void staffOperationsMenuHeader() {
+    public void staffOperationsMenuHeader() {
         System.out.println("\n       Staff Operations Sub-Menu:\n");
         System.out.println("Enter E for creating a new Staff Member, U for updating an existing Staff Member,");
         System.out.println("D for deleting a Staff Member, R to return to previous menu, or Q to quit the program.");
         System.out.println();
     }
 
-    public static void bedOperationsMenuHeader() {
+    public void bedOperationsMenuHeader() {
         System.out.println("\n       Beds Operations Sub-Menu:\n");
         System.out.println("Enter C for checking available beds in a hospital with appropriate specialty,");
         System.out.println("RES to reserve beds in hospitals, REL to release beds in hospitals.");
@@ -354,7 +400,7 @@ public class Console {
         System.out.println();
     }
 
-    public static void patientOperationsMenu(Scanner console) {
+    public void patientOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -397,7 +443,7 @@ public class Console {
         }
     }
 
-    public static void hospitalOperationsMenu(Scanner console) {
+    public void hospitalOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -433,7 +479,7 @@ public class Console {
         }
     }
 
-    public static void staffOperationsMenu(Scanner console) {
+    public void staffOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -469,7 +515,7 @@ public class Console {
         }
     }
 
-    public static void bedOperationsMenu(Scanner console) {
+    public void bedOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
@@ -485,8 +531,9 @@ public class Console {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("c")) {
-                // userCheckBedsInHospital()
-                System.out.println("\nCHECK BEDS IN A HOSPITAL WITH APPROPRIATE SPECIALTY\n");
+                userCheckBeds(console);
+                // System.out.println("\nCHECK BEDS IN A HOSPITAL WITH APPROPRIATE
+                // SPECIALTY\n");
             } else if (userAction.equals("res")) {
                 // userReserveBedsInHospital()
                 System.out.println("\nRESERVE BEDS IN A HOSPITAL\n");
@@ -503,6 +550,17 @@ public class Console {
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
+    }
+
+    public void userCheckBeds(Scanner console) {
+        String bID = "";
+
+        System.out.print("Enter the Bed id: ");
+        bID = console.next();
+        bID = bID.toLowerCase();
+
+        BackendCopy.checkBeds(this.conn, bID);
+
     }
 
 }
