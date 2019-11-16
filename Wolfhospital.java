@@ -8,11 +8,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
+	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
 
-	static String user = "jasalina";
-	static String passwd = "Sh1tterukotodake";
-
+	static String user = "cwng";
+	static String passwd = "2001207715";
 
 	public static void main(String[] args) {
 		try {
@@ -22,8 +21,8 @@ public class Wolfhospital {
 			// driver, available to clients.
 			Class.forName("org.mariadb.jdbc.Driver");
 
-			String user = "jasalina";
-			String passwd = "Sh1tterukotodake";
+			String user = "cwng";
+			String passwd = "200207715";
 
 			Connection conn = null;
 			Statement stmt = null;
