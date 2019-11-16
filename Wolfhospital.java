@@ -56,6 +56,17 @@ public class Wolfhospital {
 				// transferPatient( conn, "5", "3002", "222", "5001", "2019-09-03", "2019-09-19", "1003", "XXX", "20");
 				// enterMedicalRecords(conn, "2003", "6", "baa", "critical", "toolate", "Donttest", "TheEnd", "1000", "50000", "6000");
 				// updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive", "Hope", "Try", "Chance", "99", "555", "300");
+        showHospital(stmt);
+        showPatient(stmt);
+        showStaff(stmt);
+        createBillingAccount(stmt, "222", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
+        createBillingAccount(stmt, "111", "3001", "", "abcd", "cash", "vitamin-k", "50", "99", "2020-10-04");
+        createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "meth", "420", "111", "2020-11-04");
+        createBillingAccount(stmt, "111", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-12-04");
+        createBillingAccount(stmt, "111", "3002", "999-22-9999", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
+        showBillingAccounts(stmt);
+        checkOut(stmt, "1", "2020-10-04");
+        showCheckInOut(stmt);
 
 			} finally {
 						close(rs);
@@ -119,6 +130,79 @@ public class Wolfhospital {
 
     static void deleteStaff(String staffID) {
 
+    }
+
+
+    /**
+      This function shows the patient table similar to sql show query
+      @param stmt the statement from the db connection
+    **/
+    static void showPatient(Statement stmt) {
+      try {
+        String sql = "select * from Patient;";
+        ResultSet rs = null;
+        try {
+             rs = stmt.executeQuery(sql);
+
+              DBTablePrinter.printResultSet(rs);
+
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
+    }
+
+    /**
+      This function shows the hospital table similar to sql show query
+      @param stmt the statement from the db connection
+    **/
+    static void showHospital(Statement stmt) {
+      try {
+        String sql = "select * from Hospital;";
+        ResultSet rs = null;
+        try {
+             rs = stmt.executeQuery(sql);
+
+              DBTablePrinter.printResultSet(rs);
+
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
+    }
+
+    /**
+      This function shows the Staff table similar to sql show query
+      @param stmt the statement from the db connection
+    **/
+    static void showStaff(Statement stmt) {
+      try {
+        String sql = "select * from Staff;";
+        ResultSet rs = null;
+        try {
+             rs = stmt.executeQuery(sql);
+
+              DBTablePrinter.printResultSet(rs);
+
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
     }
 
     //#2 cwng
@@ -344,6 +428,43 @@ public class Wolfhospital {
           }
     }
     /**
+      This function update the checkin/out which is checking out the patient from the hospital
+      @param stmt the statement from the db connection
+      @param cID is check in/out id
+      @param endDate is date of checking out or discharge to the hospital
+    **/
+    static void checkOut(Statement stmt, String cID, String endDate) {
+      try {
+        // Update the checkIns
+        String sqlUpdate = "UPDATE CheckIn SET endDate=";
+        sqlUpdate += "'"+ endDate;
+        sqlUpdate += "' WHERE cID =";
+        sqlUpdate += cID + ";";
+
+        ResultSet rs = null;
+        try {
+               stmt.executeUpdate(sqlUpdate);
+               String sqlshow = "select pID from CheckIn where cID=";
+               sqlshow += cID + ";";
+               rs = stmt.executeQuery(sqlshow);
+               String patientCheckOut = null;
+               while (rs.next()) {
+                 patientCheckOut = rs.getString("pID");
+               }
+               System.out.println("Successfully check-out patient " + patientCheckOut);
+
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+          } catch(Throwable oops) {
+              oops.printStackTrace();
+          }
+    }
+
+    /**
       This function will transfer patient to the selected hospital
       @param stmt the statement from the db connection
       @param cID is check ins
@@ -506,8 +627,8 @@ public class Wolfhospital {
               sqlUpdate += "prescriptions= "+"'"+ prescriptions +"', ";
               sqlUpdate += "diagnosisDetails= "+"'"+ diagnosisDetails +"', ";
               sqlUpdate += "treatment= "+"'"+ treatment +"', ";
-              sqlUpdate+= "test= "+"'"+ test +"', ";
-              sqlUpdate+= "result= "+"'"+ result +"', ";
+              sqlUpdate += "test= "+"'"+ test +"', ";
+              sqlUpdate += "result= "+"'"+ result +"', ";
               sqlUpdate += "consultationfee= " + consultationfee +", ";
               sqlUpdate += "testfee= " + testfee +", ";
               sqlUpdate += "treatmentfee= "+ treatmentfee;
@@ -540,9 +661,122 @@ public class Wolfhospital {
           }
     }
     // #3 jasalina arthur
-    //Manage BillingAccounts
-    static void createBillingAccount(String baID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String medicationPrescribed, String accommodationFee, String visitDate) {
+    /**
+      This function will show available beds in selected Hospital
+      @param stmt the statement from the db connection
+      @param hID is the hospital to display
+    **/
+    static void showAvailableBedInHospital(Statement stmt , String hID) {
+      try {
+        String sql = "select bID from Beds where reserved = 0 AND hID=";
+        sql += hID +";";
+        ResultSet rs = null;
+        try {
+             rs = stmt.executeQuery(sql);
+
+             DBTablePrinter.printResultSet(rs);
+
+            } finally {
+                close(rs);
+
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
+    }
+
+    /**
+      This function create billing account for the patient. It will prompt user to enter hospital id so that it validates
+      if the hospital has open beds for the patient. If the bed is available, it will create a billing account for the patient.
+      @param stmt the statement from the db connection
+      @param hID is the hospital id that selected
+      @param pID is patient to be admit to the hospital
+      @param payerSSN is prescriptions info
+      @param billingAddress is the billing address of the patient
+      @param paymentInfo is the payment info for the patient
+      @param medicationPrescribed is the fee of test
+      @param test is the test of the patient
+      @param result is the result of the patient
+      @param registrationfee is the registration fee
+      @param accommodationfee is the fee of accommodation
+      @param visitDate is the date of visit of the patient
+    **/
+    static void createBillingAccount(Statement stmt, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee, String visitDate) {
       // check beds first before you create account
+      try {
+        String sql = "select bID from Beds where reserved = 0 AND hID=";
+        sql += hID +";";
+        ResultSet rs = null;
+        try {
+             rs = stmt.executeQuery(sql);
+             ResultSet temp = null;
+             temp = stmt.executeQuery(sql);
+             if( !temp.next() ) {
+               System.out.println("This hospital does not have open bed");
+             } else {
+               String sqlInsert = null;
+               String patientBillingAcount = null;
+               if( payerSSN == null) {
+                 sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, visitDate) VALUES (";
+                 sqlInsert += pID +", ";
+                 sqlInsert += "'"+ billingAddress +"', ";
+                 sqlInsert += "'"+ paymentInfo +"', ";
+                 sqlInsert += "'"+ medicationPrescribed +"', ";
+                 sqlInsert += registrationFee +", ";
+                 sqlInsert += accommodationFee +", ";
+                 sqlInsert += "'"+ visitDate + "');";
+                 rs = stmt.executeQuery(sqlInsert);
+
+                 System.out.println("Billing account for patient "+ pID +" successfully created!");
+               } else {
+                 sqlInsert = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, visitDate) VALUES (";
+                 sqlInsert += pID +", ";
+                 sqlInsert += "'"+ payerSSN +"', ";
+                 sqlInsert += "'"+ billingAddress +"', ";
+                 sqlInsert += "'"+ paymentInfo +"', ";
+                 sqlInsert += "'"+ medicationPrescribed +"', ";
+                 sqlInsert += registrationFee +", ";
+                 sqlInsert += accommodationFee +", ";
+                 sqlInsert += "'"+ visitDate + "');";
+                 rs = stmt.executeQuery(sqlInsert);
+                 System.out.println("Billing account for patient "+ pID +" successfully created!");
+               }
+             }
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
+
+    }
+
+    /**
+      This function shows the billing account table similar to sql show query
+      @param stmt the statement from the db connection
+    **/
+    static void showBillingAccounts(Statement stmt) {
+      try {
+        String sql = "select * from BillingAccounts;";
+        ResultSet rs = null;
+        try {
+             rs = stmt.executeQuery(sql);
+
+              DBTablePrinter.printResultSet(rs);
+
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
     }
 
     //Report
@@ -683,10 +917,10 @@ public class Wolfhospital {
 			"specPosition, staffPhone, email) VALUES (1004, 222, 'Joseph', '51 ABC St, NC 27', 'M', 41, 'Doctor', 'cardiology', 'cardiologist', '327', '1004@gmail.com')");
 
 			// Beds #1
-			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, 0)");
+			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, 1)");
 
 			// Beds #2
-			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, 0)");
+			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, 1)");
 
 
 			// Check-in/out #1
