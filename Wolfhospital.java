@@ -3,8 +3,9 @@
 // Further modified by Shrikanth N C for MySql(MariaDB) support
 // Relpace all $USER$ with your unity id and $PASSWORD$ with your 9 digit student id or updated password (if changed)
 
-
+//package org.verdictdb.commons.DBTablePrinter;
 import java.sql.*;
+
 
 public class Wolfhospital {
 
@@ -42,9 +43,13 @@ public class Wolfhospital {
 
                 reportUsageStatus(stmt, rs);
 
+
 				// System.out.println("Make sure we are here!");
-				// checkBeds(conn ,"5001");
-				// assignPatientToBed(conn, "3001", "5001");
+				 // checkBeds(stmt ,"5001");
+				 // assignPatientToBed(stmt, "3001", "5001");
+         // showBeds(stmt);
+         // showCheckInOut(stmt);
+         // showMedicalRecords(stmt);
 				// assignPatientToBed(conn, "3001", "5001");
 				// releaseBed(conn, "5001");
 				//
@@ -62,7 +67,7 @@ public class Wolfhospital {
 				oops.printStackTrace();
 		}
 	}
-	
+
     static void close(Connection conn) {
         if(conn != null) {
             try { conn.close(); } catch(Throwable whatever) {}
@@ -118,18 +123,62 @@ public class Wolfhospital {
     }
 
     //#2 cwng
+    /**
+      This fucntion show bed table and return list of bed table similar to sql select view
+      @param stmt the statement from the db connection
+    **/
+    static void showBeds(Statement stmt) {
+       try {
+         String sql = "select * from Beds;";
+         ResultSet rs = null;
+         try {
+              rs = stmt.executeQuery(sql);
+               // while (rs.next()) {
+               //     // String b = rs.getString("bID");
+               //     // String h = rs.getString("hID");
+               //     // String s = rs.getString("spec");
+               //     // String p = rs.getString("pID");
+               //     // String r = rs.getString("reserved");
+               //      String r = rs.getString(1);
+               //      String s = rs.getString(2);
+               //      System.out.println(r);
+               //      System.out.println(s);
+               //    // System.out.println(b + "  " + h + "  " + s + "  " + p + "  " + r);
+               // }
+               DBTablePrinter.printResultSet(rs);
 
-    static void checkBeds(Connection conn, String bID) {
+
+
+             } finally {
+                 close(rs);
+                 //close(stmt);
+                 //close(conn);
+             }
+
+             } catch(Throwable oops) {
+                 oops.printStackTrace();
+             }
+
+    }
+    //#2 cwng
+    /**
+      This checkbeds will check if the specific bed is reserved or NOT
+      @param stmt the statement from the db connection
+      @param bID is the number of bed number
+    **/
+    static void checkBeds(Statement stmt, String bID) {
        try {
          String sql = "select reserved from Beds where bID=";
          sql += bID +";";
-         Statement stmt = null;
          ResultSet rs = null;
          try {
-              stmt = conn.createStatement();
               rs = stmt.executeQuery(sql);
-
-               while (rs.next()) {
+              ResultSet temp = null;
+              temp = stmt.executeQuery(sql);
+              if( !temp.next() ) {
+                System.out.println("The bed number doesn't exist!");
+              }
+              while (rs.next()) {
                    String s = rs.getString("reserved");
                    if(s.equals("0")) {
                      System.out.println("The bed number " + bID + " is available.");
@@ -141,7 +190,7 @@ public class Wolfhospital {
 
              } finally {
                  close(rs);
-                 close(stmt);
+                 //close(stmt);
                  //close(conn);
              }
 
@@ -150,18 +199,20 @@ public class Wolfhospital {
              }
 
     }
-
-    static void assignPatientToBed(Connection conn, String pID, String bID) {
+    /**
+      This function assign the patient to the selected bed
+      @param stmt the statement from the db connection
+      @param pID is patient id
+      @param bID is the number of bed number
+    **/
+    static void assignPatientToBed(Statement stmt, String pID, String bID) {
       //MAKE SURE TO CHANGE BEDS TO RESERVE
 
       try {
         String sqlcheck = "select reserved from Beds where bID=";
         sqlcheck += bID +";";
-
-        Statement stmt = null;
         ResultSet rs = null;
         try {
-             stmt = conn.createStatement();
              rs = stmt.executeQuery(sqlcheck);
 
               while (rs.next()) {
@@ -170,7 +221,7 @@ public class Wolfhospital {
                     System.out.println("The bed number " + bID + " is not available.");
                   }
                   else {
-                    String sql = "UPDATE Beds SET reserved = TRUE, pID= ";
+                    String sql = "UPDATE Beds SET reserved = 1, pID= ";
                     sql += pID;
                     sql += " WHERE bID = ";
                     sql += bID +";";
@@ -181,7 +232,7 @@ public class Wolfhospital {
 
             } finally {
                 close(rs);
-                close(stmt);
+                //close(stmt);
                 //close(conn);
             }
 
@@ -189,22 +240,23 @@ public class Wolfhospital {
                 oops.printStackTrace();
             }
     }
-
-    static void releaseBed(Connection conn, String bID) {
+    /**
+      This function will release bed and set it to open / available
+      @param stmt the statement from the db connection
+      @param bID is the number of bed number
+    **/
+    static void releaseBed(Statement stmt, String bID) {
       try {
         String sqlcheck = "select reserved from Beds where bID=";
         sqlcheck += bID +";";
-
-        Statement stmt = null;
         ResultSet rs = null;
         try {
-             stmt = conn.createStatement();
              rs = stmt.executeQuery(sqlcheck);
 
               while (rs.next()) {
                   String s = rs.getString("reserved");
                   if(s.equals("1")) {
-                    String sql = "UPDATE Beds SET reserved = FALSE, pID= ";
+                    String sql = "UPDATE Beds SET reserved = 0, pID= ";
                     String pID = "NULL";
                     sql += pID;
                     sql += " WHERE bID = ";
@@ -219,7 +271,7 @@ public class Wolfhospital {
 
             } finally {
                 close(rs);
-                close(stmt);
+                //close(stmt);
                 //close(conn);
             }
 
@@ -227,14 +279,45 @@ public class Wolfhospital {
               oops.printStackTrace();
           }
     }
-
-    static void createCheckIn( Connection conn, String pID, String hID, String bID, String startDate, String respDoctor, String currentDiagnosis, String registrationFee) {
+    /**
+      This function shows table of Check In similar to sql query display
+      @param stmt the statement from the db connection
+    **/
+    static void showCheckInOut(Statement stmt) {
       try {
-
-        Statement stmt = null;
+        String sql = "select * from CheckIn;";
         ResultSet rs = null;
         try {
-             stmt = conn.createStatement();
+             rs = stmt.executeQuery(sql);
+
+              DBTablePrinter.printResultSet(rs);
+
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
+    }
+    /**
+      This function will create check in / out for the patient
+      @param stmt the statement from the db connection
+      @param pID is patient id
+      @param hID is the hospital id
+      @param bID is the number of bed number
+      @param startDate is the start date of check in to the hospital
+      @param respDoctor is the reponsible Doctor
+      @param currentDiagnosis is the current diagnosis information
+      @param registrationFee is the fee of registration
+    **/
+    static void createCheckIn( Statement stmt, String pID, String hID, String bID, String startDate, String respDoctor, String currentDiagnosis, String registrationFee) {
+      try {
+
+        ResultSet rs = null;
+        try {
 
               String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (";
 
@@ -253,7 +336,7 @@ public class Wolfhospital {
 
             } finally {
                 close(rs);
-                close(stmt);
+                //close(stmt);
                 //close(conn);
             }
 
@@ -261,8 +344,20 @@ public class Wolfhospital {
               oops.printStackTrace();
           }
     }
-
-    static void transferPatient( Connection conn, String cID, String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
+    /**
+      This function will transfer patient to the selected hospital
+      @param stmt the statement from the db connection
+      @param cID is check ins
+      @param pID is patient id
+      @param hID is the hospital to be transferred
+      @param bID is the number of bed number
+      @param startDate is the date of checking in to the hospital
+      @param endDate is date of checking out or discharge to the hospital
+      @param respDoctor is the reponsible Doctor
+      @param currentDiagnosis is the current diagnosis information
+      @param registrationFee is the fee of registration
+    **/
+    static void transferPatient( Statement stmt, String cID, String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
 
         try {
           // Update the checkIns
@@ -271,10 +366,8 @@ public class Wolfhospital {
           sqlUpdate += "' WHERE cID =";
           sqlUpdate += cID + ";";
 
-          Statement stmt = null;
           ResultSet rs = null;
           try {
-                 stmt = conn.createStatement();
                  stmt.executeUpdate(sqlUpdate);
                  String sqlshow = "select hID from CheckIn where cID=";
                  sqlshow += cID + ";";
@@ -300,7 +393,7 @@ public class Wolfhospital {
 
               } finally {
                   close(rs);
-                  close(stmt);
+                  //close(stmt);
                   //close(conn);
               }
 
@@ -308,16 +401,50 @@ public class Wolfhospital {
                 oops.printStackTrace();
             }
     }
-
-
-    // Manage MedicalRecords
-    static void enterMedicalRecords(Connection conn, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+    /**
+      This function shows the medical record similar to sql show query
+      @param stmt the statement from the db connection
+    **/
+    static void showMedicalRecords(Statement stmt) {
       try {
-
-        Statement stmt = null;
+        String sql = "select * from MedicalRecords;";
         ResultSet rs = null;
         try {
-             stmt = conn.createStatement();
+             rs = stmt.executeQuery(sql);
+
+              DBTablePrinter.printResultSet(rs);
+
+            } finally {
+                close(rs);
+                //close(stmt);
+                //close(conn);
+            }
+
+            } catch(Throwable oops) {
+                oops.printStackTrace();
+            }
+    }
+
+
+    /**
+      This function create medical record for the patient
+      @param stmt the statement from the db connection
+      @param mID medical record id
+      @param cID is checkIns id
+      @param prescriptions is prescriptions info
+      @param diagnosisDetails is diagnosis details
+      @param treatment is treatment info
+      @param test is the test info
+      @param result is the result
+      @param consultationfee is the fee of consultion
+      @param testfee is the fee of test
+      @param treatmentfee is the fee of treatment
+    **/
+    static void enterMedicalRecords( Statement stmt, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+      try {
+
+        ResultSet rs = null;
+        try {
 
               String sqlInsert = "insert into MedicalRecords(mID ,cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) VALUES(";
               sqlInsert += mID +", ";
@@ -348,7 +475,7 @@ public class Wolfhospital {
 
             } finally {
                 close(rs);
-                close(stmt);
+                //close(stmt);
                 //close(conn);
             }
 
@@ -356,14 +483,25 @@ public class Wolfhospital {
               oops.printStackTrace();
           }
     }
-
-    static void updateMedicalRecords(Connection conn, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+    /**
+      This function update medical record for the patient
+      @param stmt the statement from the db connection
+      @param mID medical record id
+      @param cID is checkIns id
+      @param prescriptions is prescriptions info
+      @param diagnosisDetails is diagnosis details
+      @param treatment is treatment info
+      @param test is the test info
+      @param result is the result
+      @param consultationfee is the fee of consultion
+      @param testfee is the fee of test
+      @param treatmentfee is the fee of treatment
+    **/
+    static void updateMedicalRecords(Statement stmt, String mID ,String cID, String prescriptions, String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
       try {
 
-        Statement stmt = null;
         ResultSet rs = null;
         try {
-             stmt = conn.createStatement();
 
               String sqlUpdate = "UPDATE MedicalRecords SET ";
               sqlUpdate += "prescriptions= "+"'"+ prescriptions +"', ";
@@ -394,7 +532,7 @@ public class Wolfhospital {
 
             } finally {
                 close(rs);
-                close(stmt);
+                //close(stmt);
                 //close(conn);
             }
 
@@ -469,7 +607,7 @@ public class Wolfhospital {
     static void createInitialTables(Statement stmt){
 		try {
 
-			//Drop Tables 
+			//Drop Tables
 			stmt.executeUpdate("DROP TABLE IF EXISTS BillingAccounts");
 			stmt.executeUpdate("DROP TABLE IF EXISTS MedicalRecords");
 			stmt.executeUpdate("DROP TABLE IF EXISTS CheckIn");
@@ -494,7 +632,7 @@ public class Wolfhospital {
 			"patientPhone varchar(15) NOT NULL, patientAddress varchar(150) NOT NULL, status varchar(150))");
 
 			// Beds
-			stmt.executeUpdate("create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, spec varchar(100) NOT NULL, staffID integer, pID integer, reserved boolean NOT NULL, " +
+			stmt.executeUpdate("create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, spec varchar(100) NOT NULL, staffID integer, pID integer, reserved bit(1), " +
 			"FOREIGN KEY (hID) REFERENCES Hospital(hID), FOREIGN KEY (pID) REFERENCES Patient(pID))");
 
 			// Staff
@@ -505,7 +643,7 @@ public class Wolfhospital {
 
 			// Check-in #when creating check in ensure that patient is assigned to a bed by updating bed (perhaps?)
 			stmt.executeUpdate("create table CheckIn(cID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, hID integer NOT NULL, bID integer, " +
-			"startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee double NOT NULL, " +
+			"startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee INTEGER NOT NULL, " +
 			"FOREIGN KEY(pID) REFERENCES Patient(pID), FOREIGN KEY(hID) REFERENCES Hospital(hID))");
 
 			// MedicalRecords
@@ -514,18 +652,18 @@ public class Wolfhospital {
 			"result varchar(500), consultationfee integer NOT NULL, testfee integer NOT NULL, treatmentfee integer NOT NULL, FOREIGN KEY(cID) REFERENCES CheckIn(cID))");
 
 			// BillingAccounts ##TBD
-			stmt.executeUpdate("create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY,pID integer NOT NULL, payerSSN varchar(11), " +
-			"billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee double, medicationPrescribed varchar(200), accommodationFee double, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
+			stmt.executeUpdate("create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT,pID integer NOT NULL, payerSSN varchar(11), " +
+			"billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), medicationPrescribed varchar(200), registrationFee integer, accommodationFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
 
 
-			
+
 		} catch(Throwable oops) {
 				oops.printStackTrace();
 		}
     }
-	
+
 	/**
-	* This is the function that populates the data values for all of the tables. 
+	* This is the function that populates the data values for all of the tables.
 	* @param stmt is the Statement object used to execute MariaDB statements
 	*/
 	static void populateDemoTables(Statement stmt){
@@ -573,10 +711,10 @@ public class Wolfhospital {
 			"specPosition, staffPhone, email) VALUES (1004, 222, 'Joseph', '51 ABC St, NC 27', 'M', 41, 'Doctor', 'cardiology', 'cardiologist', '327', '1004@gmail.com')");
 
 			// Beds #1
-			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, FALSE)");
+			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, 0)");
 
 			// Beds #2
-			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, FALSE)");
+			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, 0)");
 
 
 			// Check-in/out #1
@@ -599,11 +737,11 @@ public class Wolfhospital {
 
 			// MedicalRecords #2
 			stmt.executeUpdate("insert into MedicalRecords(mID ,cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) " +
-			"VALUES(2002, 4, 'continue antibiotics', 'Testing for TB', 'Not required', 'X-ray chest (TB) Advanced', 'negative', 0, 125, 0 )");	
+			"VALUES(2002, 4, 'continue antibiotics', 'Testing for TB', 'Not required', 'X-ray chest (TB) Advanced', 'negative', 0, 125, 0 )");
 		} catch(Throwable oops) {
 				oops.printStackTrace();
 		}
 	}
-	
+
 
 }
