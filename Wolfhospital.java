@@ -11,7 +11,7 @@ public class Wolfhospital {
 	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
 
 	static String user = "cwng";
-	static String passwd = "2001207715";
+	static String passwd = "200207715";
 
 
 	public static void main(String[] args) {
