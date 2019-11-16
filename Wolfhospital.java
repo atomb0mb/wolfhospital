@@ -13,6 +13,7 @@ public class Wolfhospital {
 	static String user = "cwng";
 	static String passwd = "2001207715";
 
+
 	public static void main(String[] args) {
 		try {
 
