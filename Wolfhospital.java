@@ -445,7 +445,7 @@ public class Wolfhospital {
         }
     }
 
-    static void reportPatientPerMonth(String hID) {
+    static void reportPatientsPerMonth(String hID) {
 
     }
 
