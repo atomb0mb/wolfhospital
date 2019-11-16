@@ -625,7 +625,7 @@ public class Wolfhospital {
 
 			// BillingAccounts ##TBD
 			stmt.executeUpdate("create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT,pID integer NOT NULL, payerSSN varchar(11), " +
-			"billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee double, medicationPrescribed varchar(200), accommodationFee double, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
+			"billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), medicationPrescribed varchar(200), registrationFee integer, accommodationFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
 
 
 
