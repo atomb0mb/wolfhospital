@@ -9,10 +9,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
+	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/";
 
-	static String user = "jasalina";
-	static String passwd = "Sh1tterukotodake";
+	static String user = "";
+	static String passwd = "";
 
 
 	public static void main(String[] args) {
@@ -23,8 +23,8 @@ public class Wolfhospital {
 			// driver, available to clients.
 			Class.forName("org.mariadb.jdbc.Driver");
 
-			String user = "jasalina";
-			String passwd = "Sh1tterukotodake";
+			String user = "";
+			String passwd = "";
 
 			Connection conn = null;
 			Statement stmt = null;
@@ -669,11 +669,29 @@ public class Wolfhospital {
         }catch(Throwable oops) {
               oops.printStackTrace();
         }
-
     }
 
-    static void reportAllHospitalSpeciality() {
+    /**
+     * This function reports all hospital information grouped by their specialty.
+     * @param stmt is the Statment object used to execute queries.
+     */
+    static void reportAllHospitalSpeciality(Statement stmt) {
+        ResultSet rs = null;
+        try{
+            String hQuery = "SELECT h.spec1";
 
+            rs = stmt.executeQuery(doctorQuery);
+            ResultSet temp = null;
+            temp = stmt.executeQuery(doctorQuery);
+            if(!temp.next()){
+                System.out.println("\nHospitals not set up in system!\n");
+            } else {
+                DBTablePrinter.printResultSet(rs);
+            }
+  
+        }catch(Throwable oops) {
+              oops.printStackTrace();
+        }
     }
 
 
