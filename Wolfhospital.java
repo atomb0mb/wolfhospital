@@ -1,6 +1,6 @@
 // Acknowledgments: This example is a modification of code provided
 // by Dimitri Rakitine.
-// Further modified by Shrikanth N C for MySql(MariaDB) support
+// Further modified by Shrikanth NC for MySql(MariaDB) support
 // Relpace all $USER$ with your unity id and $PASSWORD$ with your 9 digit student id or updated password (if changed)
 
 //package org.verdictdb.commons.DBTablePrinter;
@@ -9,10 +9,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
+	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
 
-	static String user = "cwng";
-	static String passwd = "200207715";
+	static String user = "jasalina";
+	static String passwd = "Sh1tterukotodake";
 
 
 	public static void main(String[] args) {
@@ -23,8 +23,8 @@ public class Wolfhospital {
 			// driver, available to clients.
 			Class.forName("org.mariadb.jdbc.Driver");
 
-			String user = "cwng";
-			String passwd = "200207715";
+			String user = "jasalina";
+			String passwd = "Sh1tterukotodake";
 
 			Connection conn = null;
 			Statement stmt = null;
@@ -40,8 +40,10 @@ public class Wolfhospital {
 				stmt = conn.createStatement();
 				createInitialTables(stmt);
 				populateDemoTables(stmt);
-
-                reportUsageStatus(stmt, rs);
+                //reportPatientsPerMonth(stmt, rs, "111", "8", "2019");
+                reportHospitalPercentage(stmt, rs, "111");
+                reportHospitalPercentage(stmt, rs, "000");
+                
 
 
 				// System.out.println("Make sure we are here!");
@@ -563,8 +565,6 @@ public class Wolfhospital {
             System.out.println("\nBeds currently in use per Hospital (Sorted by Hospital ID): ");
             System.out.println("+-------------+----------------+");
             rs = stmt.executeQuery("select h.hID, count(*) from Beds b, Hospital h WHERE b.hID = h.hID AND b.reserved = false group by h.hID;");
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
             System.out.println("| Hospital ID | Beds Reserved  |");
             System.out.println("+-------------+----------------+");
             while (rs.next()) {
@@ -583,12 +583,51 @@ public class Wolfhospital {
         }
     }
 
-    static void reportPatientsPerMonth(String hID) {
+   /**
+    * This function takes in a month, year, and hospital id and returns the number of patients that checked in that month.
+    * @param hID is the ID of the hospital to check in.
+    * @param month is the month to get the number of patients for.
+    * @param year is the year for the corresponding month. 
+    */
+    static void reportPatientsPerMonth(Statement stmt, ResultSet rs, String hID, String month, String year) {
+        try{
+            System.out.println("\nNumber of Patients in Hospital " + hID + " During the Month " + month + ", " + year);
+            String monthQuery = "select count(distinct(pID)) as Total_Patients FROM CheckIn WHERE MONTH(startDate) = ";
+            monthQuery += month;
+            monthQuery += " AND YEAR(startDate) = ";
+            monthQuery += year;
+            monthQuery += " AND hID = ";
+            monthQuery += hID;
+            rs = stmt.executeQuery(monthQuery);
 
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            DBTablePrinter.printResultSet(rs);
+  
+        }catch(Throwable oops) {
+              oops.printStackTrace();
+        }
     }
 
-    static void reportHospitalPercentage(String hID){
+    /**
+     * Report the Hospital Usage Percentages which means the number of beds currently in use per hospital as a percentage
+     */
+    static void reportHospitalPercentage(Statement stmt, ResultSet rs, String hID){
+        try{
+            System.out.println("\nThe number of Beds Currently in Use Per Hospital:");
+            String usageQuery = "SELECT h.hID, (SUM(case WHEN b.reserved = 1 then 1 else 0 end) / ";
+            usageQuery += "count(*)) as Hospital_Usage FROM Beds b, Hospital h WHERE h.hID = ";
+            usageQuery += hID;
+            usageQuery += " AND b.hID = h.hID group by h.hID;";
 
+            rs = stmt.executeQuery(usageQuery);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            DBTablePrinter.printResultSet(rs);
+  
+        }catch(Throwable oops) {
+              oops.printStackTrace();
+        }
     }
 
     static void reportDoctorByPatient(String pID) {
