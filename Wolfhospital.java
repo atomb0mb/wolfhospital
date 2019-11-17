@@ -42,7 +42,7 @@ public class Wolfhospital {
 				populateDemoTables(stmt);
                 //reportPatientsPerMonth(stmt, rs, "111", "8", "2019");
                 reportHospitalPercentage(stmt, rs, "111");
-                reportHospitalPercentage(stmt, rs, "000");
+                reportHospitalPercentage(stmt, rs, "222");
                 
 
 
@@ -610,20 +610,28 @@ public class Wolfhospital {
     }
 
     /**
-     * Report the Hospital Usage Percentages which means the number of beds currently in use per hospital as a percentage
+     * Report the Hospital Usage Percentages which means the number of beds currently in use per hospital as a percentage.
+     * @param stmt is the Statment object used to execute queries in mysql.
+     * @param rs is the currently in use ResultSet object to store results from a query.
+     * @param hID is a string for the ID of a hospital to get the usage of.
      */
     static void reportHospitalPercentage(Statement stmt, ResultSet rs, String hID){
         try{
             System.out.println("\nThe number of Beds Currently in Use Per Hospital:");
-            String usageQuery = "SELECT h.hID, (SUM(case WHEN b.reserved = 1 then 1 else 0 end) / ";
-            usageQuery += "count(*)) as Hospital_Usage FROM Beds b, Hospital h WHERE h.hID = ";
+            String usageQuery = "SELECT h.hID, h.capacity, (SUM(case WHEN b.reserved = 1 THEN 1 ELSE 0 END) / ";
+            usageQuery += "h.capacity) as Hospital_Usage FROM Beds b, Hospital h WHERE h.hID = ";
             usageQuery += hID;
             usageQuery += " AND b.hID = h.hID group by h.hID;";
 
             rs = stmt.executeQuery(usageQuery);
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
-            DBTablePrinter.printResultSet(rs);
+            ResultSet temp = null;
+            temp = stmt.executeQuery(usageQuery);
+            if(!temp.next()){
+                System.out.println("\nNO BEDS WERE SET UP FOR THIS HOSPITAL!\n");
+            } else {
+
+                DBTablePrinter.printResultSet(rs);
+            }
   
         }catch(Throwable oops) {
               oops.printStackTrace();
