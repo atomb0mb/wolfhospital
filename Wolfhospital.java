@@ -44,11 +44,11 @@ public class Wolfhospital {
 
 
 				// System.out.println("Make sure we are here!");
-				 // checkBeds(stmt ,"5001");
-				 // assignPatientToBed(stmt, "3001", "5001");
-         // showBeds(stmt);
-         // showCheckInOut(stmt);
-         // showMedicalRecords(stmt);
+				// checkBeds(stmt ,"5001");
+				// assignPatientToBed(stmt, "3001", "5001");
+        // showBeds(stmt);
+        // showCheckInOut(stmt);
+        // showMedicalRecords(stmt);
 				// assignPatientToBed(conn, "3001", "5001");
 				// releaseBed(conn, "5001");
 				//
@@ -56,17 +56,21 @@ public class Wolfhospital {
 				// transferPatient( conn, "5", "3002", "222", "5001", "2019-09-03", "2019-09-19", "1003", "XXX", "20");
 				// enterMedicalRecords(conn, "2003", "6", "baa", "critical", "toolate", "Donttest", "TheEnd", "1000", "50000", "6000");
 				// updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive", "Hope", "Try", "Chance", "99", "555", "300");
-        showHospital(stmt);
-        showPatient(stmt);
-        showStaff(stmt);
-        createBillingAccount(stmt, "222", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
-        createBillingAccount(stmt, "111", "3001", "", "abcd", "cash", "vitamin-k", "50", "99", "2020-10-04");
-        createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "meth", "420", "111", "2020-11-04");
-        createBillingAccount(stmt, "111", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-12-04");
-        createBillingAccount(stmt, "111", "3002", "999-22-9999", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
-        showBillingAccounts(stmt);
-        checkOut(stmt, "1", "2020-10-04");
-        showCheckInOut(stmt);
+        // showHospital(stmt);
+        // showPatient(stmt);
+        // showStaff(stmt);
+        // createBillingAccount(stmt, "222", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
+        // createBillingAccount(stmt, "111", "3001", "", "abcd", "cash", "vitamin-k", "50", "99", "2020-10-04");
+        // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "meth", "420", "111", "2020-11-04");
+        // createBillingAccount(stmt, "111", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-12-04");
+        // createBillingAccount(stmt, "111", "3002", "999-22-9999", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
+        // showBillingAccounts(stmt);
+        // checkOut(stmt, "1", "2020-10-04");
+        // showCheckInOut(stmt);
+        // checkBedsBySpeciality(stmt, "111", "neurology");
+        // checkBedsBySpeciality(stmt, "222", "neurology");
+        // checkBedsBySpeciality(stmt, "222", "cardiology");
+        // showBeds(stmt);
 
 			} finally {
 						close(rs);
@@ -282,6 +286,43 @@ public class Wolfhospital {
              }
 
     }
+
+    /**
+      This checkbeds will check if the hospital has available specialized bed.
+      @param stmt the statement from the db connection
+      @param hID is the hospital id that selected
+      @param spec is the specialty of the selected
+    **/
+    static void checkBedsBySpeciality(Statement stmt, String hID, String spec) {
+       try {
+         String sql = "select bID from Beds where hID=";
+         sql += hID +" AND spec= '";
+         sql += spec;
+         sql += "' AND reserved = 0;";
+         ResultSet rs = null;
+         ResultSet temp = null;
+         try {
+              rs = stmt.executeQuery(sql);
+              temp = stmt.executeQuery(sql);
+              if( !temp.next() ) {
+                System.out.println("There is no available bed for specialty of "+ spec+" in Hospital "+ hID );
+              }
+              else{
+                DBTablePrinter.printResultSet(rs);
+              }
+
+             } finally {
+                 close(rs);
+                 //close(stmt);
+                 //close(conn);
+             }
+
+             } catch(Throwable oops) {
+                 oops.printStackTrace();
+             }
+
+    }
+
     /**
       This function assign the patient to the selected bed
       @param stmt the statement from the db connection
@@ -919,8 +960,7 @@ public class Wolfhospital {
 			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, 1)");
 
 			// Beds #2
-			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, 1)");
-
+			stmt.executeUpdate("insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, 0)");
 
 			// Check-in/out #1
 			stmt.executeUpdate("insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (3001, 111, 5001, '2019-08-05', 1003, 'abc', 20)");
