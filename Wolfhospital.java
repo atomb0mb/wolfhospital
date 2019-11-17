@@ -471,13 +471,12 @@ public class Wolfhospital {
       @param pID is patient id
       @param hID is the hospital to be transferred
       @param bID is the number of bed number
-      @param startDate is the date of checking in to the hospital
       @param endDate is date of checking out or discharge to the hospital
       @param respDoctor is the reponsible Doctor
       @param currentDiagnosis is the current diagnosis information
       @param registrationFee is the fee of registration
     **/
-    static void transferPatient( Statement stmt, String cID, String pID, String hID, String bID, String startDate, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
+    static void transferPatient( Statement stmt, String cID, String pID, String hID, String bID, String endDate, String respDoctor, String currentDiagnosis, String registrationFee ) {
 
         try {
           // Update the checkIns
