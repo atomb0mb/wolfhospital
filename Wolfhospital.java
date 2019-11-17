@@ -41,9 +41,11 @@ public class Wolfhospital {
 				createInitialTables(stmt);
 				populateDemoTables(stmt);
                 //reportPatientsPerMonth(stmt, rs, "111", "8", "2019");
-                reportHospitalPercentage(stmt, rs, "111");
-                reportHospitalPercentage(stmt, rs, "222");
-                
+                //reportHospitalPercentage(stmt, "111");
+                //reportHospitalPercentage(stmt, "222");
+                //reportUsageStatus(stmt);
+                reportDoctorByPatient(stmt, "3001");
+                reportDoctorByPatient(stmt, "3002");
 
 
 				// System.out.println("Make sure we are here!");
@@ -558,13 +560,13 @@ public class Wolfhospital {
     * This is the function to report the Usage Status of the Hospitals. It will print the number of hospital beds currently
     * occupied in each hospital. The hospitals are defined by their hospital ids.
     * @param stmt statement object used to execute queries.
-    * @param rs this is the resultset object necessary to print the results from the sql query.
     */
-    static void reportUsageStatus(Statement stmt, ResultSet rs) {
+    static void reportUsageStatus(Statement stmt) {
+        ResultSet rs = null;
         try{
             System.out.println("\nBeds currently in use per Hospital (Sorted by Hospital ID): ");
             System.out.println("+-------------+----------------+");
-            rs = stmt.executeQuery("select h.hID, count(*) from Beds b, Hospital h WHERE b.hID = h.hID AND b.reserved = false group by h.hID;");
+            rs = stmt.executeQuery("select h.hID, count(*) from Beds b, Hospital h WHERE b.hID = h.hID AND b.reserved = true group by h.hID;");
             System.out.println("| Hospital ID | Beds Reserved  |");
             System.out.println("+-------------+----------------+");
             while (rs.next()) {
@@ -589,7 +591,8 @@ public class Wolfhospital {
     * @param month is the month to get the number of patients for.
     * @param year is the year for the corresponding month. 
     */
-    static void reportPatientsPerMonth(Statement stmt, ResultSet rs, String hID, String month, String year) {
+    static void reportPatientsPerMonth(Statement stmt, String hID, String month, String year) {
+        ResultSet rs = null;
         try{
             System.out.println("\nNumber of Patients in Hospital " + hID + " During the Month " + month + ", " + year);
             String monthQuery = "select count(distinct(pID)) as Total_Patients FROM CheckIn WHERE MONTH(startDate) = ";
@@ -612,10 +615,10 @@ public class Wolfhospital {
     /**
      * Report the Hospital Usage Percentages which means the number of beds currently in use per hospital as a percentage.
      * @param stmt is the Statment object used to execute queries in mysql.
-     * @param rs is the currently in use ResultSet object to store results from a query.
      * @param hID is a string for the ID of a hospital to get the usage of.
      */
-    static void reportHospitalPercentage(Statement stmt, ResultSet rs, String hID){
+    static void reportHospitalPercentage(Statement stmt, String hID){
+        ResultSet rs = null;
         try{
             System.out.println("\nThe number of Beds Currently in Use Per Hospital:");
             String usageQuery = "SELECT h.hID, h.capacity, (SUM(case WHEN b.reserved = 1 THEN 1 ELSE 0 END) / ";
@@ -638,7 +641,34 @@ public class Wolfhospital {
         }
     }
 
-    static void reportDoctorByPatient(String pID) {
+   /**
+    * This function reports all of the doctors that a particular patient is currently seeing. It features the doctor's ID, 
+    * their name, and the date from which the patient has seen the doctor.
+    * @param stmt is the statement Object used to execute mysql queries.
+    * @param pID is the string containing the ID of the patient to get the Doctors for.
+    */
+    static void reportDoctorByPatient(Statement stmt, String pID) {
+        ResultSet rs = null;
+        try{
+            System.out.println("\nThe Doctors that the Patient is currently seeing:");
+            String doctorQuery = "SELECT p.pID, p.pName as Patient_Name, c.RespDoctor as DoctorID, s.StaffName as Doctor, ";
+            doctorQuery += "c.startDate as Seeing_From FROM ";
+            doctorQuery += "CheckIn c, Patient p, Staff s WHERE c.pID = p.pID AND c.endDate is NULL AND p.pID = ";
+            doctorQuery += pID;
+            doctorQuery += " AND c.RespDoctor = s.StaffID;"; 
+
+            rs = stmt.executeQuery(doctorQuery);
+            ResultSet temp = null;
+            temp = stmt.executeQuery(doctorQuery);
+            if(!temp.next()){
+                System.out.println("\nNo Doctors assigned to this patient\n");
+            } else {
+                DBTablePrinter.printResultSet(rs);
+            }
+  
+        }catch(Throwable oops) {
+              oops.printStackTrace();
+        }
 
     }
 
