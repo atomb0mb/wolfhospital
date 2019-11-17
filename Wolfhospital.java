@@ -9,10 +9,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/";
+	static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
 
-	static String user = "";
-	static String passwd = "";
+	static String user = "jasalina";
+	static String passwd = "Sh1tterukotodake";
 
 
 	public static void main(String[] args) {
@@ -23,8 +23,8 @@ public class Wolfhospital {
 			// driver, available to clients.
 			Class.forName("org.mariadb.jdbc.Driver");
 
-			String user = "";
-			String passwd = "";
+			String user = "jasalina";
+			String passwd = "Sh1tterukotodake";
 
 			Connection conn = null;
 			Statement stmt = null;
@@ -44,9 +44,9 @@ public class Wolfhospital {
                 //reportHospitalPercentage(stmt, "111");
                 //reportHospitalPercentage(stmt, "222");
                 //reportUsageStatus(stmt);
-                reportDoctorByPatient(stmt, "3001");
-                reportDoctorByPatient(stmt, "3002");
-
+                //reportDoctorByPatient(stmt, "3001");
+                //reportDoctorByPatient(stmt, "3002");
+                reportAllHospitalSpeciality(stmt);
 
 				// System.out.println("Make sure we are here!");
 				// checkBeds(stmt ,"5001");
@@ -797,7 +797,43 @@ public class Wolfhospital {
             } catch(Throwable oops) {
                 oops.printStackTrace();
             }
+    }
 
+   /**
+    * This method is used to update billingAccounts given a billingAccountID and the parameters to update with.
+    * @param stmt is the Statement object needed to execute mysql statements.
+    * @param hID is the hospital id that selected
+    * @param pID is patient in the hospital
+    * @param payerSSN is social security of whoever is paying
+    * @param billingAddress is the billing address of the patient
+    * @param paymentInfo is the payment info for the patient
+    * @param medicationPrescribed is the fee of test
+    * @param test is the test of the patient
+    * @param result is the result of the patient
+    * @param registrationfee is the registration fee
+    * @param accommodationfee is the fee of accommodation
+    * @param visitDate is the date of visit of the patient
+    */
+    static void updateBillingAccounts(Statement stmt, String baID, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee, String visitDate){
+        try{
+            ResultSet rs = null;
+            String updateQuery = "UPDATE MedicalRecords SET ";
+            updateQuery += "hID = " + hID + ", ";
+            updateQuery += "pID = " + pID + ", ";
+            updateQuery += "payerSSN = '" + payerSSN + "', ";
+            updateQuery += "billingAddress = '" + billingAddress + "', ";
+            updateQuery += "paymentInfo = '" + paymentInfo + "', ";
+            updateQuery += "medicationPrescribed";
+
+
+            updateQuery += "WHERE baID = ";
+            updateQuery += baID + ";";
+
+            stmt.executeUpdate(updateQuery);
+
+        } catch(Throwable oops) {
+                oops.printStackTrace();
+        }
     }
 
     /**
@@ -946,17 +982,19 @@ public class Wolfhospital {
     }
 
     /**
-     * This function reports all hospital information grouped by their specialty.
+     * This function reports all hospital information grouped by their specialities
      * @param stmt is the Statment object used to execute queries.
      */
     static void reportAllHospitalSpeciality(Statement stmt) {
         ResultSet rs = null;
         try{
-            String hQuery = "SELECT h.spec1";
+            String hQuery = "SELECT h.spec1 as Specialization_1, h.spec2 as Specialization_2, h.hID as Hospital_ID, ";
+            hQuery += "h.aID as Admin_ID, h.hAddress as Address, h.hPhone as Phone, h.capacity as Capacity ";
+            hQuery += "FROM Hospital h order by h.spec1, h.spec2";
 
-            rs = stmt.executeQuery(doctorQuery);
+            rs = stmt.executeQuery(hQuery);
             ResultSet temp = null;
-            temp = stmt.executeQuery(doctorQuery);
+            temp = stmt.executeQuery(hQuery);
             if(!temp.next()){
                 System.out.println("\nHospitals not set up in system!\n");
             } else {
