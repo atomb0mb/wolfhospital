@@ -7,114 +7,95 @@
 // package org.verdictdb.commons.DBTablePrinter;
 import java.sql.*;
 
+/**
+ * Wrapper class around database. Performs all necessary queries to statisfy the
+ * required tasks and operations and exposes them as Java methods to be used by
+ * the UI.
+ * 
+ */
 public class Wolfhospital {
 
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
-
-    static String user = "cwng";
-    static String passwd = "200207715";
-
-    public static void main(String[] args) {
-        try {
-
-            // Load the driver. This creates an instance of the driver
-            // and calls the registerDriver method to make MySql Thin
-            // driver, available to clients.
-            Class.forName("org.mariadb.jdbc.Driver");
-
-            String user = "cwng";
-            String passwd = "200207715";
-
-            Connection conn = null;
-            // Connection conn2 = null;
-            Statement stmt = null;
-            ResultSet rs = null;
-
-            try {
-                // Get a connection from the first driver in the
-                // DriverManager list that recognizes the URL jdbcURL
-                conn = DriverManager.getConnection(jdbcURL, user, passwd);
-
-                // Create a statement object that will be sending your
-                // SQL statements to the DBMS
-                stmt = conn.createStatement();
-                createInitialTables(stmt);
-                populateDemoTables(stmt);
-
-                // reportPatientsPerMonth(stmt, rs, "111", "8", "2019");
-                // reportHospitalPercentage(stmt, "111");
-                // reportHospitalPercentage(stmt, "222");
-                // reportUsageStatus(stmt);
-                // reportDoctorByPatient(stmt, "3001");
-                // reportDoctorByPatient(stmt, "3002");
-                // reportAllHospitalSpeciality(stmt);
-                // System.out.println("Make sure we are here!");
-                // checkBeds(stmt ,"5001");
-                // assignPatientToBed(stmt, "3001", "5001");
-                // showBeds(stmt);
-                // showCheckInOut(stmt);
-                // showMedicalRecords(stmt);
-                // assignPatientToBed(stmt, "3001", "5001");
-
-                // releaseBed(stmt, "5001");
-
-                //
-
-                // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX",
-                // "20");
-                // transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19", "1003",
-                // "XXX", "20");
-                // enterMedicalRecords(conn, "2003", "6", "baa", "critical",
-
-                // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03",
-                // "1003", "XXX", "20");
-                // transferPatient( stmt, "5", "3002", "222", "5001",
-                // "2019-09-03", "2019-09-19", "1003", "XXX", "20");
-                // enterMedicalRecords(stmt, "2003", "6", "baa", "critical",
-
-                // "toolate", "Donttest", "TheEnd", "1000", "50000", "6000");
-                // updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive",
-                // "Hope", "Try", "Chance", "99", "555", "300");
-                // showHospital(stmt);
-                // showPatient(stmt);
-                // showStaff(stmt);
-
-                // createBillingAccount(stmt, "222", "3001", "", "abcd",
-                // "paywithKidney", "meth", "420", "999", "2020-10-04");
-                // createBillingAccount(stmt, "111", "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
-
-                // createBillingAccount(stmt, "111", "3001", "", "abcd",
-                // "paywithKidney", "meth", "420", "999", "2020-12-04");
-                // createBillingAccount(stmt, "111", "3002", "999-22-9999",
-                // "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
-                // showBillingAccounts(stmt);
-                // checkOut(stmt, "1", "2020-10-04");
-                // showCheckInOut(stmt);
-                // checkBedsBySpeciality(stmt, "111", "neurology");
-                // checkBedsBySpeciality(stmt, "222", "neurology");
-                // checkBedsBySpeciality(stmt, "222", "cardiology");
-
-                // showCheckInOut(stmt);
-                // showBeds(stmt);
-
-                //updateBillingAccount(stmt, "1", "3001", "666SSN", "112 Database Master Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                //reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
-
-
-                // showBeds(stmt);
-                // reportBillingHistory(stmt, "2019-01-20", "2019-12-31", "3001");
-
-            } finally {
-                close(rs);
-                close(stmt);
-                close(conn);
-                // close(conn2);
-            }
-        } catch (Throwable oops) {
-            oops.printStackTrace();
-        }
-    }
+    /**
+     * DELETE WHOLE COMMENT BLOCK INCLUDING MAIN METHOD ONCE FINAL VERSION OF
+     * WOLFHOSPITAL IS DONE
+     * 
+     * SPECIFY THAT USER AND PASSWORD NEEDS TO BE SET FOR CONNECTION TO WORK static
+     * final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
+     * 
+     * public static void main(String[] args) { try {
+     * 
+     * // Load the driver. This creates an instance of the driver // and calls the
+     * registerDriver method to make MySql Thin // driver, available to clients.
+     * Class.forName("org.mariadb.jdbc.Driver");
+     * 
+     * String user = "cwng"; String passwd = "200207715";
+     * 
+     * Connection conn = null; // Connection conn2 = null; Statement stmt = null;
+     * ResultSet rs = null;
+     * 
+     * try { // Get a connection from the first driver in the // DriverManager list
+     * that recognizes the URL jdbcURL conn = DriverManager.getConnection(jdbcURL,
+     * user, passwd);
+     * 
+     * // Create a statement object that will be sending your // SQL statements to
+     * the DBMS stmt = conn.createStatement(); createInitialTables(stmt);
+     * populateDemoTables(stmt);
+     * 
+     * // reportPatientsPerMonth(stmt, rs, "111", "8", "2019"); //
+     * reportHospitalPercentage(stmt, "111"); // reportHospitalPercentage(stmt,
+     * "222"); // reportUsageStatus(stmt); // reportDoctorByPatient(stmt, "3001");
+     * // reportDoctorByPatient(stmt, "3002"); // reportAllHospitalSpeciality(stmt);
+     * // System.out.println("Make sure we are here!"); // checkBeds(stmt ,"5001");
+     * // assignPatientToBed(stmt, "3001", "5001"); // showBeds(stmt); //
+     * showCheckInOut(stmt); // showMedicalRecords(stmt); //
+     * assignPatientToBed(stmt, "3001", "5001");
+     * 
+     * // releaseBed(stmt, "5001");
+     * 
+     * //
+     * 
+     * // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX",
+     * // "20"); // transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19",
+     * "1003", // "XXX", "20"); // enterMedicalRecords(conn, "2003", "6", "baa",
+     * "critical",
+     * 
+     * // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", // "1003",
+     * "XXX", "20"); // transferPatient( stmt, "5", "3002", "222", "5001", //
+     * "2019-09-03", "2019-09-19", "1003", "XXX", "20"); //
+     * enterMedicalRecords(stmt, "2003", "6", "baa", "critical",
+     * 
+     * // "toolate", "Donttest", "TheEnd", "1000", "50000", "6000"); //
+     * updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive", // "Hope",
+     * "Try", "Chance", "99", "555", "300"); // showHospital(stmt); //
+     * showPatient(stmt); // showStaff(stmt);
+     * 
+     * // createBillingAccount(stmt, "222", "3001", "", "abcd", // "paywithKidney",
+     * "meth", "420", "999", "2020-10-04"); // createBillingAccount(stmt, "111",
+     * "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200",
+     * "15", "2020-10-04"); // createBillingAccount(stmt, "111", "3001", "", "abcd",
+     * "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
+     * 
+     * // createBillingAccount(stmt, "111", "3001", "", "abcd", // "paywithKidney",
+     * "meth", "420", "999", "2020-12-04"); // createBillingAccount(stmt, "111",
+     * "3002", "999-22-9999", // "abcd", "paywithKidney", "meth", "420", "999",
+     * "2020-10-04"); // showBillingAccounts(stmt); // checkOut(stmt, "1",
+     * "2020-10-04"); // showCheckInOut(stmt); // checkBedsBySpeciality(stmt, "111",
+     * "neurology"); // checkBedsBySpeciality(stmt, "222", "neurology"); //
+     * checkBedsBySpeciality(stmt, "222", "cardiology");
+     * 
+     * // showCheckInOut(stmt); // showBeds(stmt);
+     * 
+     * //updateBillingAccount(stmt, "1", "3001", "666SSN", "112 Database Master
+     * Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+     * //reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
+     * 
+     * 
+     * // showBeds(stmt); // reportBillingHistory(stmt, "2019-01-20", "2019-12-31",
+     * "3001");
+     * 
+     * } finally { close(rs); close(stmt); close(conn); // close(conn2); } } catch
+     * (Throwable oops) { oops.printStackTrace(); } }
+     */
 
     static void close(Connection conn) {
         if (conn != null) {
@@ -1191,21 +1172,26 @@ public class Wolfhospital {
         }
     }
 
-   /**
-    * This method is used to update billingAccounts given a billingAccountID and the parameters to update with.
-    * @param stmt is the Statement object needed to execute mysql statements.
-    * @param pID is patient in the hospital
-    * @param payerSSN is social security of whoever is paying
-    * @param billingAddress is the billing address of the patient
-    * @param paymentInfo is the payment info for the patient
-    * @param test is the test of the patient
-    * @param result is the result of the patient
-    * @param registrationfee is the registration fee
-    * @param accommodationfee is the fee of accommodation
-    * @param visitDate is the date of visit of the patient
-    */
-    static void updateBillingAccount(Statement stmt, String baID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate){
-        try{
+    /**
+     * This method is used to update billingAccounts given a billingAccountID and
+     * the parameters to update with.
+     * 
+     * @param stmt             is the Statement object needed to execute mysql
+     *                         statements.
+     * @param pID              is patient in the hospital
+     * @param payerSSN         is social security of whoever is paying
+     * @param billingAddress   is the billing address of the patient
+     * @param paymentInfo      is the payment info for the patient
+     * @param test             is the test of the patient
+     * @param result           is the result of the patient
+     * @param registrationfee  is the registration fee
+     * @param accommodationfee is the fee of accommodation
+     * @param visitDate        is the date of visit of the patient
+     */
+    static void updateBillingAccount(Statement stmt, String baID, String pID, String payerSSN, String billingAddress,
+            String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee,
+            String treatmentFee, String specDailyFee, String visitDate) {
+        try {
             ResultSet rs = null;
             String updateQuery = "UPDATE BillingAccounts SET ";
             updateQuery += "pID = " + pID + ", ";
@@ -1221,13 +1207,12 @@ public class Wolfhospital {
             updateQuery += "visitDate = '" + visitDate + "' ";
             updateQuery += "WHERE baID = ";
             updateQuery += baID + ";";
-            
 
             stmt.executeUpdate(updateQuery);
 
             System.out.println("Billing Account for patient " + pID + " successfully Updated!");
-        } catch(Throwable oops) {
-                oops.printStackTrace();
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
@@ -1274,8 +1259,8 @@ public class Wolfhospital {
             billQuery += "b.consultationFee,  b.testFee, b.treatmentFee, b.specDailyFee, b.visitDate FROM BillingAccounts b WHERE ";
             billQuery += "b.visitDate >= '";
             billQuery += startDate + "' AND b.visitDate <= '";
-            billQuery +=  endDate + "';";
-            
+            billQuery += endDate + "';";
+
             rs = stmt.executeQuery(billQuery);
 
             DBTablePrinter.printResultSet(rs);

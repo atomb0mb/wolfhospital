@@ -36,8 +36,8 @@ public class ConsoleUI {
             // Create a statement object that will be sending your
             // SQL statements to the DBMS
             this.stmt = this.conn.createStatement();
-            BackendCopy.createInitialTables(this.stmt);
-            BackendCopy.populateDemoTables(this.stmt);
+            Wolfhospital.createInitialTables(this.stmt);
+            Wolfhospital.populateDemoTables(this.stmt);
 
         } catch (Throwable oops) {
             oops.printStackTrace();
@@ -71,8 +71,8 @@ public class ConsoleUI {
      */
     public void close() {
         try {
-            BackendCopy.close(this.stmt);
-            BackendCopy.close(this.conn);
+            Wolfhospital.close(this.stmt);
+            Wolfhospital.close(this.conn);
         } catch (Throwable oops) {
             oops.printStackTrace();
         }
@@ -191,12 +191,15 @@ public class ConsoleUI {
 
         while (!userAction.equals("6")) {
             while (!userAction.equals("1") && !userAction.equals("2") && !userAction.equals("3")
-                    && !userAction.equals("4") && !userAction.equals("5") && !userAction.equals("6")) {
+                    && !userAction.equals("4") && !userAction.equals("5") && !userAction.equals("6")
+                    && !userAction.equals("test")) {
                 System.out.print("Error! Invalid command. Please enter 1, 2, 3, 4, 5, or 6: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("1")) {
+            if (userAction.equals("test")) { // hidden test option to run backend tests from UI
+                // Wolfhospital.tests();
+            } else if (userAction.equals("1")) {
                 informationProcessingSubPanel(console);
             } else if (userAction.equals("2")) {
                 checkInSubPanel(console);
@@ -282,7 +285,7 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                BackendCopy.showCheckInOut(this.stmt);
+                Wolfhospital.showCheckInOut(this.stmt);
             } else if (userAction.equals("1")) {
                 createCheckIn(console);
             } else if (userAction.equals("2")) {
@@ -323,7 +326,7 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                BackendCopy.showMedicalRecords(this.stmt);
+                Wolfhospital.showMedicalRecords(this.stmt);
             } else if (userAction.equals("1")) {
                 createMedicalRecord(console);
             } else if (userAction.equals("2")) {
@@ -364,12 +367,11 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                BackendCopy.showBillingAccounts(this.stmt);
+                Wolfhospital.showBillingAccounts(this.stmt);
             } else if (userAction.equals("1")) {
                 createBillingAccount(console);
             } else if (userAction.equals("2")) {
-                // userUpdateBillingAccount()
-                System.out.println("\nUPDATE BILLING ACCOUNT\n");
+                updateBillingAccount(console);
             } else if (userAction.equals("3")) {
                 break;
             } else {
@@ -411,7 +413,7 @@ public class ConsoleUI {
                 // Usage Status Report
                 System.out.println("\nCurrent Usage Status for all Hospitals Report");
                 System.out.println();
-                // BackendCopy.reportUsageStatus(this.stmt);
+                Wolfhospital.reportUsageStatus(this.stmt);
             } else if (userAction.equals("3")) {
                 reportPatientsPerMonth(console);
             } else if (userAction.equals("4")) {
@@ -421,7 +423,7 @@ public class ConsoleUI {
                 System.out.print("\nEnter the Hospital ID: ");
                 hID = console.next();
                 System.out.println();
-                // BackendCopy.reportHospitalPercentage(this.stmt, hID);
+                Wolfhospital.reportHospitalPercentage(this.stmt, hID);
             } else if (userAction.equals("5")) {
                 // Information about all Doctors a Patient is Seeing
                 String pID = "";
@@ -429,12 +431,12 @@ public class ConsoleUI {
                 System.out.print("\nEnter the Patient ID: ");
                 pID = console.next();
                 System.out.println();
-                // BackendCopy.reportDoctorByPatient(this.stmt, pID);
+                Wolfhospital.reportDoctorByPatient(this.stmt, pID);
             } else if (userAction.equals("6")) {
                 // Information on Hospitals Grouped by Specialty
                 System.out.println("\nHospital Information grouped by Specialization Report");
                 System.out.println();
-                // BackendCopy.reportAllHospitalSpeciality(this.stmt);
+                Wolfhospital.reportAllHospitalSpeciality(this.stmt);
             } else if (userAction.equals("7")) {
                 break;
             } else {
@@ -538,7 +540,7 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                BackendCopy.showPatient(this.stmt);
+                Wolfhospital.showPatient(this.stmt);
             } else if (userAction.equals("1")) {
                 createPatient(console);
             } else if (userAction.equals("2")) {
@@ -549,7 +551,7 @@ public class ConsoleUI {
                 System.out.print("Enter the ID of Patient to be deleted: ");
                 pID = console.next();
                 System.out.println();
-                BackendCopy.deletePatient(pID);
+                Wolfhospital.deletePatient(this.stmt, pID);
             } else if (userAction.equals("4")) {
                 transferPatient(console);
             } else if (userAction.equals("5")) {
@@ -588,9 +590,9 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                BackendCopy.showHospital(this.stmt);
+                Wolfhospital.showHospital(this.stmt);
             } else if (userAction.equals("1")) {
-                updateHospital(console);
+                createHospital(console);
             } else if (userAction.equals("2")) {
                 updateHospital(console);
             } else if (userAction.equals("3")) {
@@ -599,7 +601,7 @@ public class ConsoleUI {
                 System.out.print("Enter the ID of Hospital to be deleted: ");
                 hID = console.next();
                 System.out.println();
-                BackendCopy.deleteHospital(hID);
+                Wolfhospital.deleteHospital(this.stmt, hID);
             } else if (userAction.equals("4")) {
                 break;
             } else {
@@ -636,9 +638,9 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                BackendCopy.showStaff(this.stmt);
+                Wolfhospital.showStaff(this.stmt);
             } else if (userAction.equals("1")) {
-                updateStaffMember(console);
+                createStaffMember(console);
             } else if (userAction.equals("2")) {
                 updateStaffMember(console);
             } else if (userAction.equals("3")) {
@@ -647,7 +649,7 @@ public class ConsoleUI {
                 System.out.print("Enter the ID of Staff Member to be deleted: ");
                 staffID = console.next();
                 System.out.println();
-                BackendCopy.deleteHospital(staffID);
+                Wolfhospital.deleteHospital(this.stmt, staffID);
             } else if (userAction.equals("4")) {
                 break;
             } else {
@@ -684,7 +686,7 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                BackendCopy.showBeds(this.stmt);
+                Wolfhospital.showBeds(this.stmt);
             } else if (userAction.equals("1")) {
                 userCheckBeds(console);
             } else if (userAction.equals("2")) {
@@ -721,7 +723,7 @@ public class ConsoleUI {
         bID = bID.toLowerCase();
 
         System.out.println();
-        BackendCopy.checkBeds(this.stmt, bID);
+        Wolfhospital.checkBeds(this.stmt, bID);
 
     }
 
@@ -744,7 +746,7 @@ public class ConsoleUI {
         pID = console.next();
 
         System.out.println();
-        BackendCopy.assignPatientToBed(this.stmt, pID, bID);
+        Wolfhospital.assignPatientToBed(this.stmt, pID, bID);
     }
 
     /**
@@ -762,7 +764,7 @@ public class ConsoleUI {
         bID = console.next();
 
         System.out.println();
-        BackendCopy.releaseBed(this.stmt, bID);
+        Wolfhospital.releaseBed(this.stmt, bID);
     }
 
     /**
@@ -798,7 +800,7 @@ public class ConsoleUI {
         registrationFee = console.next();
 
         System.out.println();
-        BackendCopy.createCheckIn(this.stmt, pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee);
+        Wolfhospital.createCheckIn(this.stmt, pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee);
     }
 
     /**
@@ -819,7 +821,7 @@ public class ConsoleUI {
         endDate = console.next();
 
         System.out.println();
-        BackendCopy.checkOut(this.stmt, cID, endDate);
+        Wolfhospital.checkOut(this.stmt, cID, endDate);
     }
 
     /**
@@ -858,7 +860,7 @@ public class ConsoleUI {
         registrationFee = console.next();
 
         System.out.println();
-        BackendCopy.transferPatient(this.stmt, cID, pID, hID, bID, endDate, respDoctor, currentDiagnosis,
+        Wolfhospital.transferPatient(this.conn, cID, pID, hID, bID, endDate, respDoctor, currentDiagnosis,
                 registrationFee);
 
         String answer = "";
@@ -868,7 +870,7 @@ public class ConsoleUI {
         System.out.println();
 
         if (answer.equals("y") || answer.equals("ye") || answer.equals("yes")) {
-            BackendCopy.showCheckInOut(this.stmt);
+            Wolfhospital.showCheckInOut(this.stmt);
         }
     }
 
@@ -914,7 +916,7 @@ public class ConsoleUI {
         consultationfee = console.next();
 
         System.out.println();
-        BackendCopy.enterMedicalRecords(this.stmt, mID, cID, prescriptions, diagnosisDetails, treatment, test, result,
+        Wolfhospital.enterMedicalRecords(this.stmt, mID, cID, prescriptions, diagnosisDetails, treatment, test, result,
                 consultationfee, testfee, treatmentfee);
     }
 
@@ -957,7 +959,7 @@ public class ConsoleUI {
         consultationfee = console.next();
 
         System.out.println();
-        BackendCopy.updateMedicalRecords(this.stmt, mID, prescriptions, diagnosisDetails, treatment, test, result,
+        Wolfhospital.updateMedicalRecords(this.stmt, mID, prescriptions, diagnosisDetails, treatment, test, result,
                 consultationfee, testfee, treatmentfee);
     }
 
@@ -973,7 +975,6 @@ public class ConsoleUI {
         String payerSSN = "";
         String billingAddress = "";
         String paymentInfo = "";
-        String medicationPrescribed = "";
         String visitDate = "";
         String registrationfee = "";
         String accommodationfee = "";
@@ -990,24 +991,85 @@ public class ConsoleUI {
         pID = console.next();
         System.out.print("Enter the Payer Social Security Number (SSN): ");
         payerSSN = console.next();
+        System.out.print("Enter the Visit Date: ");
+        visitDate = console.next();
         System.out.print("Enter the Billing Address: ");
         billingAddress = console.next();
         System.out.print("Enter the Payment Information: ");
         paymentInfo = console.next();
-        System.out.print("Enter the Medication Prescribed: ");
-        medicationPrescribed = console.next();
         System.out.print("Enter the Registration Fee: ");
         registrationfee = console.next();
         System.out.print("Enter the Accommodation Fee: ");
         accommodationfee = console.next();
-        System.out.print("Enter the Visit Date: ");
-        visitDate = console.next();
+        System.out.print("Enter the Charges per day for Specialization: ");
+        specializationFee = console.next();
+        System.out.print("Enter the Consultation Fee: ");
+        consultationFee = console.next();
+        System.out.print("Enter the Test Fee: ");
+        testFee = console.next();
+        System.out.print("Enter the Treatment Fee: ");
+        treatmentFee = console.next();
+
+        if (payerSSN.isEmpty()) { // if no payerSSN is specified, pass in null
+            payerSSN = null;
+        }
 
         System.out.println();
-        // BackendCopy.createBillingAccount();
+        Wolfhospital.createBillingAccount(this.conn, hID, pID, payerSSN, billingAddress, paymentInfo, registrationfee,
+                accommodationfee, consultationFee, testFee, treatmentFee, specializationFee, visitDate);
     }
 
-    // updateBillingAccount()
+    /**
+     * User updates an existing Billing Account.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void updateBillingAccount(Scanner console) {
+        String baID = "";
+        String pID = "";
+        String payerSSN = "";
+        String billingAddress = "";
+        String paymentInfo = "";
+        String visitDate = "";
+        String registrationfee = "";
+        String accommodationfee = "";
+        String specializationFee = "";
+        String consultationFee = "";
+        String testFee = "";
+        String treatmentFee = "";
+
+        System.out.println("\nUpdate Billing Account");
+
+        System.out.print("\nEnter ID of Billing Account to be updated: ");
+        baID = console.next();
+        System.out.print("Enter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Payer Social Security Number (SSN): ");
+        payerSSN = console.next();
+        System.out.print("Enter the Visit Date: ");
+        visitDate = console.next();
+        System.out.print("Enter the Billing Address: ");
+        billingAddress = console.next();
+        System.out.print("Enter the Payment Information: ");
+        paymentInfo = console.next();
+        System.out.print("Enter the Registration Fee: ");
+        registrationfee = console.next();
+        System.out.print("Enter the Accommodation Fee: ");
+        accommodationfee = console.next();
+        System.out.print("Enter the Charges per day for Specialization: ");
+        specializationFee = console.next();
+        System.out.print("Enter the Consultation Fee: ");
+        consultationFee = console.next();
+        System.out.print("Enter the Test Fee: ");
+        testFee = console.next();
+        System.out.print("Enter the Treatment Fee: ");
+        treatmentFee = console.next();
+
+        System.out.println();
+        Wolfhospital.updateBillingAccount(this.stmt, baID, pID, payerSSN, billingAddress, paymentInfo, registrationfee,
+                accommodationfee, consultationFee, testFee, treatmentFee, specializationFee, visitDate);
+    }
 
     /**
      * User creates a Patient record.
@@ -1048,8 +1110,8 @@ public class ConsoleUI {
         status = console.next();
 
         System.out.println();
-        // BackendCopy.enterPatient(this.stmt, pID, SSN, pName, dob, gender, patientAge,
-        // patientPhone, patientAddress, status);
+        Wolfhospital.enterPatient(this.stmt, pID, SSN, pName, dob, gender, patientAge, patientPhone, patientAddress,
+                status);
 
     }
 
@@ -1092,8 +1154,8 @@ public class ConsoleUI {
         status = console.next();
 
         System.out.println();
-        // BackendCopy.updatePatient(this.stmt, pID, SSN, pName, dob, gender,
-        // patientAge, patientPhone, patientAddress, status);
+        Wolfhospital.updatePatient(this.stmt, pID, SSN, pName, dob, gender, patientAge, patientPhone, patientAddress,
+                status);
 
     }
 
@@ -1136,8 +1198,7 @@ public class ConsoleUI {
         capacity = console.next();
 
         System.out.println();
-        // BackendCopy.enterHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost,
-        // s2, s2Cost, capacity);
+        Wolfhospital.enterHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost, s2, s2Cost, capacity);
 
     }
 
@@ -1180,8 +1241,7 @@ public class ConsoleUI {
         capacity = console.next();
 
         System.out.println();
-        // BackendCopy.updateHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost,
-        // s2, s2Cost, capacity);
+        Wolfhospital.updateHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost, s2, s2Cost, capacity);
 
     }
 
@@ -1233,9 +1293,8 @@ public class ConsoleUI {
         email = console.next();
 
         System.out.println();
-        // BackendCopy.enterStaff(this.stmt, staffID, hID, staffName, homeAddress,
-        // officeAddress, sgender, age, jobTitle, department, specPosition, staffPhone,
-        // email);
+        Wolfhospital.enterStaff(this.stmt, staffID, hID, staffName, homeAddress, officeAddress, sgender, age, jobTitle,
+                department, specPosition, staffPhone, email);
 
     }
 
@@ -1287,9 +1346,8 @@ public class ConsoleUI {
         email = console.next();
 
         System.out.println();
-        // BackendCopy.updateStaff(this.stmt, staffID, hID, staffName, homeAddress,
-        // officeAddress, sgender, age, jobTitle, department, specPosition, staffPhone,
-        // email);
+        Wolfhospital.updateStaff(this.stmt, staffID, staffName, homeAddress, officeAddress, sgender, age, jobTitle,
+                department, specPosition, staffPhone, email);
 
     }
 
@@ -1314,7 +1372,7 @@ public class ConsoleUI {
         pID = console.next();
 
         System.out.println();
-        // BackendCopy.reportBillingHistory(this.stmt, startDate, endDate, pID);
+        Wolfhospital.reportBillingHistory(this.stmt, startDate, endDate, pID);
     }
 
     /**
@@ -1338,7 +1396,7 @@ public class ConsoleUI {
         year = console.next();
 
         System.out.println();
-        // BackendCopy.reportPatientsPerMonth(this.stmt, hID, month, year);
+        Wolfhospital.reportPatientsPerMonth(this.stmt, hID, month, year);
     }
 
     /**
@@ -1359,7 +1417,7 @@ public class ConsoleUI {
         spec = console.next();
 
         System.out.println();
-        BackendCopy.checkBedsBySpeciality(this.stmt, hID, spec);
+        Wolfhospital.checkBedsBySpeciality(this.stmt, hID, spec);
     }
 
 }
