@@ -9,10 +9,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
 
-    static String user = "cwng";
-    static String passwd = "200207715";
+    static String user = "jasalina";
+    static String passwd = "Sh1tterukotodake";
 
     public static void main(String[] args) {
         try {
@@ -22,8 +22,8 @@ public class Wolfhospital {
             // driver, available to clients.
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String user = "cwng";
-            String passwd = "200207715";
+            String user = "jasalina";
+            String passwd = "Sh1tterukotodake";
 
             Connection conn = null;
             //Connection conn2 = null;
@@ -55,7 +55,7 @@ public class Wolfhospital {
                 // showCheckInOut(stmt);
                 // showMedicalRecords(stmt);
                 // assignPatientToBed(stmt, "3001", "5001");
-                 //releaseBed(stmt, "5001");
+                releaseBed(stmt, "5001");
                 //
 
                 //createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX", "20");
@@ -76,8 +76,8 @@ public class Wolfhospital {
                 // showStaff(stmt);
                 // createBillingAccount(stmt, "222", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-10-04");
-                 //createBillingAccount(stmt, "111", "3001", "191SSN", "abcd", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                 //createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
+                 createBillingAccount(stmt, "111", "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+                 createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
                 // createBillingAccount(stmt, "111", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-12-04");
                 // createBillingAccount(stmt, "111", "3002", "999-22-9999",
@@ -93,7 +93,7 @@ public class Wolfhospital {
                  //showBeds(stmt);
 
                 // showBeds(stmt);
-                //reportBillingHistory(stmt, "2019-01-20", "2019-12-31", "3001");
+                reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
 
 
             } finally {
@@ -1111,7 +1111,7 @@ public class Wolfhospital {
                String sqlInsert = null;
                String patientBillingAcount = null;
                if( payerSSN == null) {
-                 sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
+                 sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
                  sqlInsert += pID +", ";
                  sqlInsert += "'"+ billingAddress +"', ";
                  sqlInsert += "'"+ paymentInfo +"', ";
@@ -1126,7 +1126,7 @@ public class Wolfhospital {
 
                  System.out.println("Billing account for patient "+ pID +" successfully created!");
                } else {
-                 sqlInsert = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
+                 sqlInsert = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
                  sqlInsert += pID +", ";
                  sqlInsert += "'"+ payerSSN +"', ";
                  sqlInsert += "'"+ billingAddress +"', ";
@@ -1228,9 +1228,9 @@ public class Wolfhospital {
             ResultSet rs = null;
             String billQuery = "SELECT b.pID, b.payerSSN, b.billingAddress, b.paymentInfo, b.registrationFee, b.accommodationFee, ";
             billQuery += "b.consultationFee,  b.testFee, b.treatmentFee, b.specDailyFee, b.visitDate FROM BillingAccounts b WHERE ";
-            billQuery += "b.visitDate >= ";
-            billQuery += startDate + " AND b.visitDate <= ";
-            billQuery +=  endDate + ";";
+            billQuery += "b.visitDate >= '";
+            billQuery += startDate + "' AND b.visitDate <= '";
+            billQuery +=  endDate + "';";
             
             rs = stmt.executeQuery(billQuery);
 
