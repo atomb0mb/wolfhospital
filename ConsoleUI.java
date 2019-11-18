@@ -8,7 +8,7 @@ import java.sql.*;
 public class ConsoleUI {
 
     /** URL for connecting to the database. */
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/esarrit";
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
     /** Connection object for the database. */
     private Connection conn;
     /** General statement object for for sending SQL statements to the database. */
@@ -26,8 +26,8 @@ public class ConsoleUI {
             // driver, available to clients.
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String user = "esarrit";
-            String passwd = "CSC440";
+            String user = "jasalina";
+            String passwd = "Sh1tterukotodake";
 
             // Get a connection from the first driver in the
             // DriverManager list that recognizes the URL jdbcURL
@@ -198,7 +198,7 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("test")) { // hidden test option to run backend tests from UI
-                // Wolfhospital.tests();
+                Wolfhospital.tests(conn, stmt);
                 System.out.println("RUN BACKEND TESTS");
             } else if (userAction.equals("1")) {
                 informationProcessingSubPanel(console);
