@@ -1,6 +1,6 @@
 // Acknowledgments: This example is a modification of code provided
 // by Dimitri Rakitine.
-// Further modified by Shrikanth NC for MySql(MariaDB) support
+// Further modified by Shrikanth N C for MySql(MariaDB) support
 // Relpace all $USER$ with your unity id and $PASSWORD$ with your 9 digit student id or updated password (if changed)
 
 //package org.verdictdb.commons.DBTablePrinter;
@@ -46,7 +46,8 @@ public class Wolfhospital {
                 //reportUsageStatus(stmt);
                 //reportDoctorByPatient(stmt, "3001");
                 //reportDoctorByPatient(stmt, "3002");
-                reportAllHospitalSpeciality(stmt);
+                //reportAllHospitalSpeciality(stmt);
+                
 
 				// System.out.println("Make sure we are here!");
 				// checkBeds(stmt ,"5001");
@@ -65,7 +66,7 @@ public class Wolfhospital {
         // showPatient(stmt);
         // showStaff(stmt);
         // createBillingAccount(stmt, "222", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
-        // createBillingAccount(stmt, "111", "3001", "", "abcd", "cash", "vitamin-k", "50", "99", "2020-10-04");
+        //createBillingAccount(stmt, "111", "3001", "", "abcd", "cash", "vitamin-k", "20", "5", "50", "75", "200", "15", "2020-10-04");
         // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "meth", "420", "111", "2020-11-04");
         // createBillingAccount(stmt, "111", "3001", "", "abcd", "paywithKidney", "meth", "420", "999", "2020-12-04");
         // createBillingAccount(stmt, "111", "3002", "999-22-9999", "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
@@ -741,16 +742,18 @@ public class Wolfhospital {
       @param billingAddress is the billing address of the patient
       @param paymentInfo is the payment info for the patient
       @param medicationPrescribed is the fee of test
-      @param test is the test of the patient
-      @param result is the result of the patient
-      @param registrationfee is the registration fee
-      @param accommodationfee is the fee of accommodation
+      @param registrationFee is the registration fee
+      @param accommodationFee is the fee of accommodation
+      @param consultationFee is the fee for consulation
+      @param testFee is the fee of the test carried out on the patient
+      @param treatmentFee is the fee of the treatement to be carried out on the patient.
+      @param specDailyFee is the daily fee for specializations
       @param visitDate is the date of visit of the patient
     **/
-    static void createBillingAccount(Statement stmt, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee, String visitDate) {
+    static void createBillingAccount(Statement stmt, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate) {
       // check beds first before you create account
       try {
-        String sql = "select bID from Beds where reserved = 0 AND hID=";
+        String sql = "select bID from Beds WHERE reserved = 0 AND hID=";
         sql += hID +";";
         ResultSet rs = null;
         try {
@@ -763,19 +766,23 @@ public class Wolfhospital {
                String sqlInsert = null;
                String patientBillingAcount = null;
                if( payerSSN == null) {
-                 sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, visitDate) VALUES (";
+                 sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
                  sqlInsert += pID +", ";
                  sqlInsert += "'"+ billingAddress +"', ";
                  sqlInsert += "'"+ paymentInfo +"', ";
                  sqlInsert += "'"+ medicationPrescribed +"', ";
                  sqlInsert += registrationFee +", ";
                  sqlInsert += accommodationFee +", ";
+                 sqlInsert += consultationFee +", ";
+                 sqlInsert += testFee + ", ";
+                 sqlInsert += treatmentFee + ", ";
+                 sqlInsert += specDailyFee + ", ";
                  sqlInsert += "'"+ visitDate + "');";
                  rs = stmt.executeQuery(sqlInsert);
 
                  System.out.println("Billing account for patient "+ pID +" successfully created!");
                } else {
-                 sqlInsert = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, visitDate) VALUES (";
+                 sqlInsert = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
                  sqlInsert += pID +", ";
                  sqlInsert += "'"+ payerSSN +"', ";
                  sqlInsert += "'"+ billingAddress +"', ";
@@ -783,6 +790,10 @@ public class Wolfhospital {
                  sqlInsert += "'"+ medicationPrescribed +"', ";
                  sqlInsert += registrationFee +", ";
                  sqlInsert += accommodationFee +", ";
+                 sqlInsert += consultationFee +", ";
+                 sqlInsert += testFee + ", ";
+                 sqlInsert += treatmentFee + ", ";
+                 sqlInsert += specDailyFee + ", ";
                  sqlInsert += "'"+ visitDate + "');";
                  rs = stmt.executeQuery(sqlInsert);
                  System.out.println("Billing account for patient "+ pID +" successfully created!");
@@ -794,9 +805,9 @@ public class Wolfhospital {
                 //close(conn);
             }
 
-            } catch(Throwable oops) {
-                oops.printStackTrace();
-            }
+        } catch(Throwable oops) {
+            oops.printStackTrace();
+        }
     }
 
    /**
@@ -1060,9 +1071,7 @@ public class Wolfhospital {
 
 			// BillingAccounts ##TBD
 			stmt.executeUpdate("create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT,pID integer NOT NULL, payerSSN varchar(11), " +
-			"billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), medicationPrescribed varchar(200), registrationFee integer, accommodationFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
-
-
+			"billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), medicationPrescribed varchar(200), registrationFee integer, accommodationFee integer, consultationFee integer, testFee integer, treatmentFee integer, specDailyFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
 
 		} catch(Throwable oops) {
 				oops.printStackTrace();
