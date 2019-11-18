@@ -9,10 +9,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
 
-    static String user = "cwng";
-    static String passwd = "200207715";
+    static String user = "jasalina";
+    static String passwd = "Sh1tterukotodake";
 
     public static void main(String[] args) {
         try {
@@ -22,8 +22,8 @@ public class Wolfhospital {
             // driver, available to clients.
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String user = "cwng";
-            String passwd = "200207715";
+            String user = "jasalina";
+            String passwd = "Sh1tterukotodake";
 
             Connection conn = null;
             Statement stmt = null;
@@ -54,7 +54,7 @@ public class Wolfhospital {
                 // showCheckInOut(stmt);
                 // showMedicalRecords(stmt);
                 // assignPatientToBed(stmt, "3001", "5001");
-                // releaseBed(stmt, "5001");
+                 releaseBed(stmt, "5001");
                 //
                 // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03",
                 // "1003", "XXX", "20");
@@ -69,9 +69,8 @@ public class Wolfhospital {
                 // showStaff(stmt);
                 // createBillingAccount(stmt, "222", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-10-04");
-                // createBillingAccount(stmt, "111", "3001", "", "abcd", "cash", "vitamin-k", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit
-                // card", "meth", "420", "111", "2020-11-04");
+                 //createBillingAccount(stmt, "111", "3001", "191SSN", "abcd", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+                 //createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
                 // createBillingAccount(stmt, "111", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-12-04");
                 // createBillingAccount(stmt, "111", "3002", "999-22-9999",
@@ -83,6 +82,7 @@ public class Wolfhospital {
                 // checkBedsBySpeciality(stmt, "222", "neurology");
                 // checkBedsBySpeciality(stmt, "222", "cardiology");
                 // showBeds(stmt);
+                reportBillingHistory(stmt, "2019-01-20", "2019-12-31", "3001");
 
             } finally {
                 close(rs);
@@ -1040,7 +1040,7 @@ public class Wolfhospital {
         }
     }
 
- /**
+   /**
       This function create billing account for the patient. It will prompt user to enter hospital id so that it validates
       if the hospital has open beds for the patient. If the bed is available, it will create a billing account for the patient.
       @param stmt the statement from the db connection
@@ -1049,7 +1049,6 @@ public class Wolfhospital {
       @param payerSSN is prescriptions info
       @param billingAddress is the billing address of the patient
       @param paymentInfo is the payment info for the patient
-      @param medicationPrescribed is the fee of test
       @param registrationFee is the registration fee
       @param accommodationFee is the fee of accommodation
       @param consultationFee is the fee for consulation
@@ -1058,7 +1057,7 @@ public class Wolfhospital {
       @param specDailyFee is the daily fee for specializations
       @param visitDate is the date of visit of the patient
     **/
-    static void createBillingAccount(Statement stmt, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate) {
+    static void createBillingAccount(Statement stmt, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate) {
       // check beds first before you create account
       try {
         String sql = "select bID from Beds WHERE reserved = 0 AND hID=";
@@ -1078,7 +1077,6 @@ public class Wolfhospital {
                  sqlInsert += pID +", ";
                  sqlInsert += "'"+ billingAddress +"', ";
                  sqlInsert += "'"+ paymentInfo +"', ";
-                 sqlInsert += "'"+ medicationPrescribed +"', ";
                  sqlInsert += registrationFee +", ";
                  sqlInsert += accommodationFee +", ";
                  sqlInsert += consultationFee +", ";
@@ -1095,7 +1093,6 @@ public class Wolfhospital {
                  sqlInsert += "'"+ payerSSN +"', ";
                  sqlInsert += "'"+ billingAddress +"', ";
                  sqlInsert += "'"+ paymentInfo +"', ";
-                 sqlInsert += "'"+ medicationPrescribed +"', ";
                  sqlInsert += registrationFee +", ";
                  sqlInsert += accommodationFee +", ";
                  sqlInsert += consultationFee +", ";
@@ -1142,7 +1139,7 @@ public class Wolfhospital {
             updateQuery += "payerSSN = '" + payerSSN + "', ";
             updateQuery += "billingAddress = '" + billingAddress + "', ";
             updateQuery += "paymentInfo = '" + paymentInfo + "', ";
-            updateQuery += "medicationPrescribed";
+
 
 
             updateQuery += "WHERE baID = ";
@@ -1182,7 +1179,29 @@ public class Wolfhospital {
 
     // Report
 
-    static void reportBillingHistory(String startDate, String endDate, String pId) {
+    /**
+     * This method returns a list of all of the billing accounts that a patient has for a particular set of time.
+     * @param startDate is the starting date to display the billing accounts for.
+     * @param endDate is the ending date range to display the billing accounts for.
+     * @param pID is the id of the patient to look for the history from.
+     */
+    static void reportBillingHistory(Statement stmt, String startDate, String endDate, String pId) {
+        try{
+            ResultSet rs = null;
+            String billQuery = "SELECT b.pID, b.payerSSN, b.billingAddress, b.paymentInfo, b.registrationFee, b.accommodationFee, ";
+            billQuery += "b.consultationFee,  b.testFee, b.treatmentFee, b.specDailyFee, b.visitDate FROM BillingAccounts b WHERE ";
+            billQuery += "b.visitDate >= ";
+            billQuery += startDate + " AND b.visitDate <= ";
+            billQuery +=  endDate + ";";
+            
+            rs = stmt.executeQuery(billQuery);
+
+            DBTablePrinter.printResultSet(rs);
+            
+        
+        } catch (Throwable oops) {
+            oops.printStackTrace();
+        }
 
     }
 
@@ -1384,10 +1403,10 @@ public class Wolfhospital {
                             + "respNurse varchar(50), prescriptions varchar(500), diagnosisDetails varchar(500), treatment varchar(500), test varchar(500), "
                             + "result varchar(500), consultationfee integer NOT NULL, testfee integer NOT NULL, treatmentfee integer NOT NULL, FOREIGN KEY(cID) REFERENCES CheckIn(cID))");
 
-            // BillingAccounts ##TBD
+            // BillingAccounts 
             stmt.executeUpdate(
-                    "create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT,pID integer NOT NULL, payerSSN varchar(11), "
-                            + "billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), medicationPrescribed varchar(200), registrationFee integer, accommodationFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
+                    "create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, payerSSN varchar(11)," +
+			" billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee integer, accommodationFee integer, consultationFee integer, testFee integer, treatmentFee integer, specDailyFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID));");
 
         } catch (Throwable oops) {
             oops.printStackTrace();
