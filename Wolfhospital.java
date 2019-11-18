@@ -9,10 +9,10 @@ import java.sql.*;
 
 public class Wolfhospital {
 
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
 
-    static String user = "jasalina";
-    static String passwd = "Sh1tterukotodake";
+    static String user = "cwng";
+    static String passwd = "";
 
     public static void main(String[] args) {
         try {
@@ -22,8 +22,8 @@ public class Wolfhospital {
             // driver, available to clients.
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String user = "jasalina";
-            String passwd = "Sh1tterukotodake";
+            String user = "cwng";
+            String passwd = "";
 
             Connection conn = null;
             //Connection conn2 = null;
@@ -76,8 +76,8 @@ public class Wolfhospital {
                 // showStaff(stmt);
                 // createBillingAccount(stmt, "222", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-10-04");
-                 createBillingAccount(stmt, "111", "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                 createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
+                // createBillingAccount(stmt, "111", "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+                // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
                 // createBillingAccount(stmt, "111", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-12-04");
                 // createBillingAccount(stmt, "111", "3002", "999-22-9999",
@@ -93,7 +93,8 @@ public class Wolfhospital {
                  //showBeds(stmt);
 
                 // showBeds(stmt);
-                reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
+                //updateBillingAccount(stmt, "1", "3001", "666SSN", "112 Database Master Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+                //reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
 
 
             } finally {
@@ -1156,35 +1157,38 @@ public class Wolfhospital {
    /**
     * This method is used to update billingAccounts given a billingAccountID and the parameters to update with.
     * @param stmt is the Statement object needed to execute mysql statements.
-    * @param hID is the hospital id that selected
     * @param pID is patient in the hospital
     * @param payerSSN is social security of whoever is paying
     * @param billingAddress is the billing address of the patient
     * @param paymentInfo is the payment info for the patient
-    * @param medicationPrescribed is the fee of test
     * @param test is the test of the patient
     * @param result is the result of the patient
     * @param registrationfee is the registration fee
     * @param accommodationfee is the fee of accommodation
     * @param visitDate is the date of visit of the patient
     */
-    static void updateBillingAccounts(Statement stmt, String baID, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee, String visitDate){
+    static void updateBillingAccount(Statement stmt, String baID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate){
         try{
             ResultSet rs = null;
-            String updateQuery = "UPDATE MedicalRecords SET ";
-            updateQuery += "hID = " + hID + ", ";
+            String updateQuery = "UPDATE BillingAccounts SET ";
             updateQuery += "pID = " + pID + ", ";
             updateQuery += "payerSSN = '" + payerSSN + "', ";
             updateQuery += "billingAddress = '" + billingAddress + "', ";
             updateQuery += "paymentInfo = '" + paymentInfo + "', ";
-
-
-
+            updateQuery += "registrationFee = " + registrationFee + ", ";
+            updateQuery += "accommodationFee = " + accommodationFee + ", ";
+            updateQuery += "consultationFee = " + consultationFee + ", ";
+            updateQuery += "testFee = " + testFee + ", ";
+            updateQuery += "treatmentFee = " + treatmentFee + ", ";
+            updateQuery += "specDailyFee = " + specDailyFee + ", ";
+            updateQuery += "visitDate = '" + visitDate + "' ";
             updateQuery += "WHERE baID = ";
             updateQuery += baID + ";";
+            
 
             stmt.executeUpdate(updateQuery);
 
+            System.out.println("Billing Account for patient " + pID + " successfully Updated!");
         } catch(Throwable oops) {
                 oops.printStackTrace();
         }
