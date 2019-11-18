@@ -119,7 +119,7 @@ public class ConsoleUI {
         System.out.println("Enter the corresponding number for the desired option:");
         System.out.println("0. Show CheckIn table");
         System.out.println("1. Create a new CheckIn");
-        System.out.println("2. Update an existing CheckIn");
+        System.out.println("2. Checkout a Patient");
         System.out.println("3. Return to main menu");
         System.out.println("4. Quit the program.");
         System.out.println();
@@ -282,14 +282,11 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                // BackendCopy.printBeds()
-                System.out.println("\nPRINT CHECKIN TABLE\n");
+                BackendCopy.showCheckInOut(this.stmt);
             } else if (userAction.equals("1")) {
-                // userEnterNewCheckIn()
-                System.out.println("\nENTER NEW CHECKIN\n");
+                createCheckIn(console);
             } else if (userAction.equals("2")) {
-                // userUpdateCheckIn()
-                System.out.println("\nUPDATE CHECK IN\n");
+                patientCheckOut(console);
             } else if (userAction.equals("3")) {
                 break;
             } else {
@@ -326,15 +323,11 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                // BackendCopy.printMedicalRecords()
-                System.out.println("\nPRINT MEDICAL RECORDS TABLE\n");
-            }
-            if (userAction.equals("1")) {
-                // userEnterNewMedicalRecord()
-                System.out.println("\nENTER NEW MEDICAL RECORD\n");
+                BackendCopy.showMedicalRecords(this.stmt);
+            } else if (userAction.equals("1")) {
+                createMedicalRecord(console);
             } else if (userAction.equals("2")) {
-                // userUpdateMedicalRecord()
-                System.out.println("\nUPDATE MEDICAL RECORD\n");
+                updateMedicalRecord(console);
             } else if (userAction.equals("3")) {
                 break;
             } else {
@@ -371,11 +364,9 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                // BackendCopy.printBillingAccounts()
-                System.out.println("\nPRINT BILLING ACCOUNTS\n");
+                BackendCopy.showBillingAccounts(this.stmt);
             } else if (userAction.equals("1")) {
-                // userEnterNewBillingAccount()
-                System.out.println("\nCREATE NEW BILLING ACCOUNT\n");
+                createBillingAccount(console);
             } else if (userAction.equals("2")) {
                 // userUpdateBillingAccount()
                 System.out.println("\nUPDATE BILLING ACCOUNT\n");
@@ -415,23 +406,35 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("1")) {
-                // generateBillingHistoryForPatientGivenTime()
-                System.out.println("\nBILLING HISTORY REPORT FOR A PATIENT GIVEN TIMEFRAME\n");
+                reportBillingHistory(console);
             } else if (userAction.equals("2")) {
-                // generateUsageStatusAllHospitals()
-                System.out.println("\nUSAGE STATUS FOR ALL HOSPITALS\n");
+                // Usage Status Report
+                System.out.println("\nCurrent Usage Status for all Hospitals Report");
+                System.out.println();
+                // BackendCopy.reportUsageStatus(this.stmt);
             } else if (userAction.equals("3")) {
-                // generateNumberOfPatientsPerMonth()
-                System.out.println("\nNUMBER OF PATIENTS PER MONTH\n");
+                reportPatientsPerMonth(console);
             } else if (userAction.equals("4")) {
-                // generateHospitalUsagePercentage()
-                System.out.println("\nHOSPITAL USAGE PERCENTAGE\n");
+                // Hospital Usage Percentage
+                String hID = "";
+                System.out.println("\nHospital Usage Percentage Report");
+                System.out.print("\nEnter the Hospital ID: ");
+                hID = console.next();
+                System.out.println();
+                // BackendCopy.reportHospitalPercentage(this.stmt, hID);
             } else if (userAction.equals("5")) {
-                // generateAllPatientDoctorInfo()
-                System.out.println("\nINFORMATION ON ALL DOCTORS A PATIENT IS CURRENTLY SEEING\n");
+                // Information about all Doctors a Patient is Seeing
+                String pID = "";
+                System.out.println("\nDoctors a Patient is Currently Seeing Report");
+                System.out.print("\nEnter the Patient ID: ");
+                pID = console.next();
+                System.out.println();
+                // BackendCopy.reportDoctorByPatient(this.stmt, pID);
             } else if (userAction.equals("6")) {
-                // generateInfoOnHospitalsGroupedBySpecialty()
-                System.out.println("\nINFORMATION ON HOSPITALS GROUPED BY SPECIALTY\n");
+                // Information on Hospitals Grouped by Specialty
+                System.out.println("\nHospital Information grouped by Specialization Report");
+                System.out.println();
+                // BackendCopy.reportAllHospitalSpeciality(this.stmt);
             } else if (userAction.equals("7")) {
                 break;
             } else {
@@ -456,9 +459,8 @@ public class ConsoleUI {
         System.out.println("2. Update an existing Patient");
         System.out.println("3. Delete a Patient");
         System.out.println("4. Transfer a patient to another hospital");
-        System.out.println("5. Assign patients to a hospital if beds are available");
-        System.out.println("6. Return to previous menu");
-        System.out.println("7. Quit the program.");
+        System.out.println("5. Return to previous menu");
+        System.out.println("6. Quit the program.");
         System.out.println();
     }
 
@@ -527,33 +529,30 @@ public class ConsoleUI {
         System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("6")) {
+        while (!userAction.equals("5")) {
             while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
                     && !userAction.equals("3") && !userAction.equals("4") && !userAction.equals("5")
-                    && !userAction.equals("6") && !userAction.equals("7")) {
-                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, 4, 5, 6, or 7: ");
+                    && !userAction.equals("6")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, 4, 5, or 6: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                // BackendCopy.printPatients()
-                System.out.println("\nPRINT PATIENT TABLE\n");
+                BackendCopy.showPatient(this.stmt);
             } else if (userAction.equals("1")) {
-                // userEnterNewPatient()
-                System.out.println("\nENTER NEW PATIENT\n");
+                createPatient(console);
             } else if (userAction.equals("2")) {
-                // userUpdatePatient()
-                System.out.println("\nUPDATE EXISTING PATIENT\n");
+                updatePatient(console);
             } else if (userAction.equals("3")) {
-                // userDeletePatient()
-                System.out.println("\nDELETE EXISTING PATIENT\n");
+                // Delete Patient Record
+                String pID = "";
+                System.out.print("Enter the ID of Patient to be deleted: ");
+                pID = console.next();
+                System.out.println();
+                BackendCopy.deletePatient(pID);
             } else if (userAction.equals("4")) {
-                // userTransferPatient()
-                System.out.println("\nTRANSFER EXISTING PATIENT\n");
+                transferPatient(console);
             } else if (userAction.equals("5")) {
-                // userAssignPatientToHospital()
-                System.out.println("\nASSIGN PATIENT TO HOSPITAL\n");
-            } else if (userAction.equals("6")) {
                 break;
             } else {
                 System.exit(1);
@@ -589,17 +588,18 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                // BackendCopy.printHospitals()
-                System.out.println("\nPRINT HOSPITAL TABLE\n");
+                BackendCopy.showHospital(this.stmt);
             } else if (userAction.equals("1")) {
-                // userEnterNewHospital()
-                System.out.println("\nENTER NEW HOSPITAL\n");
+                updateHospital(console);
             } else if (userAction.equals("2")) {
-                // userUpdateHospital()
-                System.out.println("\nUPDATE EXISTING HOSPITAL\n");
+                updateHospital(console);
             } else if (userAction.equals("3")) {
-                // userDeleteHospital()
-                System.out.println("\nDELETE EXISTING HOSPITAL\n");
+                // Delete Hospital Record
+                String hID = "";
+                System.out.print("Enter the ID of Hospital to be deleted: ");
+                hID = console.next();
+                System.out.println();
+                BackendCopy.deleteHospital(hID);
             } else if (userAction.equals("4")) {
                 break;
             } else {
@@ -636,18 +636,18 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                // BackendCopy.printStaff()
-                System.out.println("\nPRINT STAFF MEMBER\n");
-            }
-            if (userAction.equals("1")) {
-                // userEnterNewStaff()
-                System.out.println("\nENTER NEW STAFF\n");
+                BackendCopy.showStaff(this.stmt);
+            } else if (userAction.equals("1")) {
+                updateStaffMember(console);
             } else if (userAction.equals("2")) {
-                // userUpdateStaff()
-                System.out.println("\nUPDATE EXISTING STAFF\n");
+                updateStaffMember(console);
             } else if (userAction.equals("3")) {
-                // userDeleteStaff()
-                System.out.println("\nDELETE EXISTING STAFF\n");
+                // Delete Staff Member Record
+                String staffID = "";
+                System.out.print("Enter the ID of Staff Member to be deleted: ");
+                staffID = console.next();
+                System.out.println();
+                BackendCopy.deleteHospital(staffID);
             } else if (userAction.equals("4")) {
                 break;
             } else {
@@ -684,19 +684,15 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("0")) {
-                // BackendCopy.printBeds()
-                System.out.println("\nPRINT BEDS TABLE\n");
+                BackendCopy.showBeds(this.stmt);
             } else if (userAction.equals("1")) {
                 userCheckBeds(console);
             } else if (userAction.equals("2")) {
-                // userCheckBedsInHospitalBySpecialty(console);
-                System.out.println("\nCHECK BEDS IN A HOSPITAL WITH APPROPRIATE SPECIALTY\n");
+                checkBedsInHospitalPerSpecialty(console);
             } else if (userAction.equals("3")) {
-                // userReserveBedsInHospital()
-                System.out.println("\nRESERVE BEDS IN A HOSPITAL\n");
+                userAssignPatientToBed(console);
             } else if (userAction.equals("4")) {
-                // userReleaseBedsInHospital()
-                System.out.println("\nRELEASE BEDS IN A HOSPITAL\n");
+                releaseBed(console);
             } else if (userAction.equals("5")) {
                 break;
             } else {
@@ -725,8 +721,645 @@ public class ConsoleUI {
         bID = bID.toLowerCase();
 
         System.out.println();
-        BackendCopy.checkBeds(this.conn, bID);
+        BackendCopy.checkBeds(this.stmt, bID);
 
+    }
+
+    /**
+     * Reserve beds in a hospital, which means assigning a patient to a bed.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void userAssignPatientToBed(Scanner console) {
+        String bID = "";
+        String pID = "";
+
+        System.out.println("\nAssign a Patient to a Bed (Reserve) ");
+
+        System.out.print("\nEnter the Bed number: ");
+        bID = console.next();
+
+        System.out.print("Enter the patient ID: ");
+        pID = console.next();
+
+        System.out.println();
+        BackendCopy.assignPatientToBed(this.stmt, pID, bID);
+    }
+
+    /**
+     * Release beds in a hospital.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void releaseBed(Scanner console) {
+        String bID = "";
+
+        System.out.println("\nRelease a Bed given its number");
+
+        System.out.print("\nEnter the Bed number: ");
+        bID = console.next();
+
+        System.out.println();
+        BackendCopy.releaseBed(this.stmt, bID);
+    }
+
+    /**
+     * User creates a checkIn.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createCheckIn(Scanner console) {
+        String pID = "";
+        String hID = "";
+        String bID = "";
+        String startDate = "";
+        String respDoctor = "";
+        String currentDiagnosis = "";
+        String registrationFee = "";
+
+        System.out.println("\nCreate a new CheckIn");
+
+        System.out.print("\nEnter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter the Bed number: ");
+        bID = console.next();
+        System.out.print("Enter the Start Date (yyyy-mm-dd): ");
+        startDate = console.next();
+        System.out.print("Enter the Responsible Doctor ID: ");
+        respDoctor = console.next();
+        System.out.print("Enter the Current Diagnosis: ");
+        currentDiagnosis = console.next();
+        System.out.print("Enter the Registration Fee: ");
+        registrationFee = console.next();
+
+        System.out.println();
+        BackendCopy.createCheckIn(this.stmt, pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee);
+    }
+
+    /**
+     * User Checks Out a patient.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void patientCheckOut(Scanner console) {
+        String cID = "";
+        String endDate = "";
+
+        System.out.println("\nCheck Out a Patient");
+
+        System.out.print("\nEnter the CheckIn ID: ");
+        cID = console.next();
+        System.out.print("Enter the check out date (yyyy-mm-dd): ");
+        endDate = console.next();
+
+        System.out.println();
+        BackendCopy.checkOut(this.stmt, cID, endDate);
+    }
+
+    /**
+     * Transfer a Patient from one hospital to another.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void transferPatient(Scanner console) {
+        String cID = "";
+        String pID = "";
+        String hID = "";
+        String bID = "";
+        String endDate = "";
+        String respDoctor = "";
+        String currentDiagnosis = "";
+        String registrationFee = "";
+
+        System.out.println("\nTransfer a Patient from one Hospital to another");
+
+        System.out.print("\nEnter the CheckIn ID: ");
+        cID = console.next();
+        System.out.print("Enter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Hospital ID of the hospital to be transferred to: ");
+        hID = console.next();
+        System.out.print("Enter the Bed number of the bed to be transferred to: ");
+        bID = console.next();
+        System.out.print("Enter the check out date (yyyy-mm-dd): ");
+        endDate = console.next();
+        System.out.print("Enter the Responsible Doctor ID: ");
+        respDoctor = console.next();
+        System.out.print("Enter the Current Diagnosis: ");
+        currentDiagnosis = console.next();
+        System.out.print("Enter the Registration Fee: ");
+        registrationFee = console.next();
+
+        System.out.println();
+        BackendCopy.transferPatient(this.stmt, cID, pID, hID, bID, endDate, respDoctor, currentDiagnosis,
+                registrationFee);
+
+        String answer = "";
+        System.out.print("Would you like to see the updated CheckIn table? (yes/no): ");
+        answer = console.next();
+        answer.toLowerCase();
+        System.out.println();
+
+        if (answer.equals("y") || answer.equals("ye") || answer.equals("yes")) {
+            BackendCopy.showCheckInOut(this.stmt);
+        }
+    }
+
+    /**
+     * User creates a Medical Record.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createMedicalRecord(Scanner console) {
+        String mID = "";
+        String cID = "";
+        String prescriptions = "";
+        String diagnosisDetails = "";
+        String treatment = "";
+        String test = "";
+        String result = "";
+        String consultationfee = "";
+        String testfee = "";
+        String treatmentfee = "";
+
+        System.out.println("\nCreate a new Medical Record");
+
+        System.out.print("\nEnter the Medical Record ID: ");
+        mID = console.next();
+        System.out.print("Enter the CheckIn ID to be tied to this Medical Record: ");
+        cID = console.next();
+        System.out.print("Enter Diagnosis Details: ");
+        diagnosisDetails = console.next();
+        System.out.print("Enter Prescriptions: ");
+        prescriptions = console.next();
+        System.out.print("Enter Test: ");
+        test = console.next();
+        System.out.print("Enter Result: ");
+        result = console.next();
+        System.out.print("Enter Treatment: ");
+        treatment = console.next();
+        System.out.print("Enter Test Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Treatment Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Consultation Fee: ");
+        consultationfee = console.next();
+
+        System.out.println();
+        BackendCopy.enterMedicalRecords(this.stmt, mID, cID, prescriptions, diagnosisDetails, treatment, test, result,
+                consultationfee, testfee, treatmentfee);
+    }
+
+    /**
+     * User updates an existing Medical Record.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void updateMedicalRecord(Scanner console) {
+        String mID = "";
+        String prescriptions = "";
+        String diagnosisDetails = "";
+        String treatment = "";
+        String test = "";
+        String result = "";
+        String consultationfee = "";
+        String testfee = "";
+        String treatmentfee = "";
+
+        System.out.println("\nUpdate Medical Record");
+
+        System.out.print("\nEnter the ID of the Medical Record to be updated: ");
+        mID = console.next();
+        System.out.print("Enter Diagnosis Details: ");
+        diagnosisDetails = console.next();
+        System.out.print("Enter Prescriptions: ");
+        prescriptions = console.next();
+        System.out.print("Enter Test: ");
+        test = console.next();
+        System.out.print("Enter Result: ");
+        result = console.next();
+        System.out.print("Enter Treatment: ");
+        treatment = console.next();
+        System.out.print("Enter Test Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Treatment Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Consultation Fee: ");
+        consultationfee = console.next();
+
+        System.out.println();
+        BackendCopy.updateMedicalRecords(this.stmt, mID, prescriptions, diagnosisDetails, treatment, test, result,
+                consultationfee, testfee, treatmentfee);
+    }
+
+    /**
+     * User creates a Billing Account.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createBillingAccount(Scanner console) {
+        String hID = "";
+        String pID = "";
+        String payerSSN = "";
+        String billingAddress = "";
+        String paymentInfo = "";
+        String medicationPrescribed = "";
+        String visitDate = "";
+        String registrationfee = "";
+        String accommodationfee = "";
+        String specializationFee = "";
+        String consultationFee = "";
+        String testFee = "";
+        String treatmentFee = "";
+
+        System.out.println("\nCreate a new Billing Account");
+
+        System.out.print("\nEnter the Hospital ID where medical care was provided: ");
+        hID = console.next();
+        System.out.print("Enter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Payer Social Security Number (SSN): ");
+        payerSSN = console.next();
+        System.out.print("Enter the Billing Address: ");
+        billingAddress = console.next();
+        System.out.print("Enter the Payment Information: ");
+        paymentInfo = console.next();
+        System.out.print("Enter the Medication Prescribed: ");
+        medicationPrescribed = console.next();
+        System.out.print("Enter the Registration Fee: ");
+        registrationfee = console.next();
+        System.out.print("Enter the Accommodation Fee: ");
+        accommodationfee = console.next();
+        System.out.print("Enter the Visit Date: ");
+        visitDate = console.next();
+
+        System.out.println();
+        // BackendCopy.createBillingAccount();
+    }
+
+    // updateBillingAccount()
+
+    /**
+     * User creates a Patient record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void createPatient(Scanner console) {
+        String pID = "";
+        String SSN = "";
+        String pName = "";
+        String dob = "";
+        String gender = "";
+        String patientAge = "";
+        String patientPhone = "";
+        String patientAddress = "";
+        String status = "";
+
+        System.out.println("\nCreate a new Patient record");
+
+        System.out.print("\nEnter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Social Security Number (SSN): ");
+        SSN = console.next();
+        System.out.print("Enter Name: ");
+        pName = console.next();
+        System.out.print("Enter Date of Birth: ");
+        dob = console.next();
+        System.out.print("Enter Gender: ");
+        gender = console.next();
+        System.out.print("Enter Age: ");
+        patientAge = console.next();
+        System.out.print("Enter Phone: ");
+        patientPhone = console.next();
+        System.out.print("Enter Address: ");
+        patientAddress = console.next();
+        System.out.print("Enter Patient Status: ");
+        status = console.next();
+
+        System.out.println();
+        // BackendCopy.enterPatient(this.stmt, pID, SSN, pName, dob, gender, patientAge,
+        // patientPhone, patientAddress, status);
+
+    }
+
+    /**
+     * User updates a Patient record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void updatePatient(Scanner console) {
+        String pID = "";
+        String SSN = "";
+        String pName = "";
+        String dob = "";
+        String gender = "";
+        String patientAge = "";
+        String patientPhone = "";
+        String patientAddress = "";
+        String status = "";
+
+        System.out.println("\nUpdate Patient record");
+
+        System.out.print("\nEnter ID of Patient to be updated: ");
+        pID = console.next();
+        System.out.print("Enter the Social Security Number (SSN): ");
+        SSN = console.next();
+        System.out.print("Enter Name: ");
+        pName = console.next();
+        System.out.print("Enter Date of Birth: ");
+        dob = console.next();
+        System.out.print("Enter Gender: ");
+        gender = console.next();
+        System.out.print("Enter Age: ");
+        patientAge = console.next();
+        System.out.print("Enter Phone: ");
+        patientPhone = console.next();
+        System.out.print("Enter Address: ");
+        patientAddress = console.next();
+        System.out.print("Enter Patient Status: ");
+        status = console.next();
+
+        System.out.println();
+        // BackendCopy.updatePatient(this.stmt, pID, SSN, pName, dob, gender,
+        // patientAge, patientPhone, patientAddress, status);
+
+    }
+
+    /**
+     * User creates a Hospital record.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createHospital(Scanner console) {
+        String hID = "";
+        String aID = "";
+        String hAddress = "";
+        String hPhone = "";
+        String s1 = "";
+        String s1Cost = "";
+        String s2 = "";
+        String s2Cost = "";
+        String capacity = "";
+
+        System.out.println("\nCreate a new Hospital record");
+
+        System.out.print("\nEnter Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter Administrator ID: ");
+        aID = console.next();
+        System.out.print("Enter Address: ");
+        hAddress = console.next();
+        System.out.print("Enter Phone: ");
+        hPhone = console.next();
+        System.out.print("Enter Specialization 1: ");
+        s1 = console.next();
+        System.out.print("Enter Charges per day for Specialization 1: ");
+        s1Cost = console.next();
+        System.out.print("Enter Specialization 2: ");
+        s2 = console.next();
+        System.out.print("Enter Charges per day for Specialization 2: ");
+        s2Cost = console.next();
+        System.out.print("Enter Hospital Capacity: ");
+        capacity = console.next();
+
+        System.out.println();
+        // BackendCopy.enterHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost,
+        // s2, s2Cost, capacity);
+
+    }
+
+    /**
+     * User updates a Hospital record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void updateHospital(Scanner console) {
+        String hID = "";
+        String aID = "";
+        String hAddress = "";
+        String hPhone = "";
+        String s1 = "";
+        String s1Cost = "";
+        String s2 = "";
+        String s2Cost = "";
+        String capacity = "";
+
+        System.out.println("\nUpdate Hospital record");
+
+        System.out.print("\nEnter ID of Hospital to be updated: ");
+        hID = console.next();
+        System.out.print("Enter Administrator ID: ");
+        aID = console.next();
+        System.out.print("Enter Address: ");
+        hAddress = console.next();
+        System.out.print("Enter Phone: ");
+        hPhone = console.next();
+        System.out.print("Enter Specialization 1: ");
+        s1 = console.next();
+        System.out.print("Enter Charges per day for Specialization 1: ");
+        s1Cost = console.next();
+        System.out.print("Enter Specialization 2: ");
+        s2 = console.next();
+        System.out.print("Enter Charges per day for Specialization 2: ");
+        s2Cost = console.next();
+        System.out.print("Enter Hospital Capacity: ");
+        capacity = console.next();
+
+        System.out.println();
+        // BackendCopy.updateHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost,
+        // s2, s2Cost, capacity);
+
+    }
+
+    /**
+     * User creates a Staff Member record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void createStaffMember(Scanner console) {
+        String staffID = "";
+        String hID = "";
+        String staffName = "";
+        String homeAddress = "";
+        String officeAddress = "";
+        String sgender = "";
+        String age = "";
+        String jobTitle = "";
+        String department = "";
+        String specPosition = "";
+        String staffPhone = "";
+        String email = "";
+
+        System.out.println("\nCreate a new Staff Member record");
+
+        System.out.print("\nEnter Staff Member ID: ");
+        staffID = console.next();
+        System.out.print("Enter Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter Name: ");
+        staffName = console.next();
+        System.out.print("Enter Home Address: ");
+        homeAddress = console.next();
+        System.out.print("Enter Office Address: ");
+        officeAddress = console.next();
+        System.out.print("Enter Gender: ");
+        sgender = console.next();
+        System.out.print("Enter Age: ");
+        age = console.next();
+        System.out.print("Enter Job Title: ");
+        jobTitle = console.next();
+        System.out.print("Enter Department: ");
+        department = console.next();
+        System.out.print("Enter Professional Title: ");
+        specPosition = console.next();
+        System.out.print("Enter Phone: ");
+        staffPhone = console.next();
+        System.out.print("Enter Email: ");
+        email = console.next();
+
+        System.out.println();
+        // BackendCopy.enterStaff(this.stmt, staffID, hID, staffName, homeAddress,
+        // officeAddress, sgender, age, jobTitle, department, specPosition, staffPhone,
+        // email);
+
+    }
+
+    /**
+     * User updates a Staff Member record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void updateStaffMember(Scanner console) {
+        String staffID = "";
+        String hID = "";
+        String staffName = "";
+        String homeAddress = "";
+        String officeAddress = "";
+        String sgender = "";
+        String age = "";
+        String jobTitle = "";
+        String department = "";
+        String specPosition = "";
+        String staffPhone = "";
+        String email = "";
+
+        System.out.println("\nUpdate Staff Member record");
+
+        System.out.print("\nEnter ID of Staff Member to be updated: ");
+        staffID = console.next();
+        System.out.print("Enter Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter Name: ");
+        staffName = console.next();
+        System.out.print("Enter Home Address: ");
+        homeAddress = console.next();
+        System.out.print("Enter Office Address: ");
+        officeAddress = console.next();
+        System.out.print("Enter Gender: ");
+        sgender = console.next();
+        System.out.print("Enter Age: ");
+        age = console.next();
+        System.out.print("Enter Job Title: ");
+        jobTitle = console.next();
+        System.out.print("Enter Department: ");
+        department = console.next();
+        System.out.print("Enter Professional Title: ");
+        specPosition = console.next();
+        System.out.print("Enter Phone: ");
+        staffPhone = console.next();
+        System.out.print("Enter Email: ");
+        email = console.next();
+
+        System.out.println();
+        // BackendCopy.updateStaff(this.stmt, staffID, hID, staffName, homeAddress,
+        // officeAddress, sgender, age, jobTitle, department, specPosition, staffPhone,
+        // email);
+
+    }
+
+    /**
+     * Billing History report for a Patient given a time period.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void reportBillingHistory(Scanner console) {
+        String startDate = "";
+        String endDate = "";
+        String pID = "";
+
+        System.out.println("\nBilling History Report");
+
+        System.out.print("\nEnter the start date of the range desired (yyyy-mm-dd): ");
+        startDate = console.next();
+        System.out.print("Enter the end date of the range desired (yyyy-mm-dd): ");
+        endDate = console.next();
+        System.out.print("Enter the Patient ID: ");
+        pID = console.next();
+
+        System.out.println();
+        // BackendCopy.reportBillingHistory(this.stmt, startDate, endDate, pID);
+    }
+
+    /**
+     * Report the number of Patients per Month.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void reportPatientsPerMonth(Scanner console) {
+        String hID = "";
+        String month = "";
+        String year = "";
+
+        System.out.println("\nNumber of Patients per Month Report");
+
+        System.out.print("\nEnter the Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter desired month (mm): ");
+        month = console.next();
+        System.out.print("Enter desired year (yyyy): ");
+        year = console.next();
+
+        System.out.println();
+        // BackendCopy.reportPatientsPerMonth(this.stmt, hID, month, year);
+    }
+
+    /**
+     * Check available beds in a hospital with appropriate specialty.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void checkBedsInHospitalPerSpecialty(Scanner console) {
+        String hID = "";
+        String spec = "";
+
+        System.out.println("\nNumber of Patients per Month Report");
+
+        System.out.print("\nEnter the Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter desired Specialization to check beds for: ");
+        spec = console.next();
+
+        System.out.println();
+        BackendCopy.checkBedsBySpeciality(this.stmt, hID, spec);
     }
 
 }
