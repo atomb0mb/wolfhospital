@@ -816,6 +816,8 @@ public class Wolfhospital {
     }
 
     /**
+     * CONTAINS TRANSACTION
+     * 
      * This function will transfer patient to the selected hospital
      *
      * @param stmt             the statement from the db connection
@@ -1080,6 +1082,8 @@ public class Wolfhospital {
     }
 
     /**
+     * CONTAINS TRANSACTION
+     * 
      * This function create billing account for the patient. It will prompt user to
      * enter hospital id so that it validates if the hospital has open beds for the
      * patient. If the bed is available, it will create a billing account for the
