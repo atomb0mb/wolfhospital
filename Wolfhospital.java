@@ -26,6 +26,7 @@ public class Wolfhospital {
             String passwd = "200207715";
 
             Connection conn = null;
+            //Connection conn2 = null;
             Statement stmt = null;
             ResultSet rs = null;
 
@@ -49,10 +50,8 @@ public class Wolfhospital {
                 // assignPatientToBed(conn, "3001", "5001");
                 // releaseBed(conn, "5001");
                 //
-                // createCheckIn( conn, "3001", "111", "5001", "2019-09-03",
-                // "1003", "XXX", "20");
-                // transferPatient( conn, "5", "3002", "222", "5001",
-                // "2019-09-03", "2019-09-19", "1003", "XXX", "20");
+                createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX", "20");
+                transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19", "1003", "XXX", "20");
                 // enterMedicalRecords(conn, "2003", "6", "baa", "critical",
                 // "toolate", "Donttest", "TheEnd", "1000", "50000", "6000");
                 // updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive",
@@ -76,12 +75,14 @@ public class Wolfhospital {
                 // checkBedsBySpeciality(stmt, "111", "neurology");
                 // checkBedsBySpeciality(stmt, "222", "neurology");
                 // checkBedsBySpeciality(stmt, "222", "cardiology");
-                // showBeds(stmt);
+                showCheckInOut(stmt);
+                 //showBeds(stmt);
 
             } finally {
                 close(rs);
                 close(stmt);
                 close(conn);
+                //close(conn2);
             }
         } catch (Throwable oops) {
             oops.printStackTrace();
@@ -414,7 +415,7 @@ public class Wolfhospital {
 
     /**
      * This function shows the patient table similar to sql show query
-     * 
+     *
      * @param stmt the statement from the db connection
      **/
     static void showPatient(Statement stmt) {
@@ -439,7 +440,7 @@ public class Wolfhospital {
 
     /**
      * This function shows the hospital table similar to sql show query
-     * 
+     *
      * @param stmt the statement from the db connection
      **/
     static void showHospital(Statement stmt) {
@@ -464,7 +465,7 @@ public class Wolfhospital {
 
     /**
      * This function shows the Staff table similar to sql show query
-     * 
+     *
      * @param stmt the statement from the db connection
      **/
     static void showStaff(Statement stmt) {
@@ -491,7 +492,7 @@ public class Wolfhospital {
     /**
      * This fucntion show bed table and return list of bed table similar to sql
      * select view
-     * 
+     *
      * @param stmt the statement from the db connection
      **/
     static void showBeds(Statement stmt) {
@@ -530,7 +531,7 @@ public class Wolfhospital {
     // #2 cwng
     /**
      * This checkbeds will check if the specific bed is reserved or NOT
-     * 
+     *
      * @param stmt the statement from the db connection
      * @param bID  is the number of bed number
      **/
@@ -569,7 +570,7 @@ public class Wolfhospital {
 
     /**
      * This checkbeds will check if the hospital has available specialized bed.
-     * 
+     *
      * @param stmt the statement from the db connection
      * @param hID  is the hospital id that selected
      * @param spec is the specialty of the selected
@@ -605,7 +606,7 @@ public class Wolfhospital {
 
     /**
      * This function assign the patient to the selected bed
-     * 
+     *
      * @param stmt the statement from the db connection
      * @param pID  is patient id
      * @param bID  is the number of bed number
@@ -647,7 +648,7 @@ public class Wolfhospital {
 
     /**
      * This function will release bed and set it to open / available
-     * 
+     *
      * @param stmt the statement from the db connection
      * @param bID  is the number of bed number
      **/
@@ -687,7 +688,7 @@ public class Wolfhospital {
 
     /**
      * This function shows table of Check In similar to sql query display
-     * 
+     *
      * @param stmt the statement from the db connection
      **/
     static void showCheckInOut(Statement stmt) {
@@ -712,7 +713,7 @@ public class Wolfhospital {
 
     /**
      * This function will create check in / out for the patient
-     * 
+     *
      * @param stmt             the statement from the db connection
      * @param pID              is patient id
      * @param hID              is the hospital id
@@ -757,7 +758,7 @@ public class Wolfhospital {
     /**
      * This function update the checkin/out which is checking out the patient from
      * the hospital
-     * 
+     *
      * @param stmt    the statement from the db connection
      * @param cID     is check in/out id
      * @param endDate is date of checking out or discharge to the hospital
@@ -795,7 +796,7 @@ public class Wolfhospital {
 
     /**
      * This function will transfer patient to the selected hospital
-     * 
+     *
      * @param stmt             the statement from the db connection
      * @param cID              is check ins
      * @param pID              is patient id
@@ -806,57 +807,80 @@ public class Wolfhospital {
      * @param currentDiagnosis is the current diagnosis information
      * @param registrationFee  is the fee of registration
      **/
-    static void transferPatient(Statement stmt, String cID, String pID, String hID, String bID, String endDate,
-            String respDoctor, String currentDiagnosis, String registrationFee) {
+    static void transferPatient(Connection conn, String cID, String pID, String hID, String bID, String endDate,
+            String respDoctor, String currentDiagnosis, String registrationFee) throws SQLException {
+
+        PreparedStatement updateCheckIn = null;
+        PreparedStatement showhid = null;
+        PreparedStatement createNewCheckIn = null;
+
+        String sqlUpdate = "UPDATE CheckIn SET endDate= ? WHERE cID= ?";
+        String sqlshow = "select hID from CheckIn WHERE cID= ?";
+        String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (?, ?, ?, ?, ?, ?, ?) ";
+        ResultSet rs = null;
 
         try {
             // Update the checkIns
-            String sqlUpdate = "UPDATE CheckIn SET endDate=";
-            sqlUpdate += "'" + endDate;
-            sqlUpdate += "' WHERE cID =";
-            sqlUpdate += cID + ";";
+            conn.setAutoCommit(false);
+            updateCheckIn = conn.prepareStatement(sqlUpdate);
+            showhid = conn.prepareStatement(sqlshow);
+            createNewCheckIn = conn.prepareStatement(sqlInsert);
 
-            ResultSet rs = null;
-            try {
-                stmt.executeUpdate(sqlUpdate);
-                String sqlshow = "select hID from CheckIn where cID=";
-                sqlshow += cID + ";";
-                rs = stmt.executeQuery(sqlshow);
-                String prevHopital = null;
-                while (rs.next()) {
-                    prevHopital = rs.getString("hID");
-                }
-                // Create new CheckIn
-                // Note: The startdate for new checkIns records is endDate of
-                // previous checkIns records
-                String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (";
-                sqlInsert += pID + ", ";
-                sqlInsert += hID + ", ";
-                sqlInsert += bID + ", ";
-                sqlInsert += "'" + endDate + "', "; // startDate
-                sqlInsert += respDoctor + ", ";
-                sqlInsert += "'" + currentDiagnosis + "', ";
-                sqlInsert += registrationFee + ");";
+            updateCheckIn.setDate(1, java.sql.Date.valueOf(endDate)); // Column of endDate
+            updateCheckIn.setInt(2, Integer.parseInt(cID)); //CID column
 
-                stmt.executeUpdate(sqlInsert);
+            updateCheckIn.executeUpdate();
 
-                System.out.println("Successfully transferred patient " + pID + " from Hospital " + prevHopital
-                        + " to Hospital " + hID);
+            showhid.setInt(1, Integer.parseInt(cID)); // CID column
+            rs = showhid.executeQuery();
+            //To store the previous hospital
+            String prevHopital = null;
+            while (rs.next()) {
+              prevHopital = rs.getString("hID");
+            }
+            // Create new CheckIn
+            // Note: The startdate for new checkIns records is endDate of
+            // previous checkIns records
+            //String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (";
+            createNewCheckIn.setInt(1, Integer.parseInt(pID)); //pId
+            createNewCheckIn.setInt(2, Integer.parseInt(hID)); // hId
+            createNewCheckIn.setInt(3, Integer.parseInt(bID)); // bID
+            createNewCheckIn.setDate(4, java.sql.Date.valueOf(endDate)); // Start Date
+            createNewCheckIn.setInt(5,Integer.parseInt(respDoctor)); // Responsible doctor
+            createNewCheckIn.setString(6, currentDiagnosis); //  currentDiagnosis
+            createNewCheckIn.setInt(7, Integer.parseInt(registrationFee)); // registrationFee
+
+            createNewCheckIn.executeUpdate();
+            conn.commit();
+            System.out.println("Successfully transferred patient " + pID + " from Hospital " + prevHopital
+                       + " to Hospital " + hID);
+
+
+            } catch (SQLException e ) {
+            //  JDBCTutorialUtilities.printSQLException(e);
+
+              if (conn != null) {
+                  try {
+                      e.printStackTrace();
+                      System.err.println("Transaction is being rolled back");
+                      conn.rollback();
+                  } catch(SQLException excep) {
+                    //  JDBCTutorialUtilities.printSQLException(excep);
+                  }
+              }
 
             } finally {
                 close(rs);
                 // close(stmt);
                 // close(conn);
+                conn.setAutoCommit(true);
             }
 
-        } catch (Throwable oops) {
-            oops.printStackTrace();
-        }
     }
 
     /**
      * This function shows the medical record similar to sql show query
-     * 
+     *
      * @param stmt the statement from the db connection
      **/
     static void showMedicalRecords(Statement stmt) {
@@ -881,7 +905,7 @@ public class Wolfhospital {
 
     /**
      * This function create medical record for the patient
-     * 
+     *
      * @param stmt             the statement from the db connection
      * @param mID              medical record id
      * @param cID              is checkIns id
@@ -940,7 +964,7 @@ public class Wolfhospital {
 
     /**
      * This function update medical record for the patient
-     * 
+     *
      * @param stmt             the statement from the db connection
      * @param mID              medical record id
      * @param prescriptions    is prescriptions info
@@ -1010,7 +1034,7 @@ public class Wolfhospital {
     // #3 jasalina arthur
     /**
      * This function will show available beds in selected Hospital
-     * 
+     *
      * @param stmt the statement from the db connection
      * @param hID  is the hospital to display
      **/
@@ -1039,7 +1063,7 @@ public class Wolfhospital {
      * enter hospital id so that it validates if the hospital has open beds for the
      * patient. If the bed is available, it will create a billing account for the
      * patient.
-     * 
+     *
      * @param stmt                 the statement from the db connection
      * @param hID                  is the hospital id that selected
      * @param pID                  is patient to be admit to the hospital
@@ -1110,7 +1134,7 @@ public class Wolfhospital {
 
     /**
      * This function shows the billing account table similar to sql show query
-     * 
+     *
      * @param stmt the statement from the db connection
      **/
     static void showBillingAccounts(Statement stmt) {
@@ -1161,7 +1185,7 @@ public class Wolfhospital {
 
     /**
      * Create the initial tables to be used in the database.
-     * 
+     *
      * @param stmt is the statement object used to execute MariaDB statements.
      */
     static void createInitialTables(Statement stmt) {
@@ -1229,7 +1253,7 @@ public class Wolfhospital {
 
     /**
      * This is the function that populates the data values for all of the tables.
-     * 
+     *
      * @param stmt is the Statement object used to execute MariaDB statements
      */
     static void populateDemoTables(Statement stmt) {
