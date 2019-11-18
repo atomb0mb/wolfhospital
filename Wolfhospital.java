@@ -12,7 +12,7 @@ public class Wolfhospital {
     static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
 
     static String user = "cwng";
-    static String passwd = "";
+    static String passwd = "200207715";
 
     public static void main(String[] args) {
         try {
@@ -23,7 +23,7 @@ public class Wolfhospital {
             Class.forName("org.mariadb.jdbc.Driver");
 
             String user = "cwng";
-            String passwd = "";
+            String passwd = "200207715";
 
             Connection conn = null;
             //Connection conn2 = null;
