@@ -55,7 +55,9 @@ public class Wolfhospital {
                 // showCheckInOut(stmt);
                 // showMedicalRecords(stmt);
                 // assignPatientToBed(stmt, "3001", "5001");
+
                 // releaseBed(stmt, "5001");
+
                 //
 
                 // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX",
@@ -76,12 +78,12 @@ public class Wolfhospital {
                 // showHospital(stmt);
                 // showPatient(stmt);
                 // showStaff(stmt);
-                // createBillingAccount(stmt, "222", "3001", "", "abcd", "paywithKidney",
-                // "meth", "420", "999", "2020-10-04");
-                // createBillingAccount(conn, "111", "3001", "191SSN", "abcd", "cash", "20",
-                // "5", "50", "75", "200", "15", "2020-10-04");
-                // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20",
-                // "5", "50", "75", "200", "15", "2020-11-04");
+
+                // createBillingAccount(stmt, "222", "3001", "", "abcd",
+                // "paywithKidney", "meth", "420", "999", "2020-10-04");
+                // createBillingAccount(stmt, "111", "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+                // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
+
                 // createBillingAccount(stmt, "111", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-12-04");
                 // createBillingAccount(stmt, "111", "3002", "999-22-9999",
@@ -95,6 +97,10 @@ public class Wolfhospital {
 
                 // showCheckInOut(stmt);
                 // showBeds(stmt);
+
+                //updateBillingAccount(stmt, "1", "3001", "666SSN", "112 Database Master Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+                //reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
+
 
                 // showBeds(stmt);
                 // reportBillingHistory(stmt, "2019-01-20", "2019-12-31", "3001");
@@ -1185,43 +1191,43 @@ public class Wolfhospital {
         }
     }
 
-    /**
-     * This method is used to update billingAccounts given a billingAccountID and
-     * the parameters to update with.
-     * 
-     * @param stmt                 is the Statement object needed to execute mysql
-     *                             statements.
-     * @param hID                  is the hospital id that selected
-     * @param pID                  is patient in the hospital
-     * @param payerSSN             is social security of whoever is paying
-     * @param billingAddress       is the billing address of the patient
-     * @param paymentInfo          is the payment info for the patient
-     * @param medicationPrescribed is the fee of test
-     * @param test                 is the test of the patient
-     * @param result               is the result of the patient
-     * @param registrationfee      is the registration fee
-     * @param accommodationfee     is the fee of accommodation
-     * @param visitDate            is the date of visit of the patient
-     */
-    static void updateBillingAccounts(Statement stmt, String baID, String hID, String pID, String payerSSN,
-            String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee,
-            String accommodationFee, String visitDate) {
-        try {
+   /**
+    * This method is used to update billingAccounts given a billingAccountID and the parameters to update with.
+    * @param stmt is the Statement object needed to execute mysql statements.
+    * @param pID is patient in the hospital
+    * @param payerSSN is social security of whoever is paying
+    * @param billingAddress is the billing address of the patient
+    * @param paymentInfo is the payment info for the patient
+    * @param test is the test of the patient
+    * @param result is the result of the patient
+    * @param registrationfee is the registration fee
+    * @param accommodationfee is the fee of accommodation
+    * @param visitDate is the date of visit of the patient
+    */
+    static void updateBillingAccount(Statement stmt, String baID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate){
+        try{
             ResultSet rs = null;
-            String updateQuery = "UPDATE MedicalRecords SET ";
-            updateQuery += "hID = " + hID + ", ";
+            String updateQuery = "UPDATE BillingAccounts SET ";
             updateQuery += "pID = " + pID + ", ";
             updateQuery += "payerSSN = '" + payerSSN + "', ";
             updateQuery += "billingAddress = '" + billingAddress + "', ";
             updateQuery += "paymentInfo = '" + paymentInfo + "', ";
-
+            updateQuery += "registrationFee = " + registrationFee + ", ";
+            updateQuery += "accommodationFee = " + accommodationFee + ", ";
+            updateQuery += "consultationFee = " + consultationFee + ", ";
+            updateQuery += "testFee = " + testFee + ", ";
+            updateQuery += "treatmentFee = " + treatmentFee + ", ";
+            updateQuery += "specDailyFee = " + specDailyFee + ", ";
+            updateQuery += "visitDate = '" + visitDate + "' ";
             updateQuery += "WHERE baID = ";
             updateQuery += baID + ";";
+            
 
             stmt.executeUpdate(updateQuery);
 
-        } catch (Throwable oops) {
-            oops.printStackTrace();
+            System.out.println("Billing Account for patient " + pID + " successfully Updated!");
+        } catch(Throwable oops) {
+                oops.printStackTrace();
         }
     }
 
@@ -1266,10 +1272,10 @@ public class Wolfhospital {
             ResultSet rs = null;
             String billQuery = "SELECT b.pID, b.payerSSN, b.billingAddress, b.paymentInfo, b.registrationFee, b.accommodationFee, ";
             billQuery += "b.consultationFee,  b.testFee, b.treatmentFee, b.specDailyFee, b.visitDate FROM BillingAccounts b WHERE ";
-            billQuery += "b.visitDate >= ";
-            billQuery += startDate + " AND b.visitDate <= ";
-            billQuery += endDate + ";";
-
+            billQuery += "b.visitDate >= '";
+            billQuery += startDate + "' AND b.visitDate <= '";
+            billQuery +=  endDate + "';";
+            
             rs = stmt.executeQuery(billQuery);
 
             DBTablePrinter.printResultSet(rs);
