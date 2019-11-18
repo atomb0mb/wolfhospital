@@ -7,11 +7,17 @@ import java.sql.*;
  */
 public class ConsoleUI {
 
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/";
+    /** URL for connecting to the database. */
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/esarrit";
+    /** Connection object for the database. */
     private Connection conn;
+    /** General statement object for for sending SQL statements to the database. */
     private Statement stmt;
-    private ResultSet rs;
 
+    /**
+     * Class constructor. Handles the initizaliation of the database.
+     * 
+     */
     public ConsoleUI() {
         try {
 
@@ -20,8 +26,8 @@ public class ConsoleUI {
             // driver, available to clients.
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String user = "";
-            String passwd = "";
+            String user = "esarrit";
+            String passwd = "CSC440";
 
             // Get a connection from the first driver in the
             // DriverManager list that recognizes the URL jdbcURL
@@ -58,9 +64,13 @@ public class ConsoleUI {
 
     }
 
+    /**
+     * Function used to close the objects related to database connection. It closes
+     * Statement and Connection.
+     * 
+     */
     public void close() {
         try {
-            BackendCopy.close(this.rs);
             BackendCopy.close(this.stmt);
             BackendCopy.close(this.conn);
         } catch (Throwable oops) {
@@ -69,16 +79,18 @@ public class ConsoleUI {
     }
 
     /**
-     * Welcome message for the user.
+     * Welcome message for the user. Serves as the main menu.
      * 
      */
     public void printMainHeader() {
-        System.out.println("\n                 Main Menu:\n");
-        System.out.println("Enter the corresponding command for the operation Task you wish to perform:");
-        System.out.println("I for Information Processing, C for CheckIn / CheckOut,");
-        System.out
-                .println("MM for Maintaining Medical Records, MB for Maintaining Billing Accounts, or R for Reports.");
-        System.out.println("To quit the program, Enter Q.");
+        System.out.println("\n                 Main Menu\n");
+        System.out.println("Enter the corresponding number for the operation Task you wish to perform:");
+        System.out.println("1. Information Processing");
+        System.out.println("2. CheckIn / CheckOut");
+        System.out.println("3. Maintaining Medical Records");
+        System.out.println("4. Maintaining Billing Accounts");
+        System.out.println("5. Reports");
+        System.out.println("6. Quit Program");
         System.out.println();
     }
 
@@ -87,9 +99,14 @@ public class ConsoleUI {
      * 
      */
     public void printInfoProcessingHeader() {
-        System.out.println("\n       Information Processing Sub-Menu:\n");
-        System.out.println("Enter P for Patients, H for Hospitals, S for Staff, B for Beds.");
-        System.out.println("Enter R to return to main menu or Q to quit the program.");
+        System.out.println("\n      Information Processing Sub-Menu\n");
+        System.out.println("Enter the corresponding number for the desired option:");
+        System.out.println("1. Patients");
+        System.out.println("2. Hospitals");
+        System.out.println("3. Staff");
+        System.out.println("4. Beds");
+        System.out.println("5. Return to main menu");
+        System.out.println("6. Quit Program");
         System.out.println();
     }
 
@@ -98,10 +115,13 @@ public class ConsoleUI {
      * 
      */
     public void checkInHeader() {
-        System.out.println("\n       CheckIn / CheckOut Sub-Menu:\n");
-        System.out.println("Enter E for creating a new CheckIn or");
-        System.out.println("U for updating an existing CheckIn.");
-        System.out.println("Enter R to return to main menu or Q to quit the program.");
+        System.out.println("\n       CheckIn / CheckOut Sub-Menu\n");
+        System.out.println("Enter the corresponding number for the desired option:");
+        System.out.println("0. Show CheckIn table");
+        System.out.println("1. Create a new CheckIn");
+        System.out.println("2. Checkout a Patient");
+        System.out.println("3. Return to main menu");
+        System.out.println("4. Quit the program.");
         System.out.println();
     }
 
@@ -110,10 +130,13 @@ public class ConsoleUI {
      * 
      */
     public void medicalRecordsHeader() {
-        System.out.println("\n      Maintaining Medical Records Sub-Menu:\n");
-        System.out.println("Enter E for entering a new Medical Record or");
-        System.out.println("U for updating an existing Medical Record.");
-        System.out.println("Enter R to return to main menu or Q to quit the program.");
+        System.out.println("\n      Maintaining Medical Records Sub-Menu\n");
+        System.out.println("Enter the corresponding number for the desired option:");
+        System.out.println("0. Show Medical Records table");
+        System.out.println("1. Enter a new Medical Record");
+        System.out.println("2. Update an existing Medical Record");
+        System.out.println("3. Return to main menu");
+        System.out.println("4. Quit the program.");
         System.out.println();
     }
 
@@ -122,10 +145,12 @@ public class ConsoleUI {
      * 
      */
     public void billingAccountsHeader() {
-        System.out.println("\n      Maintaining Billing Accounts Sub-Menu:\n");
-        System.out.println("Enter E for entering a new Billing Account or");
-        System.out.println("U for updating an existing Billing Account.");
-        System.out.println("Enter R to return to main menu or Q to quit the program.");
+        System.out.println("\n  Maintaining Billing Accounts Sub-Menu\n");
+        System.out.println("0. Show Billing Accounts table");
+        System.out.println("1. Enter a new Billing Account");
+        System.out.println("2. Update an existing Billing Account");
+        System.out.println("3. Return to main menu");
+        System.out.println("4. Quit the program.");
         System.out.println();
     }
 
@@ -134,18 +159,24 @@ public class ConsoleUI {
      * 
      */
     public void reportsHeader() {
-        System.out.println("\n       Generate Reports Sub-Menu:\n");
-        System.out.println("Enter PT for generating a report of the billing history for a given patient");
-        System.out.println("and for a certain time period (month/year), Enter U for getting the current usage");
-        System.out.println("status for all hospitals, NP for getting the number of patients per month, HP for");
-        System.out.println("getting the hospital usage percentage, DI for getting information on all the doctors");
-        System.out.println("a patient is currently seeing, HS for getting information on hospitals grouped by");
-        System.out.println("their specialty. Enter R to return to main menu or Q to quit the program.");
+        System.out.println("\n       Generate Reports Sub-Menu\n");
+        System.out.println(
+                "1. Generate a report of the billing history for a given patient and for a certain time period (month/year)");
+        System.out.println("2. Get the current usage status for all hospitals");
+        System.out.println("3. Get the number of patients per month");
+        System.out.println("4. Get the hospital usage percentage");
+        System.out.println("5. Get information on all the doctors a patient is currently seeing");
+        System.out.println("6. Get information on hospitals grouped by their specialty");
+        System.out.println("7. Return to main menu");
+        System.out.println("8. Quit the program.");
         System.out.println();
     }
 
     /**
-     * Parent layer of the application.
+     * Parent layer of the application. Handles user input to perform one of the 4
+     * main operations and tasks.
+     * 
+     * @param console Scanner object to be used to obtain input from user
      * 
      */
     public void topLevelUserInterface(Scanner console) {
@@ -154,413 +185,1181 @@ public class ConsoleUI {
         /** String object representing the command desired by user. */
         String userAction = "";
 
-        System.out.print("Enter I, C, MM, MB, R, or Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
 
-        while (!userAction.equals("q")) {
-            while (!userAction.equals("i") && !userAction.equals("c") && !userAction.equals("mm")
-                    && !userAction.equals("mb") && !userAction.equals("r") && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter I, C, MM, MB, R, or Q: ");
+        while (!userAction.equals("6")) {
+            while (!userAction.equals("1") && !userAction.equals("2") && !userAction.equals("3")
+                    && !userAction.equals("4") && !userAction.equals("5") && !userAction.equals("6")) {
+                System.out.print("Error! Invalid command. Please enter 1, 2, 3, 4, 5, or 6: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("i")) {
+            if (userAction.equals("1")) {
                 informationProcessingSubPanel(console);
-            } else if (userAction.equals("c")) {
+            } else if (userAction.equals("2")) {
                 checkInSubPanel(console);
-            } else if (userAction.equals("mm")) {
+            } else if (userAction.equals("3")) {
                 medicalRecordsSubPanel(console);
-            } else if (userAction.equals("mb")) {
+            } else if (userAction.equals("4")) {
                 billingAccountsSubPanel(console);
-            } else if (userAction.equals("r")) {
+            } else if (userAction.equals("5")) {
                 generateReportsSubPanel(console);
             } else {
                 System.exit(1);
             }
             printMainHeader();
-            System.out.print("Enter I, C, MM, MB, R, or Q: ");
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
     }
 
+    /**
+     * Information Processing Sub-Layer of the application. Handles logic related to
+     * handling input related to operations within information processing.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void informationProcessingSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         printInfoProcessingHeader();
-        System.out.print("Enter P, H, S, B, R, or Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("p") && !userAction.equals("h") && !userAction.equals("s")
-                    && !userAction.equals("b") && !userAction.equals("r") && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter P, H, S, B, R, or Q: ");
+        while (!userAction.equals("5")) {
+            while (!userAction.equals("1") && !userAction.equals("2") && !userAction.equals("3")
+                    && !userAction.equals("4") && !userAction.equals("5") && !userAction.equals("6")) {
+                System.out.print("Error! Invalid command. Please enter 1, 2, 3, 4, 5, or 6: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("p")) {
+            if (userAction.equals("1")) {
                 patientOperationsMenu(console);
-            } else if (userAction.equals("h")) {
+            } else if (userAction.equals("2")) {
                 hospitalOperationsMenu(console);
-            } else if (userAction.equals("s")) {
+            } else if (userAction.equals("3")) {
                 staffOperationsMenu(console);
-            } else if (userAction.equals("b")) {
+            } else if (userAction.equals("4")) {
                 bedOperationsMenu(console);
-            } else if (userAction.equals("r")) {
+            } else if (userAction.equals("5")) {
                 break;
             } else {
                 System.exit(1);
             }
             printInfoProcessingHeader();
-            System.out.print("Enter P, H, S, B, R, or Q: ");
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
 
     }
 
+    /**
+     * CheckIn / CheckOut sub-menu of the application. Handles user input for
+     * performing tasks related to patient checkins.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void checkInSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         checkInHeader();
-        System.out.print("Enter E, U, R, or Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("e") && !userAction.equals("u") && !userAction.equals("r")
-                    && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter E, U, R, or Q: ");
+        while (!userAction.equals("3")) {
+            while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
+                    && !userAction.equals("3") && !userAction.equals("4")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, or 4: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("e")) {
-                // userEnterNewCheckIn()
-                System.out.println("\nENTER NEW CHECKIN\n");
-            } else if (userAction.equals("u")) {
-                // userUpdateCheckIn()
-                System.out.println("\nUPDATE CHECK IN\n");
-            } else if (userAction.equals("r")) {
+            if (userAction.equals("0")) {
+                BackendCopy.showCheckInOut(this.stmt);
+            } else if (userAction.equals("1")) {
+                createCheckIn(console);
+            } else if (userAction.equals("2")) {
+                patientCheckOut(console);
+            } else if (userAction.equals("3")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter E, U, R, or Q: ");
+            checkInHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
 
     }
 
+    /**
+     * Maintaining Medical Records sub-menu. Handles logic related to performing
+     * tasks within medical records.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void medicalRecordsSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         medicalRecordsHeader();
-        System.out.print("Enter E, U, R, or Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("e") && !userAction.equals("u") && !userAction.equals("r")
-                    && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter E, U, R, or Q: ");
+        while (!userAction.equals("3")) {
+            while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
+                    && !userAction.equals("3") && !userAction.equals("4")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, or 4: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("e")) {
-                // userEnterNewMedicalRecord()
-                System.out.println("\nENTER NEW MEDICAL RECORD\n");
-            } else if (userAction.equals("u")) {
-                // userUpdateMedicalRecord()
-                System.out.println("\nUPDATE MEDICAL RECORD\n");
-            } else if (userAction.equals("r")) {
+            if (userAction.equals("0")) {
+                BackendCopy.showMedicalRecords(this.stmt);
+            } else if (userAction.equals("1")) {
+                createMedicalRecord(console);
+            } else if (userAction.equals("2")) {
+                updateMedicalRecord(console);
+            } else if (userAction.equals("3")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter E, U, R, or Q: ");
+            medicalRecordsHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
 
     }
 
+    /**
+     * Handling of logic related to user operations within billing accounts
+     * maintenance.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void billingAccountsSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         billingAccountsHeader();
-        System.out.print("Enter E, U, R, or Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("e") && !userAction.equals("u") && !userAction.equals("r")
-                    && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter E, U, R, or Q: ");
+        while (!userAction.equals("3")) {
+            while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
+                    && !userAction.equals("3") && !userAction.equals("4")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, or 4: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("e")) {
-                // userEnterNewBillingAccount()
-                System.out.println("\nCREATE NEW BILLING ACCOUNT\n");
-            } else if (userAction.equals("u")) {
+            if (userAction.equals("0")) {
+                BackendCopy.showBillingAccounts(this.stmt);
+            } else if (userAction.equals("1")) {
+                createBillingAccount(console);
+            } else if (userAction.equals("2")) {
                 // userUpdateBillingAccount()
                 System.out.println("\nUPDATE BILLING ACCOUNT\n");
-            } else if (userAction.equals("r")) {
+            } else if (userAction.equals("3")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter E, U, R, or Q: ");
+            billingAccountsHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
 
     }
 
+    /**
+     * Sub-panel for generating the different types of reports.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void generateReportsSubPanel(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         reportsHeader();
-        System.out.print("Enter PT, U, NP, HP, DI, HS, R, Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("pt") && !userAction.equals("u") && !userAction.equals("np")
-                    && !userAction.equals("hp") && !userAction.equals("di") && !userAction.equals("hs")
-                    && !userAction.equals("r") && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter PT, U, NP, HP, DI, HS, R, Q: ");
+        while (!userAction.equals("7")) {
+            while (!userAction.equals("1") && !userAction.equals("2") && !userAction.equals("3")
+                    && !userAction.equals("4") && !userAction.equals("5") && !userAction.equals("6")
+                    && !userAction.equals("7") && !userAction.equals("8")) {
+                System.out.print("Error! Invalid command. Please enter 1, 2, 3, 4, 5, 6, 7, or 8: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("pt")) {
-                // generateBillingHistoryForPatientGivenTime()
-                System.out.println("\nBILLING HISTORY REPORT FOR A PATIENT GIVEN TIMEFRAME\n");
-            } else if (userAction.equals("u")) {
-                // generateUsageStatusAllHospitals()
-                System.out.println("\nUSAGE STATUS FOR ALL HOSPITALS\n");
-            } else if (userAction.equals("np")) {
-                // generateNumberOfPatientsPerMonth()
-                System.out.println("\nNUMBER OF PATIENTS PER MONTH\n");
-            } else if (userAction.equals("hp")) {
-                // generateHospitalUsagePercentage()
-                System.out.println("\nHOSPITAL USAGE PERCENTAGE\n");
-            } else if (userAction.equals("di")) {
-                // generateAllPatientDoctorInfo()
-                System.out.println("\nINFORMATION ON ALL DOCTORS A PATIENT IS CURRENTLY SEEING\n");
-            } else if (userAction.equals("hs")) {
-                // generateInfoOnHospitalsGroupedBySpecialty()
-                System.out.println("\nINFORMATION ON HOSPITALS GROUPED BY SPECIALTY\n");
-            } else if (userAction.equals("r")) {
+            if (userAction.equals("1")) {
+                reportBillingHistory(console);
+            } else if (userAction.equals("2")) {
+                // Usage Status Report
+                System.out.println("\nCurrent Usage Status for all Hospitals Report");
+                System.out.println();
+                // BackendCopy.reportUsageStatus(this.stmt);
+            } else if (userAction.equals("3")) {
+                reportPatientsPerMonth(console);
+            } else if (userAction.equals("4")) {
+                // Hospital Usage Percentage
+                String hID = "";
+                System.out.println("\nHospital Usage Percentage Report");
+                System.out.print("\nEnter the Hospital ID: ");
+                hID = console.next();
+                System.out.println();
+                // BackendCopy.reportHospitalPercentage(this.stmt, hID);
+            } else if (userAction.equals("5")) {
+                // Information about all Doctors a Patient is Seeing
+                String pID = "";
+                System.out.println("\nDoctors a Patient is Currently Seeing Report");
+                System.out.print("\nEnter the Patient ID: ");
+                pID = console.next();
+                System.out.println();
+                // BackendCopy.reportDoctorByPatient(this.stmt, pID);
+            } else if (userAction.equals("6")) {
+                // Information on Hospitals Grouped by Specialty
+                System.out.println("\nHospital Information grouped by Specialization Report");
+                System.out.println();
+                // BackendCopy.reportAllHospitalSpeciality(this.stmt);
+            } else if (userAction.equals("7")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter PT, U, NP, HP, DI, HS, R, Q: ");
+            reportsHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
     }
 
+    /**
+     * Header for Patient operations menu.
+     * 
+     */
     public void patientOperationsMenuHeader() {
-        System.out.println("\n       Patient Operations Sub-Menu:\n");
-        System.out.println("Enter E for creating a new Patient, U for updating an existing Patient,");
-        System.out.println("D for deleting a Patient, T for transferring a patient to another hospital,");
-        System.out.println("A to assign patients to a hospital if beds are available.");
-        System.out.println("Enter R to return to previous menu or Q to quit the program.");
+        System.out.println("\n       Patient Operations Sub-Menu\n");
+        System.out.println("Enter the corresponding number for the desired option:");
+        System.out.println("0. Show Patient table");
+        System.out.println("1. Create a new Patient");
+        System.out.println("2. Update an existing Patient");
+        System.out.println("3. Delete a Patient");
+        System.out.println("4. Transfer a patient to another hospital");
+        System.out.println("5. Return to previous menu");
+        System.out.println("6. Quit the program.");
         System.out.println();
     }
 
+    /**
+     * Header for Hospital operations menu.
+     * 
+     */
     public void hospitalOperationsMenuHeader() {
-        System.out.println("\n       Hospital Operations Sub-Menu:\n");
-        System.out.println("Enter E for creating a new Hospital, U for updating an existing Hospital,");
-        System.out.println("D for deleting a Hospital, R to return to previous menu, or Q to quit the program.");
+        System.out.println("\n       Hospital Operations Sub-Menu\n");
+        System.out.println("Enter the corresponding number for the desired option:");
+        System.out.println("0. Show Hospital table");
+        System.out.println("1. Create a new Hospital");
+        System.out.println("2. Update an existing Hospital");
+        System.out.println("3. Delete a Hospital");
+        System.out.println("4. Return to previous menu");
+        System.out.println("5. Quit the program.");
         System.out.println();
     }
 
+    /**
+     * Header for Staff Member operations menu.
+     * 
+     */
     public void staffOperationsMenuHeader() {
-        System.out.println("\n       Staff Operations Sub-Menu:\n");
-        System.out.println("Enter E for creating a new Staff Member, U for updating an existing Staff Member,");
-        System.out.println("D for deleting a Staff Member, R to return to previous menu, or Q to quit the program.");
+        System.out.println("\n       Staff Operations Sub-Menu\n");
+        System.out.println("Enter the corresponding number for the desired option:");
+        System.out.println("0. Show Staff table");
+        System.out.println("1. Create a new Staff Member");
+        System.out.println("2. Update an existing Staff Member");
+        System.out.println("3. Delete a Staff Member");
+        System.out.println("4. Return to previous menu");
+        System.out.println("5. Quit the program.");
         System.out.println();
     }
 
+    /**
+     * Header for Beds operations menu.
+     * 
+     */
     public void bedOperationsMenuHeader() {
-        System.out.println("\n       Beds Operations Sub-Menu:\n");
-        System.out.println("Enter C for checking available beds in a hospital with appropriate specialty,");
-        System.out.println("RES to reserve beds in hospitals, REL to release beds in hospitals.");
-        System.out.println("Enter R to return to previous menu, or Q to quit the program.");
+        System.out.println("\n         Beds Operations Sub-Menu\n");
+        System.out.println("Enter the corresponding number for the desired option:");
+        System.out.println("0. Show Beds table");
+        System.out.println("1. Check if a bed is available by bed number");
+        System.out.println("2. Check available beds in a hospital with appropriate specialty");
+        System.out.println("3. Reserve beds in hospitals");
+        System.out.println("4. Release beds in hospitals");
+        System.out.println("5. Return to previous menu");
+        System.out.println("6. Quit the program.");
         System.out.println();
     }
 
+    /**
+     * Logic for the Patient operations menu. Makes the pertinent calls to the
+     * backend class that has functions for performing operations related to
+     * Patients.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void patientOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         patientOperationsMenuHeader();
-        System.out.print("Enter E, U, D, T, A, R, Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("e") && !userAction.equals("u") && !userAction.equals("d")
-                    && !userAction.equals("t") && !userAction.equals("a") && !userAction.equals("r")
-                    && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter E, U, D, T, A, R, Q: ");
+        while (!userAction.equals("5")) {
+            while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
+                    && !userAction.equals("3") && !userAction.equals("4") && !userAction.equals("5")
+                    && !userAction.equals("6")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, 4, 5, or 6: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("e")) {
-                // userEnterNewPatient()
-                System.out.println("\nENTER NEW PATIENT\n");
-            } else if (userAction.equals("u")) {
-                // userUpdatePatient()
-                System.out.println("\nUPDATE EXISTING PATIENT\n");
-            } else if (userAction.equals("d")) {
-                // userDeletePatient()
-                System.out.println("\nDELETE EXISTING PATIENT\n");
-            } else if (userAction.equals("t")) {
-                // userTransferPatient()
-                System.out.println("\nTRANSFER EXISTING PATIENT\n");
-            } else if (userAction.equals("a")) {
-                // userAssignPatientToHospital()
-                System.out.println("\nASSIGN PATIENT TO HOSPITAL\n");
-            } else if (userAction.equals("r")) {
+            if (userAction.equals("0")) {
+                BackendCopy.showPatient(this.stmt);
+            } else if (userAction.equals("1")) {
+                createPatient(console);
+            } else if (userAction.equals("2")) {
+                updatePatient(console);
+            } else if (userAction.equals("3")) {
+                // Delete Patient Record
+                String pID = "";
+                System.out.print("Enter the ID of Patient to be deleted: ");
+                pID = console.next();
+                System.out.println();
+                BackendCopy.deletePatient(pID);
+            } else if (userAction.equals("4")) {
+                transferPatient(console);
+            } else if (userAction.equals("5")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter E, U, D, T, A, R, Q: ");
+            patientOperationsMenuHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
     }
 
+    /**
+     * Logic for the Hospital operations menu. Makes the pertinent calls to the
+     * backend class that has functions for performing operations related to
+     * Hospitals.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void hospitalOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         hospitalOperationsMenuHeader();
-        System.out.print("Enter E, U, D, R, Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("e") && !userAction.equals("u") && !userAction.equals("d")
-                    && !userAction.equals("r") && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter E, U, D, R, Q: ");
+        while (!userAction.equals("4")) {
+            while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
+                    && !userAction.equals("3") && !userAction.equals("4") && !userAction.equals("5")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, 4, or 5: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("e")) {
-                // userEnterNewHospital()
-                System.out.println("\nENTER NEW HOSPITAL\n");
-            } else if (userAction.equals("u")) {
-                // userUpdateHospital()
-                System.out.println("\nUPDATE EXISTING HOSPITAL\n");
-            } else if (userAction.equals("d")) {
-                // userDeleteHospital()
-                System.out.println("\nDELETE EXISTING HOSPITAL\n");
-            } else if (userAction.equals("r")) {
+            if (userAction.equals("0")) {
+                BackendCopy.showHospital(this.stmt);
+            } else if (userAction.equals("1")) {
+                updateHospital(console);
+            } else if (userAction.equals("2")) {
+                updateHospital(console);
+            } else if (userAction.equals("3")) {
+                // Delete Hospital Record
+                String hID = "";
+                System.out.print("Enter the ID of Hospital to be deleted: ");
+                hID = console.next();
+                System.out.println();
+                BackendCopy.deleteHospital(hID);
+            } else if (userAction.equals("4")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter E, U, D, R, Q: ");
+            hospitalOperationsMenuHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
     }
 
+    /**
+     * Logic for the Staff Member operations menu. Makes the pertinent calls to the
+     * backend class that has functions for performing operations related to Staff
+     * Members.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void staffOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         staffOperationsMenuHeader();
-        System.out.print("Enter E, U, D, R, Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("e") && !userAction.equals("u") && !userAction.equals("d")
-                    && !userAction.equals("r") && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter E, U, D, R, Q: ");
+        while (!userAction.equals("4")) {
+            while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
+                    && !userAction.equals("3") && !userAction.equals("4") && !userAction.equals("5")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, 4, or 5: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("e")) {
-                // userEnterNewStaff()
-                System.out.println("\nENTER NEW STAFF\n");
-            } else if (userAction.equals("u")) {
-                // userUpdateStaff()
-                System.out.println("\nUPDATE EXISTING STAFF\n");
-            } else if (userAction.equals("d")) {
-                // userDeleteStaff()
-                System.out.println("\nDELETE EXISTING STAFF\n");
-            } else if (userAction.equals("r")) {
+            if (userAction.equals("0")) {
+                BackendCopy.showStaff(this.stmt);
+            } else if (userAction.equals("1")) {
+                updateStaffMember(console);
+            } else if (userAction.equals("2")) {
+                updateStaffMember(console);
+            } else if (userAction.equals("3")) {
+                // Delete Staff Member Record
+                String staffID = "";
+                System.out.print("Enter the ID of Staff Member to be deleted: ");
+                staffID = console.next();
+                System.out.println();
+                BackendCopy.deleteHospital(staffID);
+            } else if (userAction.equals("4")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter E, U, D, R, Q: ");
+            staffOperationsMenuHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
     }
 
+    /**
+     * Logic for the Beds operations menu. Makes the pertinent calls to the backend
+     * class that has functions for performing operations related to Beds.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void bedOperationsMenu(Scanner console) {
         /** String object representing the command desired by user. */
         String userAction = "";
 
         bedOperationsMenuHeader();
-        System.out.print("Enter C, RES, REL, R, Q: ");
+        System.out.print("Enter command # : ");
         userAction = console.next();
         userAction = userAction.toLowerCase();
-        while (!userAction.equals("r")) {
-            while (!userAction.equals("c") && !userAction.equals("res") && !userAction.equals("rel")
-                    && !userAction.equals("r") && !userAction.equals("q")) {
-                System.out.print("Error! Invalid command. Please enter C, RES, REL, R, Q: ");
+        while (!userAction.equals("5")) {
+            while (!userAction.equals("0") && !userAction.equals("1") && !userAction.equals("2")
+                    && !userAction.equals("3") && !userAction.equals("4") && !userAction.equals("5")
+                    && !userAction.equals("6")) {
+                System.out.print("Error! Invalid command. Please enter 0, 1, 2, 3, 4, 5, or 6: ");
                 userAction = console.next();
                 userAction = userAction.toLowerCase();
             }
-            if (userAction.equals("c")) {
+            if (userAction.equals("0")) {
+                BackendCopy.showBeds(this.stmt);
+            } else if (userAction.equals("1")) {
                 userCheckBeds(console);
-                // System.out.println("\nCHECK BEDS IN A HOSPITAL WITH APPROPRIATE
-                // SPECIALTY\n");
-            } else if (userAction.equals("res")) {
-                // userReserveBedsInHospital()
-                System.out.println("\nRESERVE BEDS IN A HOSPITAL\n");
-            } else if (userAction.equals("rel")) {
-                // userReleaseBedsInHospital()
-                System.out.println("\nRELEASE BEDS IN A HOSPITAL\n");
-            } else if (userAction.equals("r")) {
+            } else if (userAction.equals("2")) {
+                checkBedsInHospitalPerSpecialty(console);
+            } else if (userAction.equals("3")) {
+                userAssignPatientToBed(console);
+            } else if (userAction.equals("4")) {
+                releaseBed(console);
+            } else if (userAction.equals("5")) {
                 break;
             } else {
                 System.exit(1);
             }
-            printInfoProcessingHeader();
-            System.out.print("Enter C, RES, REL, R, Q: ");
+            bedOperationsMenuHeader();
+            System.out.print("Enter command # : ");
             userAction = console.next();
             userAction = userAction.toLowerCase();
         }
     }
 
+    /**
+     * Asks the user for a bed number that is to be checked for availabilty. Calls
+     * backend method that handles this operation given the bed number.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
     public void userCheckBeds(Scanner console) {
         String bID = "";
 
-        System.out.print("Enter the Bed id: ");
+        System.out.println("\nCheck Bed Availability by Bed Number ");
+        System.out.print("\nEnter the Bed number: ");
         bID = console.next();
         bID = bID.toLowerCase();
 
-        BackendCopy.checkBeds(this.conn, bID);
+        System.out.println();
+        BackendCopy.checkBeds(this.stmt, bID);
 
+    }
+
+    /**
+     * Reserve beds in a hospital, which means assigning a patient to a bed.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void userAssignPatientToBed(Scanner console) {
+        String bID = "";
+        String pID = "";
+
+        System.out.println("\nAssign a Patient to a Bed (Reserve) ");
+
+        System.out.print("\nEnter the Bed number: ");
+        bID = console.next();
+
+        System.out.print("Enter the patient ID: ");
+        pID = console.next();
+
+        System.out.println();
+        BackendCopy.assignPatientToBed(this.stmt, pID, bID);
+    }
+
+    /**
+     * Release beds in a hospital.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void releaseBed(Scanner console) {
+        String bID = "";
+
+        System.out.println("\nRelease a Bed given its number");
+
+        System.out.print("\nEnter the Bed number: ");
+        bID = console.next();
+
+        System.out.println();
+        BackendCopy.releaseBed(this.stmt, bID);
+    }
+
+    /**
+     * User creates a checkIn.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createCheckIn(Scanner console) {
+        String pID = "";
+        String hID = "";
+        String bID = "";
+        String startDate = "";
+        String respDoctor = "";
+        String currentDiagnosis = "";
+        String registrationFee = "";
+
+        System.out.println("\nCreate a new CheckIn");
+
+        System.out.print("\nEnter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter the Bed number: ");
+        bID = console.next();
+        System.out.print("Enter the Start Date (yyyy-mm-dd): ");
+        startDate = console.next();
+        System.out.print("Enter the Responsible Doctor ID: ");
+        respDoctor = console.next();
+        System.out.print("Enter the Current Diagnosis: ");
+        currentDiagnosis = console.next();
+        System.out.print("Enter the Registration Fee: ");
+        registrationFee = console.next();
+
+        System.out.println();
+        BackendCopy.createCheckIn(this.stmt, pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee);
+    }
+
+    /**
+     * User Checks Out a patient.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void patientCheckOut(Scanner console) {
+        String cID = "";
+        String endDate = "";
+
+        System.out.println("\nCheck Out a Patient");
+
+        System.out.print("\nEnter the CheckIn ID: ");
+        cID = console.next();
+        System.out.print("Enter the check out date (yyyy-mm-dd): ");
+        endDate = console.next();
+
+        System.out.println();
+        BackendCopy.checkOut(this.stmt, cID, endDate);
+    }
+
+    /**
+     * Transfer a Patient from one hospital to another.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void transferPatient(Scanner console) {
+        String cID = "";
+        String pID = "";
+        String hID = "";
+        String bID = "";
+        String endDate = "";
+        String respDoctor = "";
+        String currentDiagnosis = "";
+        String registrationFee = "";
+
+        System.out.println("\nTransfer a Patient from one Hospital to another");
+
+        System.out.print("\nEnter the CheckIn ID: ");
+        cID = console.next();
+        System.out.print("Enter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Hospital ID of the hospital to be transferred to: ");
+        hID = console.next();
+        System.out.print("Enter the Bed number of the bed to be transferred to: ");
+        bID = console.next();
+        System.out.print("Enter the check out date (yyyy-mm-dd): ");
+        endDate = console.next();
+        System.out.print("Enter the Responsible Doctor ID: ");
+        respDoctor = console.next();
+        System.out.print("Enter the Current Diagnosis: ");
+        currentDiagnosis = console.next();
+        System.out.print("Enter the Registration Fee: ");
+        registrationFee = console.next();
+
+        System.out.println();
+        BackendCopy.transferPatient(this.stmt, cID, pID, hID, bID, endDate, respDoctor, currentDiagnosis,
+                registrationFee);
+
+        String answer = "";
+        System.out.print("Would you like to see the updated CheckIn table? (yes/no): ");
+        answer = console.next();
+        answer.toLowerCase();
+        System.out.println();
+
+        if (answer.equals("y") || answer.equals("ye") || answer.equals("yes")) {
+            BackendCopy.showCheckInOut(this.stmt);
+        }
+    }
+
+    /**
+     * User creates a Medical Record.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createMedicalRecord(Scanner console) {
+        String mID = "";
+        String cID = "";
+        String prescriptions = "";
+        String diagnosisDetails = "";
+        String treatment = "";
+        String test = "";
+        String result = "";
+        String consultationfee = "";
+        String testfee = "";
+        String treatmentfee = "";
+
+        System.out.println("\nCreate a new Medical Record");
+
+        System.out.print("\nEnter the Medical Record ID: ");
+        mID = console.next();
+        System.out.print("Enter the CheckIn ID to be tied to this Medical Record: ");
+        cID = console.next();
+        System.out.print("Enter Diagnosis Details: ");
+        diagnosisDetails = console.next();
+        System.out.print("Enter Prescriptions: ");
+        prescriptions = console.next();
+        System.out.print("Enter Test: ");
+        test = console.next();
+        System.out.print("Enter Result: ");
+        result = console.next();
+        System.out.print("Enter Treatment: ");
+        treatment = console.next();
+        System.out.print("Enter Test Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Treatment Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Consultation Fee: ");
+        consultationfee = console.next();
+
+        System.out.println();
+        BackendCopy.enterMedicalRecords(this.stmt, mID, cID, prescriptions, diagnosisDetails, treatment, test, result,
+                consultationfee, testfee, treatmentfee);
+    }
+
+    /**
+     * User updates an existing Medical Record.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void updateMedicalRecord(Scanner console) {
+        String mID = "";
+        String prescriptions = "";
+        String diagnosisDetails = "";
+        String treatment = "";
+        String test = "";
+        String result = "";
+        String consultationfee = "";
+        String testfee = "";
+        String treatmentfee = "";
+
+        System.out.println("\nUpdate Medical Record");
+
+        System.out.print("\nEnter the ID of the Medical Record to be updated: ");
+        mID = console.next();
+        System.out.print("Enter Diagnosis Details: ");
+        diagnosisDetails = console.next();
+        System.out.print("Enter Prescriptions: ");
+        prescriptions = console.next();
+        System.out.print("Enter Test: ");
+        test = console.next();
+        System.out.print("Enter Result: ");
+        result = console.next();
+        System.out.print("Enter Treatment: ");
+        treatment = console.next();
+        System.out.print("Enter Test Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Treatment Fee: ");
+        treatmentfee = console.next();
+        System.out.print("Enter Consultation Fee: ");
+        consultationfee = console.next();
+
+        System.out.println();
+        BackendCopy.updateMedicalRecords(this.stmt, mID, prescriptions, diagnosisDetails, treatment, test, result,
+                consultationfee, testfee, treatmentfee);
+    }
+
+    /**
+     * User creates a Billing Account.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createBillingAccount(Scanner console) {
+        String hID = "";
+        String pID = "";
+        String payerSSN = "";
+        String billingAddress = "";
+        String paymentInfo = "";
+        String medicationPrescribed = "";
+        String visitDate = "";
+        String registrationfee = "";
+        String accommodationfee = "";
+        String specializationFee = "";
+        String consultationFee = "";
+        String testFee = "";
+        String treatmentFee = "";
+
+        System.out.println("\nCreate a new Billing Account");
+
+        System.out.print("\nEnter the Hospital ID where medical care was provided: ");
+        hID = console.next();
+        System.out.print("Enter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Payer Social Security Number (SSN): ");
+        payerSSN = console.next();
+        System.out.print("Enter the Billing Address: ");
+        billingAddress = console.next();
+        System.out.print("Enter the Payment Information: ");
+        paymentInfo = console.next();
+        System.out.print("Enter the Medication Prescribed: ");
+        medicationPrescribed = console.next();
+        System.out.print("Enter the Registration Fee: ");
+        registrationfee = console.next();
+        System.out.print("Enter the Accommodation Fee: ");
+        accommodationfee = console.next();
+        System.out.print("Enter the Visit Date: ");
+        visitDate = console.next();
+
+        System.out.println();
+        // BackendCopy.createBillingAccount();
+    }
+
+    // updateBillingAccount()
+
+    /**
+     * User creates a Patient record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void createPatient(Scanner console) {
+        String pID = "";
+        String SSN = "";
+        String pName = "";
+        String dob = "";
+        String gender = "";
+        String patientAge = "";
+        String patientPhone = "";
+        String patientAddress = "";
+        String status = "";
+
+        System.out.println("\nCreate a new Patient record");
+
+        System.out.print("\nEnter the Patient ID: ");
+        pID = console.next();
+        System.out.print("Enter the Social Security Number (SSN): ");
+        SSN = console.next();
+        System.out.print("Enter Name: ");
+        pName = console.next();
+        System.out.print("Enter Date of Birth: ");
+        dob = console.next();
+        System.out.print("Enter Gender: ");
+        gender = console.next();
+        System.out.print("Enter Age: ");
+        patientAge = console.next();
+        System.out.print("Enter Phone: ");
+        patientPhone = console.next();
+        System.out.print("Enter Address: ");
+        patientAddress = console.next();
+        System.out.print("Enter Patient Status: ");
+        status = console.next();
+
+        System.out.println();
+        // BackendCopy.enterPatient(this.stmt, pID, SSN, pName, dob, gender, patientAge,
+        // patientPhone, patientAddress, status);
+
+    }
+
+    /**
+     * User updates a Patient record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void updatePatient(Scanner console) {
+        String pID = "";
+        String SSN = "";
+        String pName = "";
+        String dob = "";
+        String gender = "";
+        String patientAge = "";
+        String patientPhone = "";
+        String patientAddress = "";
+        String status = "";
+
+        System.out.println("\nUpdate Patient record");
+
+        System.out.print("\nEnter ID of Patient to be updated: ");
+        pID = console.next();
+        System.out.print("Enter the Social Security Number (SSN): ");
+        SSN = console.next();
+        System.out.print("Enter Name: ");
+        pName = console.next();
+        System.out.print("Enter Date of Birth: ");
+        dob = console.next();
+        System.out.print("Enter Gender: ");
+        gender = console.next();
+        System.out.print("Enter Age: ");
+        patientAge = console.next();
+        System.out.print("Enter Phone: ");
+        patientPhone = console.next();
+        System.out.print("Enter Address: ");
+        patientAddress = console.next();
+        System.out.print("Enter Patient Status: ");
+        status = console.next();
+
+        System.out.println();
+        // BackendCopy.updatePatient(this.stmt, pID, SSN, pName, dob, gender,
+        // patientAge, patientPhone, patientAddress, status);
+
+    }
+
+    /**
+     * User creates a Hospital record.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void createHospital(Scanner console) {
+        String hID = "";
+        String aID = "";
+        String hAddress = "";
+        String hPhone = "";
+        String s1 = "";
+        String s1Cost = "";
+        String s2 = "";
+        String s2Cost = "";
+        String capacity = "";
+
+        System.out.println("\nCreate a new Hospital record");
+
+        System.out.print("\nEnter Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter Administrator ID: ");
+        aID = console.next();
+        System.out.print("Enter Address: ");
+        hAddress = console.next();
+        System.out.print("Enter Phone: ");
+        hPhone = console.next();
+        System.out.print("Enter Specialization 1: ");
+        s1 = console.next();
+        System.out.print("Enter Charges per day for Specialization 1: ");
+        s1Cost = console.next();
+        System.out.print("Enter Specialization 2: ");
+        s2 = console.next();
+        System.out.print("Enter Charges per day for Specialization 2: ");
+        s2Cost = console.next();
+        System.out.print("Enter Hospital Capacity: ");
+        capacity = console.next();
+
+        System.out.println();
+        // BackendCopy.enterHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost,
+        // s2, s2Cost, capacity);
+
+    }
+
+    /**
+     * User updates a Hospital record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void updateHospital(Scanner console) {
+        String hID = "";
+        String aID = "";
+        String hAddress = "";
+        String hPhone = "";
+        String s1 = "";
+        String s1Cost = "";
+        String s2 = "";
+        String s2Cost = "";
+        String capacity = "";
+
+        System.out.println("\nUpdate Hospital record");
+
+        System.out.print("\nEnter ID of Hospital to be updated: ");
+        hID = console.next();
+        System.out.print("Enter Administrator ID: ");
+        aID = console.next();
+        System.out.print("Enter Address: ");
+        hAddress = console.next();
+        System.out.print("Enter Phone: ");
+        hPhone = console.next();
+        System.out.print("Enter Specialization 1: ");
+        s1 = console.next();
+        System.out.print("Enter Charges per day for Specialization 1: ");
+        s1Cost = console.next();
+        System.out.print("Enter Specialization 2: ");
+        s2 = console.next();
+        System.out.print("Enter Charges per day for Specialization 2: ");
+        s2Cost = console.next();
+        System.out.print("Enter Hospital Capacity: ");
+        capacity = console.next();
+
+        System.out.println();
+        // BackendCopy.updateHospital(this.stmt, hID, aID, hAddress, hPhone, s1, s1Cost,
+        // s2, s2Cost, capacity);
+
+    }
+
+    /**
+     * User creates a Staff Member record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void createStaffMember(Scanner console) {
+        String staffID = "";
+        String hID = "";
+        String staffName = "";
+        String homeAddress = "";
+        String officeAddress = "";
+        String sgender = "";
+        String age = "";
+        String jobTitle = "";
+        String department = "";
+        String specPosition = "";
+        String staffPhone = "";
+        String email = "";
+
+        System.out.println("\nCreate a new Staff Member record");
+
+        System.out.print("\nEnter Staff Member ID: ");
+        staffID = console.next();
+        System.out.print("Enter Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter Name: ");
+        staffName = console.next();
+        System.out.print("Enter Home Address: ");
+        homeAddress = console.next();
+        System.out.print("Enter Office Address: ");
+        officeAddress = console.next();
+        System.out.print("Enter Gender: ");
+        sgender = console.next();
+        System.out.print("Enter Age: ");
+        age = console.next();
+        System.out.print("Enter Job Title: ");
+        jobTitle = console.next();
+        System.out.print("Enter Department: ");
+        department = console.next();
+        System.out.print("Enter Professional Title: ");
+        specPosition = console.next();
+        System.out.print("Enter Phone: ");
+        staffPhone = console.next();
+        System.out.print("Enter Email: ");
+        email = console.next();
+
+        System.out.println();
+        // BackendCopy.enterStaff(this.stmt, staffID, hID, staffName, homeAddress,
+        // officeAddress, sgender, age, jobTitle, department, specPosition, staffPhone,
+        // email);
+
+    }
+
+    /**
+     * User updates a Staff Member record.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void updateStaffMember(Scanner console) {
+        String staffID = "";
+        String hID = "";
+        String staffName = "";
+        String homeAddress = "";
+        String officeAddress = "";
+        String sgender = "";
+        String age = "";
+        String jobTitle = "";
+        String department = "";
+        String specPosition = "";
+        String staffPhone = "";
+        String email = "";
+
+        System.out.println("\nUpdate Staff Member record");
+
+        System.out.print("\nEnter ID of Staff Member to be updated: ");
+        staffID = console.next();
+        System.out.print("Enter Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter Name: ");
+        staffName = console.next();
+        System.out.print("Enter Home Address: ");
+        homeAddress = console.next();
+        System.out.print("Enter Office Address: ");
+        officeAddress = console.next();
+        System.out.print("Enter Gender: ");
+        sgender = console.next();
+        System.out.print("Enter Age: ");
+        age = console.next();
+        System.out.print("Enter Job Title: ");
+        jobTitle = console.next();
+        System.out.print("Enter Department: ");
+        department = console.next();
+        System.out.print("Enter Professional Title: ");
+        specPosition = console.next();
+        System.out.print("Enter Phone: ");
+        staffPhone = console.next();
+        System.out.print("Enter Email: ");
+        email = console.next();
+
+        System.out.println();
+        // BackendCopy.updateStaff(this.stmt, staffID, hID, staffName, homeAddress,
+        // officeAddress, sgender, age, jobTitle, department, specPosition, staffPhone,
+        // email);
+
+    }
+
+    /**
+     * Billing History report for a Patient given a time period.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void reportBillingHistory(Scanner console) {
+        String startDate = "";
+        String endDate = "";
+        String pID = "";
+
+        System.out.println("\nBilling History Report");
+
+        System.out.print("\nEnter the start date of the range desired (yyyy-mm-dd): ");
+        startDate = console.next();
+        System.out.print("Enter the end date of the range desired (yyyy-mm-dd): ");
+        endDate = console.next();
+        System.out.print("Enter the Patient ID: ");
+        pID = console.next();
+
+        System.out.println();
+        // BackendCopy.reportBillingHistory(this.stmt, startDate, endDate, pID);
+    }
+
+    /**
+     * Report the number of Patients per Month.
+     * 
+     * @param console Scanner object to be used to obtain input from user String
+     * 
+     */
+    public void reportPatientsPerMonth(Scanner console) {
+        String hID = "";
+        String month = "";
+        String year = "";
+
+        System.out.println("\nNumber of Patients per Month Report");
+
+        System.out.print("\nEnter the Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter desired month (mm): ");
+        month = console.next();
+        System.out.print("Enter desired year (yyyy): ");
+        year = console.next();
+
+        System.out.println();
+        // BackendCopy.reportPatientsPerMonth(this.stmt, hID, month, year);
+    }
+
+    /**
+     * Check available beds in a hospital with appropriate specialty.
+     * 
+     * @param console Scanner object to be used to obtain input from user
+     * 
+     */
+    public void checkBedsInHospitalPerSpecialty(Scanner console) {
+        String hID = "";
+        String spec = "";
+
+        System.out.println("\nNumber of Patients per Month Report");
+
+        System.out.print("\nEnter the Hospital ID: ");
+        hID = console.next();
+        System.out.print("Enter desired Specialization to check beds for: ");
+        spec = console.next();
+
+        System.out.println();
+        BackendCopy.checkBedsBySpeciality(this.stmt, hID, spec);
     }
 
 }
