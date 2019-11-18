@@ -26,7 +26,7 @@ public class Wolfhospital {
             String passwd = "200207715";
 
             Connection conn = null;
-            //Connection conn2 = null;
+            // Connection conn2 = null;
             Statement stmt = null;
             ResultSet rs = null;
 
@@ -41,13 +41,13 @@ public class Wolfhospital {
                 createInitialTables(stmt);
                 populateDemoTables(stmt);
 
-                //reportPatientsPerMonth(stmt, rs, "111", "8", "2019");
-                //reportHospitalPercentage(stmt, "111");
-                //reportHospitalPercentage(stmt, "222");
-                //reportUsageStatus(stmt);
-                //reportDoctorByPatient(stmt, "3001");
-                //reportDoctorByPatient(stmt, "3002");
-                //reportAllHospitalSpeciality(stmt);
+                // reportPatientsPerMonth(stmt, rs, "111", "8", "2019");
+                // reportHospitalPercentage(stmt, "111");
+                // reportHospitalPercentage(stmt, "222");
+                // reportUsageStatus(stmt);
+                // reportDoctorByPatient(stmt, "3001");
+                // reportDoctorByPatient(stmt, "3002");
+                // reportAllHospitalSpeciality(stmt);
                 // System.out.println("Make sure we are here!");
                 // checkBeds(stmt ,"5001");
                 // assignPatientToBed(stmt, "3001", "5001");
@@ -55,11 +55,13 @@ public class Wolfhospital {
                 // showCheckInOut(stmt);
                 // showMedicalRecords(stmt);
                 // assignPatientToBed(stmt, "3001", "5001");
-                 //releaseBed(stmt, "5001");
+                // releaseBed(stmt, "5001");
                 //
 
-                //createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX", "20");
-                //transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19", "1003", "XXX", "20");
+                // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX",
+                // "20");
+                // transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19", "1003",
+                // "XXX", "20");
                 // enterMedicalRecords(conn, "2003", "6", "baa", "critical",
 
                 // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03",
@@ -74,10 +76,12 @@ public class Wolfhospital {
                 // showHospital(stmt);
                 // showPatient(stmt);
                 // showStaff(stmt);
-                // createBillingAccount(stmt, "222", "3001", "", "abcd",
-                // "paywithKidney", "meth", "420", "999", "2020-10-04");
-                 //createBillingAccount(stmt, "111", "3001", "191SSN", "abcd", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                 //createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
+                // createBillingAccount(stmt, "222", "3001", "", "abcd", "paywithKidney",
+                // "meth", "420", "999", "2020-10-04");
+                // createBillingAccount(conn, "111", "3001", "191SSN", "abcd", "cash", "20",
+                // "5", "50", "75", "200", "15", "2020-10-04");
+                // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20",
+                // "5", "50", "75", "200", "15", "2020-11-04");
                 // createBillingAccount(stmt, "111", "3001", "", "abcd",
                 // "paywithKidney", "meth", "420", "999", "2020-12-04");
                 // createBillingAccount(stmt, "111", "3002", "999-22-9999",
@@ -89,18 +93,17 @@ public class Wolfhospital {
                 // checkBedsBySpeciality(stmt, "222", "neurology");
                 // checkBedsBySpeciality(stmt, "222", "cardiology");
 
-                //showCheckInOut(stmt);
-                 //showBeds(stmt);
+                // showCheckInOut(stmt);
+                // showBeds(stmt);
 
                 // showBeds(stmt);
-                //reportBillingHistory(stmt, "2019-01-20", "2019-12-31", "3001");
-
+                // reportBillingHistory(stmt, "2019-01-20", "2019-12-31", "3001");
 
             } finally {
                 close(rs);
                 close(stmt);
                 close(conn);
-                //close(conn2);
+                // close(conn2);
             }
         } catch (Throwable oops) {
             oops.printStackTrace();
@@ -828,71 +831,71 @@ public class Wolfhospital {
     static void transferPatient(Connection conn, String cID, String pID, String hID, String bID, String endDate,
             String respDoctor, String currentDiagnosis, String registrationFee) throws SQLException {
 
-        PreparedStatement updateCheckIn = null;
-        PreparedStatement showhid = null;
-        PreparedStatement createNewCheckIn = null;
+        PreparedStatement updateCheckIn = null; // For updating checkins
+        PreparedStatement showhid = null; // for showing the hospital ID
+        PreparedStatement createNewCheckIn = null; // for creating a new chech in
 
+        /** SQL Queries to be executed */
         String sqlUpdate = "UPDATE CheckIn SET endDate= ? WHERE cID= ?";
         String sqlshow = "select hID from CheckIn WHERE cID= ?";
         String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (?, ?, ?, ?, ?, ?, ?) ";
-        ResultSet rs = null;
+
+        ResultSet rs = null; // ResultSet object to store query result
 
         try {
             // Update the checkIns
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false); // set auto commit to false to initiate transaction
+
+            /** Initialize PreparedStatements */
             updateCheckIn = conn.prepareStatement(sqlUpdate);
             showhid = conn.prepareStatement(sqlshow);
             createNewCheckIn = conn.prepareStatement(sqlInsert);
 
-            updateCheckIn.setDate(1, java.sql.Date.valueOf(endDate)); // Column of endDate
-            updateCheckIn.setInt(2, Integer.parseInt(cID)); //CID column
+            /** Set the corresponding attributes */
+            updateCheckIn.setDate(1, java.sql.Date.valueOf(endDate)); // parameter of endDate
+            updateCheckIn.setInt(2, Integer.parseInt(cID)); // parameter of cID
 
-            updateCheckIn.executeUpdate();
+            updateCheckIn.executeUpdate(); // execute update query
 
-            showhid.setInt(1, Integer.parseInt(cID)); // CID column
-            rs = showhid.executeQuery();
-            //To store the previous hospital
+            showhid.setInt(1, Integer.parseInt(cID)); // parameter of cID
+
+            rs = showhid.executeQuery(); // execute select query
+            // To store the previous hospital
             String prevHopital = null;
             while (rs.next()) {
-              prevHopital = rs.getString("hID");
+                prevHopital = rs.getString("hID");
             }
             // Create new CheckIn
             // Note: The startdate for new checkIns records is endDate of
             // previous checkIns records
-            //String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (";
-            createNewCheckIn.setInt(1, Integer.parseInt(pID)); //pId
-            createNewCheckIn.setInt(2, Integer.parseInt(hID)); // hId
-            createNewCheckIn.setInt(3, Integer.parseInt(bID)); // bID
-            createNewCheckIn.setDate(4, java.sql.Date.valueOf(endDate)); // Start Date
-            createNewCheckIn.setInt(5,Integer.parseInt(respDoctor)); // Responsible doctor
-            createNewCheckIn.setString(6, currentDiagnosis); //  currentDiagnosis
-            createNewCheckIn.setInt(7, Integer.parseInt(registrationFee)); // registrationFee
+            createNewCheckIn.setInt(1, Integer.parseInt(pID)); // parameter of pId
+            createNewCheckIn.setInt(2, Integer.parseInt(hID)); // parameter of hId
+            createNewCheckIn.setInt(3, Integer.parseInt(bID)); // parameter of bID
+            createNewCheckIn.setDate(4, java.sql.Date.valueOf(endDate)); // parameter of Start Date
+            createNewCheckIn.setInt(5, Integer.parseInt(respDoctor)); // parameter of Responsible doctor
+            createNewCheckIn.setString(6, currentDiagnosis); // parameter of currentDiagnosis
+            createNewCheckIn.setInt(7, Integer.parseInt(registrationFee)); // parameter of registrationFee
 
-            createNewCheckIn.executeUpdate();
-            conn.commit();
+            createNewCheckIn.executeUpdate(); // execute insert query
+            conn.commit(); // commit to database
             System.out.println("Successfully transferred patient " + pID + " from Hospital " + prevHopital
-                       + " to Hospital " + hID);
+                    + " to Hospital " + hID);
 
-
-            } catch (SQLException e ) {
-            //  JDBCTutorialUtilities.printSQLException(e);
-
-              if (conn != null) {
-                  try {
-                      e.printStackTrace();
-                      System.err.println("Transaction is being rolled back");
-                      conn.rollback();
-                  } catch(SQLException excep) {
-                    //  JDBCTutorialUtilities.printSQLException(excep);
-                  }
-              }
-
-            } finally {
-                close(rs);
-                // close(stmt);
-                // close(conn);
-                conn.setAutoCommit(true);
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    System.out.println("Cannot transfer patient.");
+                    System.err.println("Transaction is being rolled back");
+                    conn.rollback(); // if patient cannot be transferred, rollback
+                } catch (SQLException excep) {
+                    excep.printStackTrace();
+                }
             }
+
+        } finally {
+            close(rs);
+            conn.setAutoCommit(true); // set auto commit back to true
+        }
 
     }
 
@@ -1076,100 +1079,130 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * This function create billing account for the patient. It will prompt user to
+     * enter hospital id so that it validates if the hospital has open beds for the
+     * patient. If the bed is available, it will create a billing account for the
+     * patient.
+     * 
+     * @param stmt             the statement from the db connection
+     * @param hID              is the hospital id that selected
+     * @param pID              is patient to be admit to the hospital
+     * @param payerSSN         is prescriptions info
+     * @param billingAddress   is the billing address of the patient
+     * @param paymentInfo      is the payment info for the patient
+     * @param registrationFee  is the registration fee
+     * @param accommodationFee is the fee of accommodation
+     * @param consultationFee  is the fee for consulation
+     * @param testFee          is the fee of the test carried out on the patient
+     * @param treatmentFee     is the fee of the treatement to be carried out on the
+     *                         patient.
+     * @param specDailyFee     is the daily fee for specializations
+     * @param visitDate        is the date of visit of the patient
+     **/
+    static void createBillingAccount(Connection conn, String hID, String pID, String payerSSN, String billingAddress,
+            String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee,
+            String treatmentFee, String specDailyFee, String visitDate) throws SQLException {
 
-   /**
-      This function create billing account for the patient. It will prompt user to enter hospital id so that it validates
-      if the hospital has open beds for the patient. If the bed is available, it will create a billing account for the patient.
-      @param stmt the statement from the db connection
-      @param hID is the hospital id that selected
-      @param pID is patient to be admit to the hospital
-      @param payerSSN is prescriptions info
-      @param billingAddress is the billing address of the patient
-      @param paymentInfo is the payment info for the patient
-      @param registrationFee is the registration fee
-      @param accommodationFee is the fee of accommodation
-      @param consultationFee is the fee for consulation
-      @param testFee is the fee of the test carried out on the patient
-      @param treatmentFee is the fee of the treatement to be carried out on the patient.
-      @param specDailyFee is the daily fee for specializations
-      @param visitDate is the date of visit of the patient
-    **/
-    static void createBillingAccount(Statement stmt, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate) {
-      // check beds first before you create account
-      try {
-        String sql = "select bID from Beds WHERE reserved = 0 AND hID=";
-        sql += hID +";";
-        ResultSet rs = null;
+        PreparedStatement checkIfAvailableBeds = null; // for checking if there are available beds
+        PreparedStatement createNewBillingAccount1 = null; // for creating a billing account with payerSSN = NULL
+        PreparedStatement createNewBillingAccount2 = null; // for creating a billing account with a payerSSN
+
+        /** SQL Queries to be executed. */
+        String sqlCheck = "SELECT bID from Beds WHERE reserved = ? AND hID= ?";
+        String sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+        String sqlInsert2 = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+        ResultSet rs = null; // ResultSet to store the result of the queries
 
         try {
-             rs = stmt.executeQuery(sql);
-             ResultSet temp = null;
-             temp = stmt.executeQuery(sql);
-             if( !temp.next() ) {
-               System.out.println("This hospital does not have open bed");
-             } else {
-               String sqlInsert = null;
-               String patientBillingAcount = null;
-               if( payerSSN == null) {
-                 sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
-                 sqlInsert += pID +", ";
-                 sqlInsert += "'"+ billingAddress +"', ";
-                 sqlInsert += "'"+ paymentInfo +"', ";
-                 sqlInsert += registrationFee +", ";
-                 sqlInsert += accommodationFee +", ";
-                 sqlInsert += consultationFee +", ";
-                 sqlInsert += testFee + ", ";
-                 sqlInsert += treatmentFee + ", ";
-                 sqlInsert += specDailyFee + ", ";
-                 sqlInsert += "'"+ visitDate + "');";
-                 rs = stmt.executeQuery(sqlInsert);
+            // check beds first before you create account
+            conn.setAutoCommit(false); // set auto commit to false to initiate transaction
 
-                 System.out.println("Billing account for patient "+ pID +" successfully created!");
-               } else {
-                 sqlInsert = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, consultationFee, testFee, treatmentFee, specDailyFee, visitDate) VALUES (";
-                 sqlInsert += pID +", ";
-                 sqlInsert += "'"+ payerSSN +"', ";
-                 sqlInsert += "'"+ billingAddress +"', ";
-                 sqlInsert += "'"+ paymentInfo +"', ";
-                 sqlInsert += registrationFee +", ";
-                 sqlInsert += accommodationFee +", ";
-                 sqlInsert += consultationFee +", ";
-                 sqlInsert += testFee + ", ";
-                 sqlInsert += treatmentFee + ", ";
-                 sqlInsert += specDailyFee + ", ";
-                 sqlInsert += "'"+ visitDate + "');";
-                 rs = stmt.executeQuery(sqlInsert);
-                 System.out.println("Billing account for patient "+ pID +" successfully created!");
-               }
-             }
-            } finally {
-                close(rs);
-                //close(stmt);
-                //close(conn);
+            /** Initialize PreparedStatements */
+            checkIfAvailableBeds = conn.prepareStatement(sqlCheck);
+            createNewBillingAccount1 = conn.prepareStatement(sqlInsert);
+            createNewBillingAccount2 = conn.prepareStatement(sqlInsert2);
+
+            /** Set the parameter values. */
+            checkIfAvailableBeds.setBoolean(1, false); // parameter of reserved
+            checkIfAvailableBeds.setInt(2, Integer.parseInt(hID)); // parameter of hID
+
+            ResultSet temp = null; // temporary variable to store ResultSet
+            temp = checkIfAvailableBeds.executeQuery(); // execute select query
+
+            // Check if there are beds in the hospital. If there are none, rollback.
+            if (!temp.next()) {
+                System.out.println("This hospital does not have an open bed.");
+                System.err.println("Transaction is being rolled back");
+                conn.rollback(); // rollback
+            } else {
+                if (payerSSN == null) { // if no payerSSN provided
+                    createNewBillingAccount1.setInt(1, Integer.parseInt(pID));
+                    createNewBillingAccount1.setString(2, billingAddress);
+                    createNewBillingAccount1.setString(3, paymentInfo);
+                    createNewBillingAccount1.setInt(4, Integer.parseInt(registrationFee));
+                    createNewBillingAccount1.setInt(5, Integer.parseInt(accommodationFee));
+                    createNewBillingAccount1.setInt(6, Integer.parseInt(consultationFee));
+                    createNewBillingAccount1.setInt(7, Integer.parseInt(testFee));
+                    createNewBillingAccount1.setInt(8, Integer.parseInt(treatmentFee));
+                    createNewBillingAccount1.setInt(9, Integer.parseInt(specDailyFee));
+                    createNewBillingAccount1.setDate(10, java.sql.Date.valueOf(visitDate));
+
+                    createNewBillingAccount1.executeUpdate();
+                    conn.commit(); // commit
+
+                    System.out.println("Billing account for patient " + pID + " successfully created!");
+                } else { // if payerSSN provided
+                    createNewBillingAccount2.setInt(1, Integer.parseInt(pID));
+                    createNewBillingAccount2.setString(2, payerSSN);
+                    createNewBillingAccount2.setString(3, billingAddress);
+                    createNewBillingAccount2.setString(4, paymentInfo);
+                    createNewBillingAccount2.setInt(5, Integer.parseInt(registrationFee));
+                    createNewBillingAccount2.setInt(6, Integer.parseInt(accommodationFee));
+                    createNewBillingAccount2.setInt(7, Integer.parseInt(consultationFee));
+                    createNewBillingAccount2.setInt(8, Integer.parseInt(testFee));
+                    createNewBillingAccount2.setInt(9, Integer.parseInt(treatmentFee));
+                    createNewBillingAccount2.setInt(10, Integer.parseInt(specDailyFee));
+                    createNewBillingAccount2.setDate(11, java.sql.Date.valueOf(visitDate));
+
+                    createNewBillingAccount2.executeUpdate();
+                    conn.commit(); // commit
+
+                    System.out.println("Billing account for patient " + pID + " successfully created!");
+                }
             }
 
-        } catch(Throwable oops) {
+        } catch (Throwable oops) {
             oops.printStackTrace();
+        } finally {
+            close(rs);
+            conn.setAutoCommit(true); // set auto commit back to true
         }
     }
 
-   /**
-    * This method is used to update billingAccounts given a billingAccountID and the parameters to update with.
-    * @param stmt is the Statement object needed to execute mysql statements.
-    * @param hID is the hospital id that selected
-    * @param pID is patient in the hospital
-    * @param payerSSN is social security of whoever is paying
-    * @param billingAddress is the billing address of the patient
-    * @param paymentInfo is the payment info for the patient
-    * @param medicationPrescribed is the fee of test
-    * @param test is the test of the patient
-    * @param result is the result of the patient
-    * @param registrationfee is the registration fee
-    * @param accommodationfee is the fee of accommodation
-    * @param visitDate is the date of visit of the patient
-    */
-    static void updateBillingAccounts(Statement stmt, String baID, String hID, String pID, String payerSSN, String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee, String visitDate){
-        try{
+    /**
+     * This method is used to update billingAccounts given a billingAccountID and
+     * the parameters to update with.
+     * 
+     * @param stmt                 is the Statement object needed to execute mysql
+     *                             statements.
+     * @param hID                  is the hospital id that selected
+     * @param pID                  is patient in the hospital
+     * @param payerSSN             is social security of whoever is paying
+     * @param billingAddress       is the billing address of the patient
+     * @param paymentInfo          is the payment info for the patient
+     * @param medicationPrescribed is the fee of test
+     * @param test                 is the test of the patient
+     * @param result               is the result of the patient
+     * @param registrationfee      is the registration fee
+     * @param accommodationfee     is the fee of accommodation
+     * @param visitDate            is the date of visit of the patient
+     */
+    static void updateBillingAccounts(Statement stmt, String baID, String hID, String pID, String payerSSN,
+            String billingAddress, String paymentInfo, String medicationPrescribed, String registrationFee,
+            String accommodationFee, String visitDate) {
+        try {
             ResultSet rs = null;
             String updateQuery = "UPDATE MedicalRecords SET ";
             updateQuery += "hID = " + hID + ", ";
@@ -1178,15 +1211,13 @@ public class Wolfhospital {
             updateQuery += "billingAddress = '" + billingAddress + "', ";
             updateQuery += "paymentInfo = '" + paymentInfo + "', ";
 
-
-
             updateQuery += "WHERE baID = ";
             updateQuery += baID + ";";
 
             stmt.executeUpdate(updateQuery);
 
-        } catch(Throwable oops) {
-                oops.printStackTrace();
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
@@ -1218,69 +1249,76 @@ public class Wolfhospital {
     // Report
 
     /**
-     * This method returns a list of all of the billing accounts that a patient has for a particular set of time.
+     * This method returns a list of all of the billing accounts that a patient has
+     * for a particular set of time.
+     * 
      * @param startDate is the starting date to display the billing accounts for.
-     * @param endDate is the ending date range to display the billing accounts for.
-     * @param pID is the id of the patient to look for the history from.
+     * @param endDate   is the ending date range to display the billing accounts
+     *                  for.
+     * @param pID       is the id of the patient to look for the history from.
      */
     static void reportBillingHistory(Statement stmt, String startDate, String endDate, String pId) {
-        try{
+        try {
             ResultSet rs = null;
             String billQuery = "SELECT b.pID, b.payerSSN, b.billingAddress, b.paymentInfo, b.registrationFee, b.accommodationFee, ";
             billQuery += "b.consultationFee,  b.testFee, b.treatmentFee, b.specDailyFee, b.visitDate FROM BillingAccounts b WHERE ";
             billQuery += "b.visitDate >= ";
             billQuery += startDate + " AND b.visitDate <= ";
-            billQuery +=  endDate + ";";
-            
+            billQuery += endDate + ";";
+
             rs = stmt.executeQuery(billQuery);
 
             DBTablePrinter.printResultSet(rs);
-            
-        
+
         } catch (Throwable oops) {
             oops.printStackTrace();
         }
 
     }
 
-   /**
-    * This is the function to report the Usage Status of the Hospitals. It will print the number of hospital beds currently
-    * occupied in each hospital. The hospitals are defined by their hospital ids.
-    * @param stmt statement object used to execute queries.
-    */
+    /**
+     * This is the function to report the Usage Status of the Hospitals. It will
+     * print the number of hospital beds currently occupied in each hospital. The
+     * hospitals are defined by their hospital ids.
+     * 
+     * @param stmt statement object used to execute queries.
+     */
     static void reportUsageStatus(Statement stmt) {
         ResultSet rs = null;
-        try{
+        try {
             System.out.println("\nBeds currently in use per Hospital (Sorted by Hospital ID): ");
             System.out.println("+-------------+----------------+");
-            rs = stmt.executeQuery("select h.hID, count(*) from Beds b, Hospital h WHERE b.hID = h.hID AND b.reserved = true group by h.hID;");
+            rs = stmt.executeQuery(
+                    "select h.hID, count(*) from Beds b, Hospital h WHERE b.hID = h.hID AND b.reserved = true group by h.hID;");
             System.out.println("| Hospital ID | Beds Reserved  |");
             System.out.println("+-------------+----------------+");
             while (rs.next()) {
-                //Print one row
-                
+                // Print one row
+
                 System.out.print("| ");
-                System.out.print(rs.getString(1) + "         | "); //Print each  col element
-                System.out.print(rs.getString(2) + "              | "); 
+                System.out.print(rs.getString(1) + "         | "); // Print each col element
+                System.out.print(rs.getString(2) + "              | ");
 
                 System.out.println();
                 System.out.println("+-------------+----------------+");
             }
-  
-        }catch(Throwable oops) {
-              oops.printStackTrace();
+
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
     /**
-    * This function takes in a month, year, and hospital id and returns the number of patients that checked in that month.
-    * @param hID is the ID of the hospital to check in.
-    * @param month is the month to get the number of patients for.
-    * @param year is the year for the corresponding month. 
-    */
+     * This function takes in a month, year, and hospital id and returns the number
+     * of patients that checked in that month.
+     * 
+     * @param hID   is the ID of the hospital to check in.
+     * @param month is the month to get the number of patients for.
+     * @param year  is the year for the corresponding month.
+     */
     static void reportPatientsPerMonth(Statement stmt, String hID, String month, String year) {
         ResultSet rs = null;
-        try{
+        try {
             System.out.println("\nNumber of Patients in Hospital " + hID + " During the Month " + month + ", " + year);
             String monthQuery = "select count(distinct(pID)) as Total_Patients FROM CheckIn WHERE MONTH(startDate) = ";
             monthQuery += month;
@@ -1293,20 +1331,22 @@ public class Wolfhospital {
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnsNumber = rsmd.getColumnCount();
             DBTablePrinter.printResultSet(rs);
-  
-        }catch(Throwable oops) {
-              oops.printStackTrace();
+
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
     /**
-     * Report the Hospital Usage Percentages which means the number of beds currently in use per hospital as a percentage.
+     * Report the Hospital Usage Percentages which means the number of beds
+     * currently in use per hospital as a percentage.
+     * 
      * @param stmt is the Statment object used to execute queries in mysql.
-     * @param hID is a string for the ID of a hospital to get the usage of.
+     * @param hID  is a string for the ID of a hospital to get the usage of.
      */
-    static void reportHospitalPercentage(Statement stmt, String hID){
+    static void reportHospitalPercentage(Statement stmt, String hID) {
         ResultSet rs = null;
-        try{
+        try {
             System.out.println("\nThe number of Beds Currently in Use Per Hospital:");
             String usageQuery = "SELECT h.hID, h.capacity, (SUM(case WHEN b.reserved = 1 THEN 1 ELSE 0 END) / ";
             usageQuery += "h.capacity) as Hospital_Usage FROM Beds b, Hospital h WHERE h.hID = ";
@@ -1316,55 +1356,59 @@ public class Wolfhospital {
             rs = stmt.executeQuery(usageQuery);
             ResultSet temp = null;
             temp = stmt.executeQuery(usageQuery);
-            if(!temp.next()){
+            if (!temp.next()) {
                 System.out.println("\nNO BEDS WERE SET UP FOR THIS HOSPITAL!\n");
             } else {
 
                 DBTablePrinter.printResultSet(rs);
             }
-  
-        }catch(Throwable oops) {
-              oops.printStackTrace();
+
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
     /**
-    * This function reports all of the doctors that a particular patient is currently seeing. It features the doctor's ID, 
-    * their name, and the date from which the patient has seen the doctor.
-    * @param stmt is the statement Object used to execute mysql queries.
-    * @param pID is the string containing the ID of the patient to get the Doctors for.
-    */
+     * This function reports all of the doctors that a particular patient is
+     * currently seeing. It features the doctor's ID, their name, and the date from
+     * which the patient has seen the doctor.
+     * 
+     * @param stmt is the statement Object used to execute mysql queries.
+     * @param pID  is the string containing the ID of the patient to get the Doctors
+     *             for.
+     */
     static void reportDoctorByPatient(Statement stmt, String pID) {
         ResultSet rs = null;
-        try{
+        try {
             System.out.println("\nThe Doctors that the Patient is currently seeing:");
             String doctorQuery = "SELECT p.pID, p.pName as Patient_Name, c.RespDoctor as DoctorID, s.StaffName as Doctor, ";
             doctorQuery += "c.startDate as Seeing_From FROM ";
             doctorQuery += "CheckIn c, Patient p, Staff s WHERE c.pID = p.pID AND c.endDate is NULL AND p.pID = ";
             doctorQuery += pID;
-            doctorQuery += " AND c.RespDoctor = s.StaffID;"; 
+            doctorQuery += " AND c.RespDoctor = s.StaffID;";
 
             rs = stmt.executeQuery(doctorQuery);
             ResultSet temp = null;
             temp = stmt.executeQuery(doctorQuery);
-            if(!temp.next()){
+            if (!temp.next()) {
                 System.out.println("\nNo Doctors assigned to this patient\n");
             } else {
                 DBTablePrinter.printResultSet(rs);
             }
-  
-        }catch(Throwable oops) {
-              oops.printStackTrace();
+
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
     /**
      * This function reports all hospital information grouped by their specialities
+     * 
      * @param stmt is the Statment object used to execute queries.
      */
     static void reportAllHospitalSpeciality(Statement stmt) {
         ResultSet rs = null;
-        try{
+        try {
             String hQuery = "SELECT h.spec1 as Specialization_1, h.spec2 as Specialization_2, h.hID as Hospital_ID, ";
             hQuery += "h.aID as Admin_ID, h.hAddress as Address, h.hPhone as Phone, h.capacity as Capacity ";
             hQuery += "FROM Hospital h order by h.spec1, h.spec2";
@@ -1372,14 +1416,14 @@ public class Wolfhospital {
             rs = stmt.executeQuery(hQuery);
             ResultSet temp = null;
             temp = stmt.executeQuery(hQuery);
-            if(!temp.next()){
+            if (!temp.next()) {
                 System.out.println("\nHospitals not set up in system!\n");
             } else {
                 DBTablePrinter.printResultSet(rs);
             }
-  
-        }catch(Throwable oops) {
-              oops.printStackTrace();
+
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
@@ -1441,10 +1485,10 @@ public class Wolfhospital {
                             + "respNurse varchar(50), prescriptions varchar(500), diagnosisDetails varchar(500), treatment varchar(500), test varchar(500), "
                             + "result varchar(500), consultationfee integer NOT NULL, testfee integer NOT NULL, treatmentfee integer NOT NULL, FOREIGN KEY(cID) REFERENCES CheckIn(cID))");
 
-            // BillingAccounts 
+            // BillingAccounts
             stmt.executeUpdate(
-                    "create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, payerSSN varchar(11)," +
-			" billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee integer, accommodationFee integer, consultationFee integer, testFee integer, treatmentFee integer, specDailyFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID));");
+                    "create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, payerSSN varchar(11),"
+                            + " billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee integer, accommodationFee integer, consultationFee integer, testFee integer, treatmentFee integer, specDailyFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID));");
 
         } catch (Throwable oops) {
             oops.printStackTrace();
