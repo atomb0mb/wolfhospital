@@ -118,24 +118,139 @@ public class BackendCopy {
 
   }
 
-  // #2 cwng
+  /**
+   * This function shows the patient table similar to sql show query
+   * 
+   * @param stmt the statement from the db connection
+   **/
+  static void showPatient(Statement stmt) {
+    try {
+      String sql = "select * from Patient;";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
 
-  static void checkBeds(Connection conn, String bID) {
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+  }
+
+  /**
+   * This function shows the hospital table similar to sql show query
+   * 
+   * @param stmt the statement from the db connection
+   **/
+  static void showHospital(Statement stmt) {
+    try {
+      String sql = "select * from Hospital;";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
+
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+  }
+
+  /**
+   * This function shows the Staff table similar to sql show query
+   * 
+   * @param stmt the statement from the db connection
+   **/
+  static void showStaff(Statement stmt) {
+    try {
+      String sql = "select * from Staff;";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
+
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+  }
+
+  // #2 cwng
+  /**
+   * This fucntion show bed table and return list of bed table similar to sql
+   * select view
+   * 
+   * @param stmt the statement from the db connection
+   **/
+  static void showBeds(Statement stmt) {
+    try {
+      String sql = "select * from Beds;";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
+        // while (rs.next()) {
+        // // String b = rs.getString("bID");
+        // // String h = rs.getString("hID");
+        // // String s = rs.getString("spec");
+        // // String p = rs.getString("pID");
+        // // String r = rs.getString("reserved");
+        // String r = rs.getString(1);
+        // String s = rs.getString(2);
+        // System.out.println(r);
+        // System.out.println(s);
+        // // System.out.println(b + " " + h + " " + s + " " + p + " " + r);
+        // }
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+
+  }
+
+  // #2 cwng
+  /**
+   * This checkbeds will check if the specific bed is reserved or NOT
+   * 
+   * @param stmt the statement from the db connection
+   * @param bID  is the number of bed number
+   **/
+  static void checkBeds(Statement stmt, String bID) {
     try {
       String sql = "select reserved from Beds where bID=";
       sql += bID + ";";
-      Statement stmt = null;
       ResultSet rs = null;
-      ResultSet rsTemp = null;
       try {
-        stmt = conn.createStatement();
         rs = stmt.executeQuery(sql);
-        rsTemp = stmt.executeQuery(sql);
-
-        if (!rsTemp.next()) {
-          System.out.println("The bed number " + bID + " does not exist.");
+        ResultSet temp = null;
+        temp = stmt.executeQuery(sql);
+        if (!temp.next()) {
+          System.out.println("The bed number doesn't exist!");
         }
-
         while (rs.next()) {
           String s = rs.getString("reserved");
           if (s.equals("0")) {
@@ -147,7 +262,7 @@ public class BackendCopy {
 
       } finally {
         close(rs);
-        close(stmt);
+        // close(stmt);
         // close(conn);
       }
 
@@ -157,17 +272,57 @@ public class BackendCopy {
 
   }
 
-  static void assignPatientToBed(Connection conn, String pID, String bID) {
+  /**
+   * This checkbeds will check if the hospital has available specialized bed.
+   * 
+   * @param stmt the statement from the db connection
+   * @param hID  is the hospital id that selected
+   * @param spec is the specialty of the selected
+   **/
+  static void checkBedsBySpeciality(Statement stmt, String hID, String spec) {
+    try {
+      String sql = "select bID from Beds where hID=";
+      sql += hID + " AND spec= '";
+      sql += spec;
+      sql += "' AND reserved = 0;";
+      ResultSet rs = null;
+      ResultSet temp = null;
+      try {
+        rs = stmt.executeQuery(sql);
+        temp = stmt.executeQuery(sql);
+        if (!temp.next()) {
+          System.out.println("There is no available bed for specialty of " + spec + " in Hospital " + hID);
+        } else {
+          DBTablePrinter.printResultSet(rs);
+        }
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+
+  }
+
+  /**
+   * This function assign the patient to the selected bed
+   * 
+   * @param stmt the statement from the db connection
+   * @param pID  is patient id
+   * @param bID  is the number of bed number
+   **/
+  static void assignPatientToBed(Statement stmt, String pID, String bID) {
     // MAKE SURE TO CHANGE BEDS TO RESERVE
 
     try {
       String sqlcheck = "select reserved from Beds where bID=";
       sqlcheck += bID + ";";
-
-      Statement stmt = null;
       ResultSet rs = null;
       try {
-        stmt = conn.createStatement();
         rs = stmt.executeQuery(sqlcheck);
 
         while (rs.next()) {
@@ -175,7 +330,7 @@ public class BackendCopy {
           if (s.equals("1")) {
             System.out.println("The bed number " + bID + " is not available.");
           } else {
-            String sql = "UPDATE Beds SET reserved = TRUE, pID= ";
+            String sql = "UPDATE Beds SET reserved = 1, pID= ";
             sql += pID;
             sql += " WHERE bID = ";
             sql += bID + ";";
@@ -186,7 +341,7 @@ public class BackendCopy {
 
       } finally {
         close(rs);
-        close(stmt);
+        // close(stmt);
         // close(conn);
       }
 
@@ -195,21 +350,24 @@ public class BackendCopy {
     }
   }
 
-  static void releaseBed(Connection conn, String bID) {
+  /**
+   * This function will release bed and set it to open / available
+   * 
+   * @param stmt the statement from the db connection
+   * @param bID  is the number of bed number
+   **/
+  static void releaseBed(Statement stmt, String bID) {
     try {
       String sqlcheck = "select reserved from Beds where bID=";
       sqlcheck += bID + ";";
-
-      Statement stmt = null;
       ResultSet rs = null;
       try {
-        stmt = conn.createStatement();
         rs = stmt.executeQuery(sqlcheck);
 
         while (rs.next()) {
           String s = rs.getString("reserved");
           if (s.equals("1")) {
-            String sql = "UPDATE Beds SET reserved = FALSE, pID= ";
+            String sql = "UPDATE Beds SET reserved = 0, pID= ";
             String pID = "NULL";
             sql += pID;
             sql += " WHERE bID = ";
@@ -223,7 +381,7 @@ public class BackendCopy {
 
       } finally {
         close(rs);
-        close(stmt);
+        // close(stmt);
         // close(conn);
       }
 
@@ -232,14 +390,49 @@ public class BackendCopy {
     }
   }
 
-  static void createCheckIn(Connection conn, String pID, String hID, String bID, String startDate, String respDoctor,
+  /**
+   * This function shows table of Check In similar to sql query display
+   * 
+   * @param stmt the statement from the db connection
+   **/
+  static void showCheckInOut(Statement stmt) {
+    try {
+      String sql = "select * from CheckIn;";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
+
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+  }
+
+  /**
+   * This function will create check in / out for the patient
+   * 
+   * @param stmt             the statement from the db connection
+   * @param pID              is patient id
+   * @param hID              is the hospital id
+   * @param bID              is the number of bed number
+   * @param startDate        is the start date of check in to the hospital
+   * @param respDoctor       is the reponsible Doctor
+   * @param currentDiagnosis is the current diagnosis information
+   * @param registrationFee  is the fee of registration
+   **/
+  static void createCheckIn(Statement stmt, String pID, String hID, String bID, String startDate, String respDoctor,
       String currentDiagnosis, String registrationFee) {
     try {
 
-      Statement stmt = null;
       ResultSet rs = null;
       try {
-        stmt = conn.createStatement();
 
         String sqlInsert = "insert into CheckIn(pID, hID, bID, startDate, respDoctor, currentDiagnosis, registrationFee) VALUES (";
 
@@ -257,7 +450,7 @@ public class BackendCopy {
 
       } finally {
         close(rs);
-        close(stmt);
+        // close(stmt);
         // close(conn);
       }
 
@@ -266,8 +459,60 @@ public class BackendCopy {
     }
   }
 
-  static void transferPatient(Connection conn, String cID, String pID, String hID, String bID, String startDate,
-      String endDate, String respDoctor, String currentDiagnosis, String registrationFee) {
+  /**
+   * This function update the checkin/out which is checking out the patient from
+   * the hospital
+   * 
+   * @param stmt    the statement from the db connection
+   * @param cID     is check in/out id
+   * @param endDate is date of checking out or discharge to the hospital
+   **/
+  static void checkOut(Statement stmt, String cID, String endDate) {
+    try {
+      // Update the checkIns
+      String sqlUpdate = "UPDATE CheckIn SET endDate=";
+      sqlUpdate += "'" + endDate;
+      sqlUpdate += "' WHERE cID =";
+      sqlUpdate += cID + ";";
+
+      ResultSet rs = null;
+      try {
+        stmt.executeUpdate(sqlUpdate);
+        String sqlshow = "select pID from CheckIn where cID=";
+        sqlshow += cID + ";";
+        rs = stmt.executeQuery(sqlshow);
+        String patientCheckOut = null;
+        while (rs.next()) {
+          patientCheckOut = rs.getString("pID");
+        }
+        System.out.println("Successfully check-out patient " + patientCheckOut);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+  }
+
+  /**
+   * This function will transfer patient to the selected hospital
+   * 
+   * @param stmt             the statement from the db connection
+   * @param cID              is check ins
+   * @param pID              is patient id
+   * @param hID              is the hospital to be transferred
+   * @param bID              is the number of bed number
+   * @param endDate          is date of checking out or discharge to the hospital
+   * @param respDoctor       is the reponsible Doctor
+   * @param currentDiagnosis is the current diagnosis information
+   * @param registrationFee  is the fee of registration
+   **/
+  static void transferPatient(Statement stmt, String cID, String pID, String hID, String bID, String endDate,
+      String respDoctor, String currentDiagnosis, String registrationFee) {
 
     try {
       // Update the checkIns
@@ -276,10 +521,8 @@ public class BackendCopy {
       sqlUpdate += "' WHERE cID =";
       sqlUpdate += cID + ";";
 
-      Statement stmt = null;
       ResultSet rs = null;
       try {
-        stmt = conn.createStatement();
         stmt.executeUpdate(sqlUpdate);
         String sqlshow = "select hID from CheckIn where cID=";
         sqlshow += cID + ";";
@@ -307,7 +550,7 @@ public class BackendCopy {
 
       } finally {
         close(rs);
-        close(stmt);
+        // close(stmt);
         // close(conn);
       }
 
@@ -316,16 +559,52 @@ public class BackendCopy {
     }
   }
 
-  // Manage MedicalRecords
-  static void enterMedicalRecords(Connection conn, String mID, String cID, String prescriptions,
-      String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee,
-      String treatmentfee) {
+  /**
+   * This function shows the medical record similar to sql show query
+   * 
+   * @param stmt the statement from the db connection
+   **/
+  static void showMedicalRecords(Statement stmt) {
     try {
-
-      Statement stmt = null;
+      String sql = "select * from MedicalRecords;";
       ResultSet rs = null;
       try {
-        stmt = conn.createStatement();
+        rs = stmt.executeQuery(sql);
+
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+  }
+
+  /**
+   * This function create medical record for the patient
+   * 
+   * @param stmt             the statement from the db connection
+   * @param mID              medical record id
+   * @param cID              is checkIns id
+   * @param prescriptions    is prescriptions info
+   * @param diagnosisDetails is diagnosis details
+   * @param treatment        is treatment info
+   * @param test             is the test info
+   * @param result           is the result
+   * @param consultationfee  is the fee of consultion
+   * @param testfee          is the fee of test
+   * @param treatmentfee     is the fee of treatment
+   **/
+  static void enterMedicalRecords(Statement stmt, String mID, String cID, String prescriptions, String diagnosisDetails,
+      String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
+    try {
+
+      ResultSet rs = null;
+      try {
 
         String sqlInsert = "insert into MedicalRecords(mID ,cID, prescriptions, diagnosisDetails, treatment, test, result, consultationfee, testfee, treatmentfee) VALUES(";
         sqlInsert += mID + ", ";
@@ -354,7 +633,7 @@ public class BackendCopy {
 
       } finally {
         close(rs);
-        close(stmt);
+        // close(stmt);
         // close(conn);
       }
 
@@ -363,15 +642,27 @@ public class BackendCopy {
     }
   }
 
-  static void updateMedicalRecords(Connection conn, String mID, String cID, String prescriptions,
-      String diagnosisDetails, String treatment, String test, String result, String consultationfee, String testfee,
-      String treatmentfee) {
+  /**
+   * This function update medical record for the patient
+   * 
+   * @param stmt             the statement from the db connection
+   * @param mID              medical record id
+   * @param prescriptions    is prescriptions info
+   * @param diagnosisDetails is diagnosis details
+   * @param treatment        is treatment info
+   * @param test             is the test info
+   * @param result           is the result
+   * @param consultationfee  is the fee of consultion
+   * @param testfee          is the fee of test
+   * @param treatmentfee     is the fee of treatment
+   **/
+  static void updateMedicalRecords(Statement stmt, String mID, String prescriptions, String diagnosisDetails,
+      String treatment, String test, String result, String consultationfee, String testfee, String treatmentfee) {
     try {
 
-      Statement stmt = null;
       ResultSet rs = null;
+      ResultSet rs2 = null;
       try {
-        stmt = conn.createStatement();
 
         String sqlUpdate = "UPDATE MedicalRecords SET ";
         sqlUpdate += "prescriptions= " + "'" + prescriptions + "', ";
@@ -387,20 +678,31 @@ public class BackendCopy {
 
         stmt.executeUpdate(sqlUpdate);
 
-        String sqlshow = "select pID from CheckIn where cID=";
-        sqlshow += cID + ";";
-        rs = stmt.executeQuery(sqlshow);
+        // Get cID from existing MedicalRecord
+        String sqlshow1 = "select cID from MedicalRecords where mID=";
+        sqlshow1 += mID + ";";
+        rs = stmt.executeQuery(sqlshow1);
+
+        String cID = null;
+        while (rs.next()) {
+          cID = rs.getString("cID");
+        }
+
+        String sqlshow2 = "select pID from CheckIn where cID=";
+        sqlshow2 += cID + ";";
+        rs2 = stmt.executeQuery(sqlshow2);
 
         String patientmedicalRecord = null;
-        while (rs.next()) {
-          patientmedicalRecord = rs.getString("pID");
+        while (rs2.next()) {
+          patientmedicalRecord = rs2.getString("pID");
         }
 
         System.out.println("MedicalRecord for patient " + patientmedicalRecord + " successfully Updated!");
 
       } finally {
         close(rs);
-        close(stmt);
+        close(rs2);
+        // close(stmt);
         // close(conn);
       }
 
@@ -410,10 +712,129 @@ public class BackendCopy {
   }
 
   // #3 jasalina arthur
-  // Manage BillingAccounts
-  static void createBillingAccount(String baID, String pID, String payerSSN, String billingAddress, String paymentInfo,
-      String registrationFee, String medicationPrescribed, String accommodationFee, String visitDate) {
+  /**
+   * This function will show available beds in selected Hospital
+   * 
+   * @param stmt the statement from the db connection
+   * @param hID  is the hospital to display
+   **/
+  static void showAvailableBedInHospital(Statement stmt, String hID) {
+    try {
+      String sql = "select bID from Beds where reserved = 0 AND hID=";
+      sql += hID + ";";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
+
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+  }
+
+  /**
+   * This function create billing account for the patient. It will prompt user to
+   * enter hospital id so that it validates if the hospital has open beds for the
+   * patient. If the bed is available, it will create a billing account for the
+   * patient.
+   * 
+   * @param stmt                 the statement from the db connection
+   * @param hID                  is the hospital id that selected
+   * @param pID                  is patient to be admit to the hospital
+   * @param payerSSN             is prescriptions info
+   * @param billingAddress       is the billing address of the patient
+   * @param paymentInfo          is the payment info for the patient
+   * @param medicationPrescribed is the fee of test
+   * @param test                 is the test of the patient
+   * @param result               is the result of the patient
+   * @param registrationfee      is the registration fee
+   * @param accommodationfee     is the fee of accommodation
+   * @param visitDate            is the date of visit of the patient
+   **/
+  static void createBillingAccount(Statement stmt, String hID, String pID, String payerSSN, String billingAddress,
+      String paymentInfo, String medicationPrescribed, String registrationFee, String accommodationFee,
+      String visitDate) {
     // check beds first before you create account
+    try {
+      String sql = "select bID from Beds where reserved = 0 AND hID=";
+      sql += hID + ";";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
+        ResultSet temp = null;
+        temp = stmt.executeQuery(sql);
+        if (!temp.next()) {
+          System.out.println("This hospital does not have open bed");
+        } else {
+          String sqlInsert = null;
+          String patientBillingAcount = null;
+          if (payerSSN == null) {
+            sqlInsert = "insert into BillingAccounts(pID, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, visitDate) VALUES (";
+            sqlInsert += pID + ", ";
+            sqlInsert += "'" + billingAddress + "', ";
+            sqlInsert += "'" + paymentInfo + "', ";
+            sqlInsert += "'" + medicationPrescribed + "', ";
+            sqlInsert += registrationFee + ", ";
+            sqlInsert += accommodationFee + ", ";
+            sqlInsert += "'" + visitDate + "');";
+            rs = stmt.executeQuery(sqlInsert);
+
+            System.out.println("Billing account for patient " + pID + " successfully created!");
+          } else {
+            sqlInsert = "insert into BillingAccounts(pID, payerSSN, billingAddress, paymentInfo, medicationPrescribed, registrationFee, accommodationFee, visitDate) VALUES (";
+            sqlInsert += pID + ", ";
+            sqlInsert += "'" + payerSSN + "', ";
+            sqlInsert += "'" + billingAddress + "', ";
+            sqlInsert += "'" + paymentInfo + "', ";
+            sqlInsert += "'" + medicationPrescribed + "', ";
+            sqlInsert += registrationFee + ", ";
+            sqlInsert += accommodationFee + ", ";
+            sqlInsert += "'" + visitDate + "');";
+            rs = stmt.executeQuery(sqlInsert);
+            System.out.println("Billing account for patient " + pID + " successfully created!");
+          }
+        }
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
+
+  }
+
+  /**
+   * This function shows the billing account table similar to sql show query
+   * 
+   * @param stmt the statement from the db connection
+   **/
+  static void showBillingAccounts(Statement stmt) {
+    try {
+      String sql = "select * from BillingAccounts;";
+      ResultSet rs = null;
+      try {
+        rs = stmt.executeQuery(sql);
+
+        DBTablePrinter.printResultSet(rs);
+
+      } finally {
+        close(rs);
+        // close(stmt);
+        // close(conn);
+      }
+
+    } catch (Throwable oops) {
+      oops.printStackTrace();
+    }
   }
 
   // Report
@@ -478,7 +899,7 @@ public class BackendCopy {
 
       // Beds
       stmt.executeUpdate(
-          "create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, spec varchar(100) NOT NULL, staffID integer, pID integer, reserved boolean NOT NULL, "
+          "create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, spec varchar(100) NOT NULL, staffID integer, pID integer, reserved bit(1), "
               + "FOREIGN KEY (hID) REFERENCES Hospital(hID), FOREIGN KEY (pID) REFERENCES Patient(pID))");
 
       // Staff
@@ -491,7 +912,7 @@ public class BackendCopy {
       // updating bed (perhaps?)
       stmt.executeUpdate(
           "create table CheckIn(cID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, hID integer NOT NULL, bID integer, "
-              + "startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee double NOT NULL, "
+              + "startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee INTEGER NOT NULL, "
               + "FOREIGN KEY(pID) REFERENCES Patient(pID), FOREIGN KEY(hID) REFERENCES Hospital(hID))");
 
       // MedicalRecords
@@ -501,8 +922,8 @@ public class BackendCopy {
 
       // BillingAccounts ##TBD
       stmt.executeUpdate(
-          "create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY,pID integer NOT NULL, payerSSN varchar(11), "
-              + "billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee double, medicationPrescribed varchar(200), accommodationFee double, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
+          "create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT,pID integer NOT NULL, payerSSN varchar(11), "
+              + "billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), medicationPrescribed varchar(200), registrationFee integer, accommodationFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID))");
 
     } catch (Throwable oops) {
       oops.printStackTrace();
@@ -562,11 +983,11 @@ public class BackendCopy {
 
       // Beds #1
       stmt.executeUpdate(
-          "insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, FALSE)");
+          "insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, 1)");
 
       // Beds #2
       stmt.executeUpdate(
-          "insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, FALSE)");
+          "insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, 1)");
 
       // Check-in/out #1
       stmt.executeUpdate(
