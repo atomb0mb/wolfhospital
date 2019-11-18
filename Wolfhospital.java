@@ -7,115 +7,102 @@
 // package org.verdictdb.commons.DBTablePrinter;
 import java.sql.*;
 
+/**
+ * Wrapper class around database. Performs all necessary queries to statisfy the
+ * required tasks and operations and exposes them as Java methods to be used by
+ * the UI.
+ * 
+ */
 public class Wolfhospital {
 
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
+    /**
+     * DELETE WHOLE COMMENT BLOCK INCLUDING MAIN METHOD ONCE FINAL VERSION OF
+     * WOLFHOSPITAL IS DONE
+     * 
+     * SPECIFY THAT USER AND PASSWORD NEEDS TO BE SET FOR CONNECTION TO WORK static
+     * final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
+     * 
+     * public static void main(String[] args) { try {
+     * 
+     * // Load the driver. This creates an instance of the driver // and calls the
+     * registerDriver method to make MySql Thin // driver, available to clients.
+     * Class.forName("org.mariadb.jdbc.Driver");
+     * 
+     * String user = "cwng"; String passwd = "200207715";
+     * 
+     * Connection conn = null; // Connection conn2 = null; Statement stmt = null;
+     * ResultSet rs = null;
+     * 
+     * try { // Get a connection from the first driver in the // DriverManager list
+     * that recognizes the URL jdbcURL conn = DriverManager.getConnection(jdbcURL,
+     * user, passwd);
+     * 
+     * // Create a statement object that will be sending your // SQL statements to
+     * the DBMS stmt = conn.createStatement(); createInitialTables(stmt);
+     * populateDemoTables(stmt);
+     * 
+     * // reportPatientsPerMonth(stmt, rs, "111", "8", "2019"); //
+     * reportHospitalPercentage(stmt, "111"); // reportHospitalPercentage(stmt,
+     * "222"); // reportUsageStatus(stmt); // reportDoctorByPatient(stmt, "3001");
+     * // reportDoctorByPatient(stmt, "3002"); // reportAllHospitalSpeciality(stmt);
+     * // System.out.println("Make sure we are here!"); // checkBeds(stmt ,"5001");
+     * // assignPatientToBed(stmt, "3001", "5001"); // showBeds(stmt); //
+     * showCheckInOut(stmt); // showMedicalRecords(stmt); //
+     * assignPatientToBed(stmt, "3001", "5001");
+     * 
+     * // releaseBed(stmt, "5001");
+     * 
+     * //
+     * 
+     * // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX",
+     * // "20"); // transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19",
+     * "1003", // "XXX", "20"); // enterMedicalRecords(conn, "2003", "6", "baa",
+     * "critical",
+     * 
+     * // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", // "1003",
+     * "XXX", "20"); // transferPatient( stmt, "5", "3002", "222", "5001", //
+     * "2019-09-03", "2019-09-19", "1003", "XXX", "20"); //
+     * enterMedicalRecords(stmt, "2003", "6", "baa", "critical",
+     * 
+     * // "toolate", "Donttest", "TheEnd", "1000", "50000", "6000"); //
+     * updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive", // "Hope",
+     * "Try", "Chance", "99", "555", "300"); // showHospital(stmt); //
+     * showPatient(stmt); // showStaff(stmt);
+     * 
+     * // createBillingAccount(stmt, "222", "3001", "", "abcd", // "paywithKidney",
+     * "meth", "420", "999", "2020-10-04"); // createBillingAccount(stmt, "111",
+     * "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200",
+     * "15", "2020-10-04"); // createBillingAccount(stmt, "111", "3001", "", "abcd",
+     * "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
+     * 
+     * // createBillingAccount(stmt, "111", "3001", "", "abcd", // "paywithKidney",
+     * "meth", "420", "999", "2020-12-04"); // createBillingAccount(stmt, "111",
+     * "3002", "999-22-9999", // "abcd", "paywithKidney", "meth", "420", "999",
+     * "2020-10-04"); // showBillingAccounts(stmt); // checkOut(stmt, "1",
+     * "2020-10-04"); // showCheckInOut(stmt); // checkBedsBySpeciality(stmt, "111",
+     * "neurology"); // checkBedsBySpeciality(stmt, "222", "neurology"); //
+     * checkBedsBySpeciality(stmt, "222", "cardiology");
+     * 
+     * // showCheckInOut(stmt); // showBeds(stmt);
+     * 
+     * //updateBillingAccount(stmt, "1", "3001", "666SSN", "112 Database Master
+     * Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
+     * //reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
+     * 
+     * 
+     * // showBeds(stmt); // reportBillingHistory(stmt, "2019-01-20", "2019-12-31",
+     * "3001");
+     * 
+     * } finally { close(rs); close(stmt); close(conn); // close(conn2); } } catch
+     * (Throwable oops) { oops.printStackTrace(); } }
+     */
 
-    static String user = "cwng";
-    static String passwd = "200207715";
-
-    public static void main(String[] args) {
-        try {
-
-            // Load the driver. This creates an instance of the driver
-            // and calls the registerDriver method to make MySql Thin
-            // driver, available to clients.
-            Class.forName("org.mariadb.jdbc.Driver");
-
-            String user = "cwng";
-            String passwd = "200207715";
-
-            Connection conn = null;
-            // Connection conn2 = null;
-            Statement stmt = null;
-            ResultSet rs = null;
-
-            try {
-                // Get a connection from the first driver in the
-                // DriverManager list that recognizes the URL jdbcURL
-                conn = DriverManager.getConnection(jdbcURL, user, passwd);
-
-                // Create a statement object that will be sending your
-                // SQL statements to the DBMS
-                stmt = conn.createStatement();
-                createInitialTables(stmt);
-                populateDemoTables(stmt);
-
-                // reportPatientsPerMonth(stmt, rs, "111", "8", "2019");
-                // reportHospitalPercentage(stmt, "111");
-                // reportHospitalPercentage(stmt, "222");
-                // reportUsageStatus(stmt);
-                // reportDoctorByPatient(stmt, "3001");
-                // reportDoctorByPatient(stmt, "3002");
-                // reportAllHospitalSpeciality(stmt);
-                // System.out.println("Make sure we are here!");
-                // checkBeds(stmt ,"5001");
-                // assignPatientToBed(stmt, "3001", "5001");
-                // showBeds(stmt);
-                // showCheckInOut(stmt);
-                // showMedicalRecords(stmt);
-                // assignPatientToBed(stmt, "3001", "5001");
-
-                // releaseBed(stmt, "5001");
-
-                //
-
-                // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX",
-                // "20");
-                // transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19", "1003",
-                // "XXX", "20");
-                // enterMedicalRecords(conn, "2003", "6", "baa", "critical",
-
-                // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03",
-                // "1003", "XXX", "20");
-                // transferPatient( stmt, "5", "3002", "222", "5001",
-                // "2019-09-03", "2019-09-19", "1003", "XXX", "20");
-                // enterMedicalRecords(stmt, "2003", "6", "baa", "critical",
-
-                // "toolate", "Donttest", "TheEnd", "1000", "50000", "6000");
-                // updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive",
-                // "Hope", "Try", "Chance", "99", "555", "300");
-                // showHospital(stmt);
-                // showPatient(stmt);
-                // showStaff(stmt);
-
-                // createBillingAccount(stmt, "222", "3001", "", "abcd",
-                // "paywithKidney", "meth", "420", "999", "2020-10-04");
-                // createBillingAccount(stmt, "111", "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                // createBillingAccount(stmt, "111", "3001", "", "abcd", "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
-
-                // createBillingAccount(stmt, "111", "3001", "", "abcd",
-                // "paywithKidney", "meth", "420", "999", "2020-12-04");
-                // createBillingAccount(stmt, "111", "3002", "999-22-9999",
-                // "abcd", "paywithKidney", "meth", "420", "999", "2020-10-04");
-                // showBillingAccounts(stmt);
-                // checkOut(stmt, "1", "2020-10-04");
-                // showCheckInOut(stmt);
-                // checkBedsBySpeciality(stmt, "111", "neurology");
-                // checkBedsBySpeciality(stmt, "222", "neurology");
-                // checkBedsBySpeciality(stmt, "222", "cardiology");
-
-                // showCheckInOut(stmt);
-                // showBeds(stmt);
-
-                //updateBillingAccount(stmt, "1", "3001", "666SSN", "112 Database Master Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-                //reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
-
-
-                // showBeds(stmt);
-                // reportBillingHistory(stmt, "2019-01-20", "2019-12-31", "3001");
-
-            } finally {
-                close(rs);
-                close(stmt);
-                close(conn);
-                // close(conn2);
-            }
-        } catch (Throwable oops) {
-            oops.printStackTrace();
-        }
-    }
-
+    /**
+     * Utility function to close the Connection object.
+     * 
+     * @param conn Connection to be closed.
+     * 
+     */
     static void close(Connection conn) {
         if (conn != null) {
             try {
@@ -125,6 +112,12 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * Utility function to close the Statement object.
+     * 
+     * @param st Statement to be closed.
+     * 
+     */
     static void close(Statement st) {
         if (st != null) {
             try {
@@ -134,6 +127,12 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * Utility function to close the ResultSet object.
+     * 
+     * @param rs ResultSet to be closed.
+     * 
+     */
     static void close(ResultSet rs) {
         if (rs != null) {
             try {
@@ -143,7 +142,21 @@ public class Wolfhospital {
         }
     }
 
-    // #1 (Abhi)
+    /**
+     * Create a new Hospital record.
+     * 
+     * @param stmt     the statement from the db connection
+     * @param hID      hospital ID
+     * @param aId      administrator ID
+     * @param hAddress hospital address
+     * @param hPhone   hospital phone
+     * @param s1       specialization 1
+     * @param s1cost   charges per day for specialization 1
+     * @param s2       specialization 2
+     * @param s2cost   charges per day for specialization 2
+     * @param capacity hospital capacity
+     * 
+     */
     static void enterHospital(Statement stmt, String hID, String aId, String hAddress, String hPhone, String s1,
             String s1cost, String s2, String s2cost, String capacity) {
         try {
@@ -151,7 +164,7 @@ public class Wolfhospital {
 
             try {
 
-                String sqlInsert = "insert into Hospital(hID ,aID, hAddress, hPhone, s1, s1cost, s2, s2cost, capacity) VALUES(";
+                String sqlInsert = "insert into Hospital(hID, aID, hAddress, hPhone, spec1, s1CostPerDay, spec2, s2CostPerDay, capacity) VALUES(";
                 sqlInsert += hID + ", ";
                 sqlInsert += aId + ", ";
                 sqlInsert += "'" + hAddress + "', ";
@@ -176,20 +189,35 @@ public class Wolfhospital {
         }
     }
 
-    static void updateHospital(Statement stmt, String hID, String aId, String hAddress, String hPhone, String s1,
-            String s1cost, String s2, String s2cost, String capacity) {
+    /**
+     * Update a Hospital with given ID with provided values.
+     * 
+     * @param stmt     the statement from the db connection
+     * @param hID      ID of hospital to be updated
+     * @param aId      administrator ID
+     * @param hAddress hospital address
+     * @param hPhone   hospital phone
+     * @param s1       specialization 1
+     * @param s1cost   charges per day for specialization 1
+     * @param s2       specialization 2
+     * @param s2cost   charges per day for specialization 2
+     * @param capacity hospital capacity
+     * 
+     */
+    static void updateHospital(Statement stmt, String hID, String hAddress, String hPhone, String s1, String s1cost,
+            String s2, String s2cost, String capacity) {
         try {
             ResultSet rs = null;
 
             try {
 
-                String sqlUpdate = "UPDATE Hospital SET";
+                String sqlUpdate = "UPDATE Hospital SET ";
                 sqlUpdate += "hAddress = " + "'" + hAddress + "', ";
                 sqlUpdate += "hPhone = " + "'" + hPhone + "', ";
-                sqlUpdate += "s1 = " + "'" + s1 + "', ";
-                sqlUpdate += "s1cost = " + s1cost + "', ";
-                sqlUpdate += "s2 = " + "'" + s2 + "', ";
-                sqlUpdate += "s2cost = " + s2cost + "', ";
+                sqlUpdate += "spec1 = " + "'" + s1 + "', ";
+                sqlUpdate += "s1CostPerDay = " + s1cost + ", ";
+                sqlUpdate += "spec2 = " + "'" + s2 + "', ";
+                sqlUpdate += "s2CostPerDay = " + s2cost + ", ";
                 sqlUpdate += "capacity = " + capacity;
                 sqlUpdate += " WHERE hId = " + hID;
 
@@ -207,6 +235,13 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * Delete a Hospital given its ID.
+     * 
+     * @param stmt the statement from the db connection
+     * @param hID  ID of hospital to be deleted
+     * 
+     */
     static void deleteHospital(Statement stmt, String hID) {
         try {
             ResultSet rs = null;
@@ -229,6 +264,21 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * Create a new Patient record.
+     * 
+     * @param stmt           the statement from the db connection
+     * @param pId            patient ID
+     * @param ssn            patient social security number
+     * @param pName          patient name
+     * @param dob            patient date of birth
+     * @param gender         patient gender
+     * @param patientAge     patient age
+     * @param patientPhone   patient phone
+     * @param patientAddress patient address
+     * @param status         patient status
+     * 
+     */
     static void enterPatient(Statement stmt, String pId, String ssn, String pName, String dob, String gender,
             String patientAge, String patientPhone, String patientAddress, String status) {
         try {
@@ -236,7 +286,7 @@ public class Wolfhospital {
 
             try {
                 if (ssn == null) {
-                    String sqlInsert = "insert into Pateint(pId , pName, dob, gender, patientAge, patientPhone, patientAddress, status) VALUES(";
+                    String sqlInsert = "insert into Patient(pID, pName, DOB, gender, patientAge, patientPhone, patientAddress, status) VALUES(";
                     sqlInsert += pId + ", ";
                     sqlInsert += "'" + pName + "', ";
                     sqlInsert += "'" + dob + "', ";
@@ -249,10 +299,10 @@ public class Wolfhospital {
                     rs = stmt.executeQuery(sqlInsert);
                     System.out.println("Patient with " + pId + " successfully created.");
                 } else {
-                    String sqlInsert = "insert into Pateint(pId ,ssn, pName, dob, gender, patientAge, patientPhone, patientAddress, status) VALUES(";
+                    String sqlInsert = "insert into Patient(pID, pName, SSN, DOB, gender, patientAge, patientPhone, patientAddress, status) VALUES(";
                     sqlInsert += pId + ", ";
-                    sqlInsert += "'" + ssn + "', ";
                     sqlInsert += "'" + pName + "', ";
+                    sqlInsert += "'" + ssn + "', ";
                     sqlInsert += "'" + dob + "', ";
                     sqlInsert += "'" + gender + "', ";
                     sqlInsert += patientAge + ", ";
@@ -274,6 +324,21 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * Update a Patient with given ID with provided values.
+     * 
+     * @param stmt           the statement from the db connection
+     * @param pId            ID of Patient to be updated
+     * @param ssn            patient social security number
+     * @param pName          patient name
+     * @param dob            patient date of birth
+     * @param gender         patient gender
+     * @param patientAge     patient age
+     * @param patientPhone   patient phone
+     * @param patientAddress patient address
+     * @param status         patient status
+     * 
+     */
     static void updatePatient(Statement stmt, String pId, String ssn, String pName, String dob, String gender,
             String patientAge, String patientPhone, String patientAddress, String status) {
         try {
@@ -282,29 +347,29 @@ public class Wolfhospital {
             try {
                 if (ssn == null) {
 
-                    String sqlUpdate = "UPDATE Pateint SET";
+                    String sqlUpdate = "UPDATE Patient SET";
                     sqlUpdate += " pName = " + "'" + pName + "', ";
-                    sqlUpdate += "dob = " + "'" + dob + "', ";
+                    sqlUpdate += "DOB = " + "'" + dob + "', ";
                     sqlUpdate += "gender = " + "'" + gender + "', ";
                     sqlUpdate += "patientAge = " + patientAge + ", ";
                     sqlUpdate += "patientPhone = " + "'" + patientPhone + "', ";
                     sqlUpdate += "patientAddress = " + "'" + patientAddress + "', ";
-                    sqlUpdate += "status = " + "'" + status;
-                    sqlUpdate += "WHERE pId = " + pId;
+                    sqlUpdate += "status = " + "'" + status + "'";
+                    sqlUpdate += " WHERE pID = " + pId;
                     stmt.executeUpdate(sqlUpdate);
                     System.out.println("Patient with " + pId + " successfully updates.");
 
                 } else {
-                    String sqlUpdate = "UPDATE Pateint SET";
-                    sqlUpdate += " ssn = " + "'" + ssn + "', ";
+                    String sqlUpdate = "UPDATE Patient SET";
                     sqlUpdate += " pName = " + "'" + pName + "', ";
-                    sqlUpdate += "dob = " + "'" + dob + "', ";
+                    sqlUpdate += " SSN = " + "'" + ssn + "', ";
+                    sqlUpdate += "DOB = " + "'" + dob + "', ";
                     sqlUpdate += "gender = " + "'" + gender + "', ";
                     sqlUpdate += "patientAge = " + patientAge + ", ";
                     sqlUpdate += "patientPhone = " + "'" + patientPhone + "', ";
                     sqlUpdate += "patientAddress = " + "'" + patientAddress + "', ";
-                    sqlUpdate += "status = " + "'" + status;
-                    sqlUpdate += "WHERE pId = " + pId;
+                    sqlUpdate += "status = " + "'" + status + "'";
+                    sqlUpdate += " WHERE pID = " + pId;
                     stmt.executeUpdate(sqlUpdate);
                     System.out.println("Patient with " + pId + " successfully updates.");
 
@@ -321,13 +386,20 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * Delete a Patient given its ID.
+     * 
+     * @param stmt the statement from the db connection
+     * @param pId  the ID of patient to be deleted
+     * 
+     */
     static void deletePatient(Statement stmt, String pId) {
         try {
             ResultSet rs = null;
 
             try {
 
-                String sqlDelete = "DELETE FROM Patient WHERE pId = ";
+                String sqlDelete = "DELETE FROM Patient WHERE pID = ";
                 sqlDelete += pId + ";";
                 stmt.executeUpdate(sqlDelete);
                 System.out.println("Hospital with " + pId + " successfully deleted.");
@@ -343,6 +415,24 @@ public class Wolfhospital {
         }
     }
 
+    /**
+     * Enter a new Staff member record.
+     * 
+     * @param stmt          the statement from the db connection
+     * @param staffID       ID of staff member
+     * @param hID           hospital ID staff member belongs to
+     * @param staffName     name of staff member
+     * @param homeAddress   home address of staff member
+     * @param officeAddress office address of staff member
+     * @param sgender       staff member gender
+     * @param age           staff member age
+     * @param jobTitle      staff member job title
+     * @param department    staff member department
+     * @param specPosition  staff member professional title
+     * @param staffPhone    staff member phone
+     * @param email         staff member email
+     * 
+     */
     static void enterStaff(Statement stmt, String staffID, String hID, String staffName, String homeAddress,
             String officeAddress, String sgender, String age, String jobTitle, String department, String specPosition,
             String staffPhone, String email) {
@@ -351,7 +441,7 @@ public class Wolfhospital {
 
             try {
 
-                String sqlInsert = "insert into Staff(staffID, hId ,staffName, homeAddress, officeAddress, sgender, age, jobTitle, department, "
+                String sqlInsert = "insert into Staff(staffID, hID, staffName, homeAddress, officeAddress, sgender, age, jobTitle, department, "
                         + "specPosition, staffPhone, email) VALUES(";
                 sqlInsert += staffID + ", ";
                 sqlInsert += hID + ", ";
@@ -381,6 +471,23 @@ public class Wolfhospital {
 
     }
 
+    /**
+     * Update Staff Member record with given ID with the provided values.
+     * 
+     * @param stmt          the statement from the db connection
+     * @param staffID       ID of staff to be updated
+     * @param staffName     name of staff member
+     * @param homeAddress   home address of staff member
+     * @param officeAddress office address of staff member
+     * @param sgender       staff member gender
+     * @param age           staff member age
+     * @param jobTitle      staff member job title
+     * @param department    staff member department
+     * @param specPosition  staff member professional title
+     * @param staffPhone    staff member phone
+     * @param email         staff member email
+     * 
+     */
     static void updateStaff(Statement stmt, String staffID, String staffName, String homeAddress, String officeAddress,
             String sgender, String age, String jobTitle, String department, String specPosition, String staffPhone,
             String email) {
@@ -390,20 +497,20 @@ public class Wolfhospital {
 
             try {
 
-                String sqlInsert = "UPDATE Staff SET ";
-                sqlInsert += "staffId = " + staffID + ", ";
-                sqlInsert += "staffName = " + "'" + staffName + "', ";
-                sqlInsert += "homeAddress = " + "'" + homeAddress + "', ";
-                sqlInsert += "homeAddress = " + "'" + officeAddress + "', ";
-                sqlInsert += "homeAddress = " + "'" + sgender + "', ";
-                sqlInsert += "age = " + age + ", ";
-                sqlInsert += "jobTitle = " + "'" + jobTitle + "', ";
-                sqlInsert += "department = " + "'" + department + "', ";
-                sqlInsert += "specPosition = " + "'" + specPosition + "', ";
-                sqlInsert += "staffPhone = " + "'" + staffPhone + "', ";
-                sqlInsert += "email = " + "'" + email;
+                String sqlUpdate = "UPDATE Staff SET ";
+                sqlUpdate += "staffName = " + "'" + staffName + "', ";
+                sqlUpdate += "homeAddress = " + "'" + homeAddress + "', ";
+                sqlUpdate += "officeAddress = " + "'" + officeAddress + "', ";
+                sqlUpdate += "sgender = " + "'" + sgender + "', ";
+                sqlUpdate += "age = " + age + ", ";
+                sqlUpdate += "jobTitle = " + "'" + jobTitle + "', ";
+                sqlUpdate += "department = " + "'" + department + "', ";
+                sqlUpdate += "specPosition = " + "'" + specPosition + "', ";
+                sqlUpdate += "staffPhone = " + "'" + staffPhone + "', ";
+                sqlUpdate += "email = " + "'" + email + "'";
+                sqlUpdate += " WHERE staffID = " + staffID;
 
-                stmt.executeQuery(sqlInsert);
+                stmt.executeQuery(sqlUpdate);
                 System.out.println("Staff with " + staffID + " successfully Updated.");
 
             } finally {
@@ -418,13 +525,20 @@ public class Wolfhospital {
 
     }
 
+    /**
+     * Delete Staff member with given ID.
+     * 
+     * @param stmt    the statement from the db connection
+     * @param staffID the ID of staff to be deleted
+     * 
+     */
     static void deleteStaff(Statement stmt, String staffID) {
         try {
             ResultSet rs = null;
 
             try {
 
-                String sqlDelete = "DELETE FROM Staff WHERE staffId = ";
+                String sqlDelete = "DELETE FROM Staff WHERE staffID = ";
                 sqlDelete += staffID + ";";
                 stmt.executeUpdate(sqlDelete);
                 System.out.println("Hospital with " + staffID + " successfully deleted.");
@@ -1191,21 +1305,26 @@ public class Wolfhospital {
         }
     }
 
-   /**
-    * This method is used to update billingAccounts given a billingAccountID and the parameters to update with.
-    * @param stmt is the Statement object needed to execute mysql statements.
-    * @param pID is patient in the hospital
-    * @param payerSSN is social security of whoever is paying
-    * @param billingAddress is the billing address of the patient
-    * @param paymentInfo is the payment info for the patient
-    * @param test is the test of the patient
-    * @param result is the result of the patient
-    * @param registrationfee is the registration fee
-    * @param accommodationfee is the fee of accommodation
-    * @param visitDate is the date of visit of the patient
-    */
-    static void updateBillingAccount(Statement stmt, String baID, String pID, String payerSSN, String billingAddress, String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee, String treatmentFee, String specDailyFee, String visitDate){
-        try{
+    /**
+     * This method is used to update billingAccounts given a billingAccountID and
+     * the parameters to update with.
+     * 
+     * @param stmt             is the Statement object needed to execute mysql
+     *                         statements.
+     * @param pID              is patient in the hospital
+     * @param payerSSN         is social security of whoever is paying
+     * @param billingAddress   is the billing address of the patient
+     * @param paymentInfo      is the payment info for the patient
+     * @param test             is the test of the patient
+     * @param result           is the result of the patient
+     * @param registrationfee  is the registration fee
+     * @param accommodationfee is the fee of accommodation
+     * @param visitDate        is the date of visit of the patient
+     */
+    static void updateBillingAccount(Statement stmt, String baID, String pID, String payerSSN, String billingAddress,
+            String paymentInfo, String registrationFee, String accommodationFee, String consultationFee, String testFee,
+            String treatmentFee, String specDailyFee, String visitDate) {
+        try {
             ResultSet rs = null;
             String updateQuery = "UPDATE BillingAccounts SET ";
             updateQuery += "pID = " + pID + ", ";
@@ -1221,13 +1340,12 @@ public class Wolfhospital {
             updateQuery += "visitDate = '" + visitDate + "' ";
             updateQuery += "WHERE baID = ";
             updateQuery += baID + ";";
-            
 
             stmt.executeUpdate(updateQuery);
 
             System.out.println("Billing Account for patient " + pID + " successfully Updated!");
-        } catch(Throwable oops) {
-                oops.printStackTrace();
+        } catch (Throwable oops) {
+            oops.printStackTrace();
         }
     }
 
@@ -1274,8 +1392,8 @@ public class Wolfhospital {
             billQuery += "b.consultationFee,  b.testFee, b.treatmentFee, b.specDailyFee, b.visitDate FROM BillingAccounts b WHERE ";
             billQuery += "b.visitDate >= '";
             billQuery += startDate + "' AND b.visitDate <= '";
-            billQuery +=  endDate + "';";
-            
+            billQuery += endDate + "';";
+
             rs = stmt.executeQuery(billQuery);
 
             DBTablePrinter.printResultSet(rs);
