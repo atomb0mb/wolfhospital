@@ -198,7 +198,7 @@ public class ConsoleUI {
                 userAction = userAction.toLowerCase();
             }
             if (userAction.equals("test")) { // hidden test option to run backend tests from UI
-                // Wolfhospital.tests();
+                Wolfhospital.tests(conn, stmt);
                 System.out.println("RUN BACKEND TESTS");
             } else if (userAction.equals("1")) {
                 informationProcessingSubPanel(console);
