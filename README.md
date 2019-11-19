@@ -21,3 +21,7 @@ Running Instructions:
 ### Run Application
 
 1. java ConsoleUI
+
+### Run Backend Tests
+
+1. Within the application's main menu, type the keyword "test" to access a hidden user feature that runs all backend tests from the UI and prints the output to the console. This was placed there for the benefit of the grader.
