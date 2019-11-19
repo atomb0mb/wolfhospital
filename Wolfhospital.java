@@ -1652,12 +1652,118 @@ public class Wolfhospital {
                 "85");
         showHospital(stmt);
         System.out.println("\n\nTesting updating a hospital: ");
-        enterHospital(stmt, "999", "22201", "111 Hospital Blvd", "704-919-3388", "dental", "500", "Proctology", "20",
-                "100");
+
+        updateHospital(stmt, "999", "111 Hospital Blvd", "704-919-3388", "dental", "500", "Proctology", "20", "100");
+
         showHospital(stmt);
         System.out.println("\n\nTesting deleting a hospital: ");
         deleteHospital(stmt, "999");
         showHospital(stmt);
+        
+        System.out.println("\n\nTesting adding a Patient: ");
+        enterPatient(stmt, "440", "90-36-2352", "Ellie Warren", "1999-10-01", "F", "21", "555-555-5555", "NYC", "RECOVERY");
+        showPatient(stmt);
+        System.out.println("\n\nTesting updating a Patient: ");
+        updatePatient(stmt, "440", "90-36-2352", "Ellizabeth Warren", "1989-10-01", "F", "31", "555-555-5555", "NYC", "RECOVERED");
+        showPatient(stmt);
+        System.out.println("\n\nTesting deleting a Patient: ");
+        deletePatient(stmt, "440");
+        showPatient(stmt);
+        
+        System.out.println("\n\nTesting adding Staff: ");
+        enterStaff(stmt, "440", "222", "Dr Jekyll", "somewhere", "Hospital 2 Basement", "M", "45", "doctor", "psych_ward", "psychology", "919-333-3333", "hyde@yahoo.com");
+        showStaff(stmt);
+        System.out.println("\n\nTesting updating Staff: ");
+        updateStaff(stmt, "440", "Dr Hyde", "elsewhere", "Hospital 2 Basement", "M", "45", "doctor", "er", "surgery", "919-333-3333", "hyde@yahoo.com");
+        showStaff(stmt);
+        System.out.println("\n\nTesting deleting Staff: ");
+        deleteStaff(stmt, "440");
+        showStaff(stmt);
+        
+        System.out.println("\n\nTesting Bed Checking: ");
+        System.out.println("Checking bed 5001");
+        checkBeds(stmt, "5001");
+        showBeds(stmt);
+        System.out.println("\n\nTesting Releasing a Bed: ");
+        releaseBed(stmt, "5001");
+        showBeds(stmt);
+        System.out.println("\n\nTesting Bed Checking Again: ");
+        System.out.println("Checking bed 5001");
+        checkBeds(stmt, "5001");
+        System.out.println("\n\nTesting Check Beds by Speciality: ");
+        System.out.println("Checking neurology: ");
+        checkBedsBySpeciality(stmt, "111", "neurology");
+        System.out.println("\n\nTesting Reserving/Assigning Beds: ");
+        System.out.println("Assiging Bed 5001: ");
+        assignPatientToBed(stmt, "3001", "5001");
+        showBeds(stmt);
+        System.out.println("\n\nTesting Bed Checking YET Again: ");
+        System.out.println("Checking bed 5001");
+        checkBeds(stmt, "5001");
+        
+        System.out.println("\n\nTesting Creating a CheckIn: ");
+        createCheckIn(stmt, "3001", "222", "5005", "2019-11-17", "1004", "CHECKINITIS", "42");
+        showCheckInOut(stmt);
+        System.out.println("\n\nTesting Checking Out: ");
+        checkOut(stmt, "5", "2019-11-18"); 
+        showCheckInOut(stmt); 
+        
+        System.out.println("\n\nTransferring a Patient: ");
+        System.out.println("First Create a new CheckIn");
+        createCheckIn(stmt, "3001", "222", "5008", "2019-11-19", "1004", "TRANSFERITIS", "888");
+        showCheckInOut(stmt);
+        System.out.println("\nThen Conduct the Transfer: ");
+        try{
+          transferPatient(conn, "6", "3001", "111", "5002", "2019-11-20", "1010", "TRANSFERSUCCESS", "21");
+        }catch (Exception e){
+          e.printStackTrace();
+        }
+        showCheckInOut(stmt);
+        
+        System.out.println("\n\nTESTING MEDICAL RECORD MANAGEMENT");
+        System.out.println("\n\nTesting Entering a Medical Record: ");
+        enterMedicalRecords(stmt, "2003", "6", "prescription", "critical", "toolate", "Donttest", "TheEnd", "1000", "50000", "6000"); 
+        showMedicalRecords(stmt);
+        System.out.println("\n\nTesting Updating a Medical Record: ");
+        updateMedicalRecords(stmt, "2003", "prescription2", "StillAlive", "Hope", "Try", "Chance", "99", "555", "300");
+        showMedicalRecords(stmt);
+        
+        System.out.println("\n\nTESTING BILLING ACCOUNT MANAGEMENT");
+        System.out.println("\n\nCreating a Billing Account: ");
+        System.out.println("First Release Bed");
+        releaseBed(stmt, "5001");
+        try{
+            createBillingAccount(conn, "111", "3001", "", "abcd street", "check", "1", "2", "3", "4", "5", "6", "2020-12-04");
+            createBillingAccount(conn, "111", "3002", "999-22-9999", "abcd blvd", "credit", "11", "22", "33", "44", "55", "66", "2020-10-04");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        showBillingAccounts(stmt);
+        
+        System.out.println("\n\nUpdating BillingAccount 1: ");
+        updateBillingAccount(stmt, "1", "3001", "6SSN", "Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-11-04");
+        showBillingAccounts(stmt);
+        
+        
+        System.out.println("\n\nTESTING REPORTS GENERATION");
+        System.out.println("\n\nReporting Billing History of Only a Single Patient: ");
+        reportBillingHistory(stmt, "2020-01-20", "2020-12-01", "3001");
+        
+        System.out.println("\n\nReporting Usage Status of All Hospitals: ");
+        reportUsageStatus(stmt); 
+        
+        System.out.println("\n\nReporting Number of Patients in Specified Month at a Hospital: ");
+        reportPatientsPerMonth(stmt, "111", "8", "2019");
+        
+        System.out.println("\n\nReporting Usage Percentage of a Specific Hospital (Beds used /Total Capacity): ");
+        reportHospitalPercentage(stmt, "111"); 
+        
+        System.out.println("\n\nReporting The Doctors that a Specific Patient is Seeing: ");
+        reportDoctorByPatient(stmt, "3001");
+        reportDoctorByPatient(stmt, "3002");
+        
+        System.out.println("\n\nReporting Hospitals Grouped By Their Speciality: ");
+        reportAllHospitalSpeciality(stmt);
 
     }
 
