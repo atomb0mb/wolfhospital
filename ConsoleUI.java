@@ -8,7 +8,7 @@ import java.sql.*;
 public class ConsoleUI {
 
     /** URL for connecting to the database. */
-    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/jasalina";
+    static final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/esarrit";
     /** Connection object for the database. */
     private Connection conn;
     /** General statement object for for sending SQL statements to the database. */
@@ -26,8 +26,8 @@ public class ConsoleUI {
             // driver, available to clients.
             Class.forName("org.mariadb.jdbc.Driver");
 
-            String user = "jasalina";
-            String passwd = "Sh1tterukotodake";
+            String user = "esarrit";
+            String passwd = "CSC440";
 
             // Get a connection from the first driver in the
             // DriverManager list that recognizes the URL jdbcURL
