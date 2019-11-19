@@ -199,7 +199,6 @@ public class ConsoleUI {
             }
             if (userAction.equals("test")) { // hidden test option to run backend tests from UI
                 Wolfhospital.tests(conn, stmt);
-                System.out.println("RUN BACKEND TESTS");
             } else if (userAction.equals("1")) {
                 informationProcessingSubPanel(console);
             } else if (userAction.equals("2")) {
@@ -650,7 +649,7 @@ public class ConsoleUI {
                 System.out.print("Enter the ID of Staff Member to be deleted: ");
                 staffID = console.nextLine();
                 System.out.println();
-                Wolfhospital.deleteHospital(this.stmt, staffID);
+                Wolfhospital.deleteStaff(this.stmt, staffID);
             } else if (userAction.equals("4")) {
                 break;
             } else {
@@ -914,7 +913,7 @@ public class ConsoleUI {
         System.out.print("Enter Treatment: ");
         treatment = console.nextLine();
         System.out.print("Enter Test Fee: ");
-        treatmentfee = console.nextLine();
+        testfee = console.nextLine();
         System.out.print("Enter Treatment Fee: ");
         treatmentfee = console.nextLine();
         System.out.print("Enter Consultation Fee: ");
@@ -957,7 +956,7 @@ public class ConsoleUI {
         System.out.print("Enter Treatment: ");
         treatment = console.nextLine();
         System.out.print("Enter Test Fee: ");
-        treatmentfee = console.nextLine();
+        testfee = console.nextLine();
         System.out.print("Enter Treatment Fee: ");
         treatmentfee = console.nextLine();
         System.out.print("Enter Consultation Fee: ");
@@ -996,7 +995,7 @@ public class ConsoleUI {
         pID = console.nextLine();
         System.out.print("Enter the Payer Social Security Number (SSN): ");
         payerSSN = console.nextLine();
-        System.out.print("Enter the Visit Date: ");
+        System.out.print("Enter the Visit Date (yyyy-mm-dd): ");
         visitDate = console.nextLine();
         System.out.print("Enter the Billing Address: ");
         billingAddress = console.nextLine();
@@ -1057,7 +1056,7 @@ public class ConsoleUI {
         pID = console.nextLine();
         System.out.print("Enter the Payer Social Security Number (SSN): ");
         payerSSN = console.nextLine();
-        System.out.print("Enter the Visit Date: ");
+        System.out.print("Enter the Visit Date (yyyy-mm-dd): ");
         visitDate = console.nextLine();
         System.out.print("Enter the Billing Address: ");
         billingAddress = console.nextLine();
@@ -1106,7 +1105,7 @@ public class ConsoleUI {
         SSN = console.nextLine();
         System.out.print("Enter Name: ");
         pName = console.nextLine();
-        System.out.print("Enter Date of Birth: ");
+        System.out.print("Enter Date of Birth (yyyy-mm-dd): ");
         dob = console.nextLine();
         System.out.print("Enter Gender: ");
         gender = console.nextLine();
@@ -1155,7 +1154,7 @@ public class ConsoleUI {
         SSN = console.nextLine();
         System.out.print("Enter Name: ");
         pName = console.nextLine();
-        System.out.print("Enter Date of Birth: ");
+        System.out.print("Enter Date of Birth (yyyy-mm-dd): ");
         dob = console.nextLine();
         System.out.print("Enter Gender: ");
         gender = console.nextLine();
@@ -1423,7 +1422,7 @@ public class ConsoleUI {
         String hID = "";
         String spec = "";
 
-        System.out.println("\nNumber of Patients per Month Report");
+        System.out.println("\nAvailable Beds for a Specific Specialization in a Hospital");
 
         System.out.print("\nEnter the Hospital ID: ");
         hID = console.nextLine();
