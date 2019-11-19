@@ -16,88 +16,6 @@ import java.sql.*;
 public class Wolfhospital {
 
     /**
-     * DELETE WHOLE COMMENT BLOCK INCLUDING MAIN METHOD ONCE FINAL VERSION OF
-     * WOLFHOSPITAL IS DONE
-     * 
-     * SPECIFY THAT USER AND PASSWORD NEEDS TO BE SET FOR CONNECTION TO WORK static
-     * final String jdbcURL = "jdbc:mariadb://classdb2.csc.ncsu.edu:3306/cwng";
-     * 
-     * public static void main(String[] args) { try {
-     * 
-     * // Load the driver. This creates an instance of the driver // and calls the
-     * registerDriver method to make MySql Thin // driver, available to clients.
-     * Class.forName("org.mariadb.jdbc.Driver");
-     * 
-     * String user = "cwng"; String passwd = "200207715";
-     * 
-     * Connection conn = null; // Connection conn2 = null; Statement stmt = null;
-     * ResultSet rs = null;
-     * 
-     * try { // Get a connection from the first driver in the // DriverManager list
-     * that recognizes the URL jdbcURL conn = DriverManager.getConnection(jdbcURL,
-     * user, passwd);
-     * 
-     * // Create a statement object that will be sending your // SQL statements to
-     * the DBMS stmt = conn.createStatement(); createInitialTables(stmt);
-     * populateDemoTables(stmt);
-     * 
-     * // reportPatientsPerMonth(stmt, rs, "111", "8", "2019"); //
-     * reportHospitalPercentage(stmt, "111"); // reportHospitalPercentage(stmt,
-     * "222"); // reportUsageStatus(stmt); // reportDoctorByPatient(stmt, "3001");
-     * // reportDoctorByPatient(stmt, "3002"); // reportAllHospitalSpeciality(stmt);
-     * // System.out.println("Make sure we are here!"); // checkBeds(stmt ,"5001");
-     * // assignPatientToBed(stmt, "3001", "5001"); // showBeds(stmt); //
-     * showCheckInOut(stmt); // showMedicalRecords(stmt); //
-     * assignPatientToBed(stmt, "3001", "5001");
-     * 
-     * // releaseBed(stmt, "5001");
-     * 
-     * //
-     * 
-     * // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", "1003", "XXX",
-     * // "20"); // transferPatient( conn, "5", "3002", "222", "5001", "2019-09-19",
-     * "1003", // "XXX", "20"); // enterMedicalRecords(conn, "2003", "6", "baa",
-     * "critical",
-     * 
-     * // createCheckIn( stmt, "3001", "111", "5001", "2019-09-03", // "1003",
-     * "XXX", "20"); // transferPatient( stmt, "5", "3002", "222", "5001", //
-     * "2019-09-03", "2019-09-19", "1003", "XXX", "20"); //
-     * enterMedicalRecords(stmt, "2003", "6", "baa", "critical",
-     * 
-     * // "toolate", "Donttest", "TheEnd", "1000", "50000", "6000"); //
-     * updateMedicalRecords(conn, "2003", "6", "baa", "StillAlive", // "Hope",
-     * "Try", "Chance", "99", "555", "300"); // showHospital(stmt); //
-     * showPatient(stmt); // showStaff(stmt);
-     * 
-     * // createBillingAccount(stmt, "222", "3001", "", "abcd", // "paywithKidney",
-     * "meth", "420", "999", "2020-10-04"); // createBillingAccount(stmt, "111",
-     * "3001", "191SSN", "112 ABC street", "cash", "20", "5", "50", "75", "200",
-     * "15", "2020-10-04"); // createBillingAccount(stmt, "111", "3001", "", "abcd",
-     * "credit card", "20", "5", "50", "75", "200", "15", "2020-11-04");
-     * 
-     * // createBillingAccount(stmt, "111", "3001", "", "abcd", // "paywithKidney",
-     * "meth", "420", "999", "2020-12-04"); // createBillingAccount(stmt, "111",
-     * "3002", "999-22-9999", // "abcd", "paywithKidney", "meth", "420", "999",
-     * "2020-10-04"); // showBillingAccounts(stmt); // checkOut(stmt, "1",
-     * "2020-10-04"); // showCheckInOut(stmt); // checkBedsBySpeciality(stmt, "111",
-     * "neurology"); // checkBedsBySpeciality(stmt, "222", "neurology"); //
-     * checkBedsBySpeciality(stmt, "222", "cardiology");
-     * 
-     * // showCheckInOut(stmt); // showBeds(stmt);
-     * 
-     * //updateBillingAccount(stmt, "1", "3001", "666SSN", "112 Database Master
-     * Chee", "cash", "20", "5", "50", "75", "200", "15", "2020-10-04");
-     * //reportBillingHistory(stmt, "2020-01-20", "2020-11-03", "3001");
-     * 
-     * 
-     * // showBeds(stmt); // reportBillingHistory(stmt, "2019-01-20", "2019-12-31",
-     * "3001");
-     * 
-     * } finally { close(rs); close(stmt); close(conn); // close(conn2); } } catch
-     * (Throwable oops) { oops.printStackTrace(); } }
-     */
-
-    /**
      * Utility function to close the Connection object.
      * 
      * @param conn Connection to be closed.
@@ -176,7 +94,7 @@ public class Wolfhospital {
                 sqlInsert += capacity + ");";
 
                 rs = stmt.executeQuery(sqlInsert);
-                System.out.println("Hospital with " + hID + " Successfully created.");
+                System.out.println("Hospital with ID " + hID + " Successfully created.");
 
             } finally {
                 close(rs);
@@ -222,7 +140,7 @@ public class Wolfhospital {
                 sqlUpdate += " WHERE hId = " + hID;
 
                 stmt.executeUpdate(sqlUpdate);
-                System.out.println("Hospital with " + hID + " successfully updated.");
+                System.out.println("Hospital with ID " + hID + " successfully updated.");
 
             } finally {
                 close(rs);
@@ -251,7 +169,7 @@ public class Wolfhospital {
                 String sqlDelete = "DELETE FROM Hospital WHERE hID = ";
                 sqlDelete += hID + ";";
                 stmt.executeUpdate(sqlDelete);
-                System.out.println("Hospital with " + hID + " successfully deleted.");
+                System.out.println("Hospital with ID " + hID + " successfully deleted.");
 
             } finally {
                 close(rs);
@@ -311,7 +229,7 @@ public class Wolfhospital {
                     sqlInsert += "'" + status + "');";
 
                     rs = stmt.executeQuery(sqlInsert);
-                    System.out.println("Patient with " + pId + " successfully created.");
+                    System.out.println("Patient with ID " + pId + " successfully created.");
                 }
             } finally {
                 close(rs);
@@ -357,7 +275,7 @@ public class Wolfhospital {
                     sqlUpdate += "status = " + "'" + status + "'";
                     sqlUpdate += " WHERE pID = " + pId;
                     stmt.executeUpdate(sqlUpdate);
-                    System.out.println("Patient with " + pId + " successfully updates.");
+                    System.out.println("Patient with ID " + pId + " successfully updates.");
 
                 } else {
                     String sqlUpdate = "UPDATE Patient SET";
@@ -371,7 +289,7 @@ public class Wolfhospital {
                     sqlUpdate += "status = " + "'" + status + "'";
                     sqlUpdate += " WHERE pID = " + pId;
                     stmt.executeUpdate(sqlUpdate);
-                    System.out.println("Patient with " + pId + " successfully updates.");
+                    System.out.println("Patient with ID " + pId + " successfully updates.");
 
                 }
 
@@ -402,7 +320,7 @@ public class Wolfhospital {
                 String sqlDelete = "DELETE FROM Patient WHERE pID = ";
                 sqlDelete += pId + ";";
                 stmt.executeUpdate(sqlDelete);
-                System.out.println("Hospital with " + pId + " successfully deleted.");
+                System.out.println("Patient with ID " + pId + " successfully deleted.");
 
             } finally {
                 close(rs);
@@ -457,7 +375,7 @@ public class Wolfhospital {
                 sqlInsert += "'" + email + "'); ";
 
                 rs = stmt.executeQuery(sqlInsert);
-                System.out.println("Staff with " + staffID + " successfully created.");
+                System.out.println("Staff with ID " + staffID + " successfully created.");
 
             } finally {
                 close(rs);
@@ -511,7 +429,7 @@ public class Wolfhospital {
                 sqlUpdate += " WHERE staffID = " + staffID;
 
                 stmt.executeQuery(sqlUpdate);
-                System.out.println("Staff with " + staffID + " successfully Updated.");
+                System.out.println("Staff with ID " + staffID + " successfully Updated.");
 
             } finally {
                 close(rs);
@@ -541,7 +459,7 @@ public class Wolfhospital {
                 String sqlDelete = "DELETE FROM Staff WHERE staffID = ";
                 sqlDelete += staffID + ";";
                 stmt.executeUpdate(sqlDelete);
-                System.out.println("Hospital with " + staffID + " successfully deleted.");
+                System.out.println("Staff with ID " + staffID + " successfully deleted.");
 
             } finally {
                 close(rs);
@@ -1390,7 +1308,7 @@ public class Wolfhospital {
             ResultSet rs = null;
             String billQuery = "SELECT b.pID, b.payerSSN, b.billingAddress, b.paymentInfo, b.registrationFee, b.accommodationFee, ";
             billQuery += "b.consultationFee,  b.testFee, b.treatmentFee, b.specDailyFee, b.visitDate FROM BillingAccounts b WHERE b.pID = ";
-            billQuery += pID + ", AND ";
+            billQuery += pID + " AND ";
             billQuery += "b.visitDate >= '";
             billQuery += startDate + "' AND b.visitDate <= '";
             billQuery += endDate + "';";
@@ -1592,8 +1510,8 @@ public class Wolfhospital {
 
             // Beds
             stmt.executeUpdate(
-                    "create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, spec varchar(100) NOT NULL, staffID integer, pID integer, reserved boolean, "
-                            + "FOREIGN KEY (hID) REFERENCES Hospital(hID), FOREIGN KEY (pID) REFERENCES Patient(pID))");
+                    "create table Beds(bID int NOT NULL UNIQUE PRIMARY KEY, hID integer NOT NULL, spec varchar(100) NOT NULL, sChargePerDay integer, staffID integer, pID integer, reserved boolean, "
+                            + "FOREIGN KEY (hID) REFERENCES Hospital(hID))");
 
             // Staff
             stmt.executeUpdate(
@@ -1606,7 +1524,7 @@ public class Wolfhospital {
             stmt.executeUpdate(
                     "create table CheckIn(cID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, hID integer NOT NULL, bID integer, "
                             + "startDate DATE NOT NULL, endDate DATE, respDoctor varchar(50) NOT NULL, currentDiagnosis varchar(500), registrationFee INTEGER NOT NULL, "
-                            + "FOREIGN KEY(pID) REFERENCES Patient(pID), FOREIGN KEY(hID) REFERENCES Hospital(hID))");
+                            + "FOREIGN KEY(hID) REFERENCES Hospital(hID))");
 
             // MedicalRecords
             stmt.executeUpdate(
@@ -1617,7 +1535,7 @@ public class Wolfhospital {
             // BillingAccounts
             stmt.executeUpdate(
                     "create table BillingAccounts(baID integer NOT NULL UNIQUE PRIMARY KEY AUTO_INCREMENT, pID integer NOT NULL, payerSSN varchar(11),"
-                            + " billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee integer, accommodationFee integer, consultationFee integer, testFee integer, treatmentFee integer, specDailyFee integer, visitDate DATE NOT NULL, FOREIGN KEY(pID) REFERENCES Patient(pID));");
+                            + " billingAddress varchar(150) NOT NULL, paymentInfo varchar(100), registrationFee integer, accommodationFee integer, consultationFee integer, testFee integer, treatmentFee integer, specDailyFee integer, visitDate DATE NOT NULL);");
 
         } catch (Throwable oops) {
             oops.printStackTrace();
@@ -1683,11 +1601,11 @@ public class Wolfhospital {
 
             // Beds #1
             stmt.executeUpdate(
-                    "insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5001, 111, 'neurology', 1002, 1)");
+                    "insert into Beds(bID, hID, spec, sChargePerDay, staffID, pID, reserved) VALUES (5001, 111, 'neurology', 15, 1002, 3001, 1)");
 
             // Beds #2
             stmt.executeUpdate(
-                    "insert into Beds(bID, hID, spec, staffID, reserved) VALUES (5002, 111, 'neurology', 1002, 1)");
+                    "insert into Beds(bID, hID, spec, sChargePerDay, staffID, pID, reserved) VALUES (5002, 111, 'neurology', 15, 1002, 3002, 1)");
 
             // Check-in/out #1
             stmt.executeUpdate(
@@ -1720,24 +1638,27 @@ public class Wolfhospital {
             oops.printStackTrace();
         }
     }
-    
-   /**
-    * This method is used to test all of the currently implemented functions
-    * @param conn is a working connection to the SQL database.
-    * @param stmt is the Statement object used for executing SQL queries. 
-    */
-    static void tests(Connection conn, Statement stmt){
+
+    /**
+     * This method is used to test all of the currently implemented functions
+     * 
+     * @param conn is a working connection to the SQL database.
+     * @param stmt is the Statement object used for executing SQL queries.
+     */
+    static void tests(Connection conn, Statement stmt) {
         System.out.println("TESTS FOR INFORMATION PROCESSING: ");
         System.out.println("\n\nTesting adding a hospital: ");
-        enterHospital(stmt, "999", "22201", "111 Hospital Plaza", "704-919-3388", "dental", "500", "dermatology", "20", "85");
+        enterHospital(stmt, "999", "22201", "111 Hospital Plaza", "704-919-3388", "dental", "500", "dermatology", "20",
+                "85");
         showHospital(stmt);
         System.out.println("\n\nTesting updating a hospital: ");
-        enterHospital(stmt, "999", "22201", "111 Hospital Blvd", "704-919-3388", "dental", "500", "Proctology", "20", "100");
+        enterHospital(stmt, "999", "22201", "111 Hospital Blvd", "704-919-3388", "dental", "500", "Proctology", "20",
+                "100");
         showHospital(stmt);
         System.out.println("\n\nTesting deleting a hospital: ");
         deleteHospital(stmt, "999");
         showHospital(stmt);
-        
+
     }
 
 }
